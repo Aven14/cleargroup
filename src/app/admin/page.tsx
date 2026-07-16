@@ -11,7 +11,7 @@ import { getLogStats, getAdminLogs } from "@/actions/logs";
 export default async function AdminPage() {
   await ensureBootstrapAdmin();
   const user = await getCurrentUser();
-  if (!user) redirect("/clearbus/connexion?redirect=/clearbus/admin");
+  if (!user) redirect("/clearbus/connexion?redirect=/admin");
   if (!hasRole(user.roles, "ADMIN")) redirect("/clearbus/espace-personnel");
 
   const [lines, tickets, users, logStats, logs] = await Promise.all([

@@ -26,7 +26,7 @@ const PANEL_LINKS: {
   },
   {
     role: "ADMIN",
-    href: "/clearbus/admin",
+    href: "/admin",
     title: "Administration",
     desc: "Gestion des comptes, lignes et billets.",
   },

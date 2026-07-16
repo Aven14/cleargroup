@@ -26,7 +26,7 @@ export function hasAnyRole(
 }
 
 export function getLoginRedirect(roles: UserRole[]): string {
-  if (hasRole(roles, "ADMIN")) return "/clearbus/admin";
+  if (hasRole(roles, "ADMIN")) return "/admin";
   if (hasRole(roles, "DRIVER")) return "/clearbus/chauffeur";
   if (hasRole(roles, "CONTROLLER")) return "/clearbus/controleur";
   return "/clearbus/espace-personnel";

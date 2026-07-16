@@ -22,21 +22,23 @@ type NavItem = {
   children?: NavItem[];
 };
 
-function linksForRoles(roles: UserRole[]): NavItem[] {
+function linksForRoles(roles: UserRole[], isInClearBus: boolean): NavItem[] {
   const links: NavItem[] = [];
 
-  if (hasRole(roles, "DRIVER") || hasRole(roles, "ADMIN")) {
-    links.push(
-      { href: "/clearbus/chauffeur", label: "Mon service" },
-      { href: "/clearbus/chauffeur/annonces", label: "Annonces" },
-      { href: "/clearbus/chauffeur/bannis", label: "Personnes bannies" }
-    );
-  }
-  if (hasRole(roles, "CONTROLLER") || hasRole(roles, "ADMIN")) {
-    links.push({ href: "/clearbus/controleur", label: "Contrôle" });
+  if (isInClearBus) {
+    if (hasRole(roles, "DRIVER") || hasRole(roles, "ADMIN")) {
+      links.push(
+        { href: "/clearbus/chauffeur", label: "Mon service" },
+        { href: "/clearbus/chauffeur/annonces", label: "Annonces" },
+        { href: "/clearbus/chauffeur/bannis", label: "Personnes bannies" }
+      );
+    }
+    if (hasRole(roles, "CONTROLLER") || hasRole(roles, "ADMIN")) {
+      links.push({ href: "/clearbus/controleur", label: "Contrôle" });
+    }
   }
   if (hasRole(roles, "ADMIN")) {
-    links.push({ href: "/clearbus/admin", label: "Admin" });
+    links.push({ href: "/admin", label: "Admin" });
   }
 
   return links;
@@ -76,6 +78,9 @@ export function Navbar({ user }: { user: NavUser | null }) {
   const [companiesOpen, setCompaniesOpen] = useState(false);
 
   const mainLinks = useMemo<NavItem[]>(() => {
+    const isInClearBus = pathname.startsWith('/clearbus');
+    const isInClearSecurity = pathname.startsWith('/clearsecurity');
+    
     return [
       { href: "/", label: "Accueil" },
       {
@@ -90,9 +95,9 @@ export function Navbar({ user }: { user: NavUser | null }) {
       { href: "/actualites", label: "Actualités" },
       { href: "/a-propos", label: "À propos" },
       { href: "/contact", label: "Contact" },
-      ...(user ? linksForRoles(user.roles) : []),
+      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles, isInClearBus) : []),
     ];
-  }, [user]);
+  }, [user, pathname]);
 
   const handleLogout = async () => {
     await logoutUser();
