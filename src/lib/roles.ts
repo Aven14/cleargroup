@@ -5,6 +5,7 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   DRIVER: "Chauffeur",
   CONTROLLER: "Contrôleur",
   ADMIN: "Administrateur",
+  SECURITY: "Agent de sécurité",
 };
 
 export const ASSIGNABLE_ROLES: UserRole[] = [
