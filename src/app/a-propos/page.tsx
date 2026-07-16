@@ -40,7 +40,7 @@ export default function AProposPage() {
           <p className="text-muted leading-relaxed">
             La mission de ClearGroup est de fournir aux habitants de Vice City des services urbains de 
             premier plan, fiables et accessibles. Nous nous engageons à améliorer la qualité de vie 
-            dans la ville en assurant le transport en commun, la sécurité et bientôt d'autres services 
+            dans la ville en assurant le transport en commun, la sécurité et bientôt d&apos;autres services 
             essentiels.
           </p>
           <p className="mt-4 text-muted leading-relaxed">
