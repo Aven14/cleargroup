@@ -56,28 +56,28 @@ export default function RecrutementPage() {
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <h3 className="font-bold text-ink">Formation complète</h3>
             <p className="mt-2 text-sm text-muted">
-              Formation professionnelle aux techniques de sécurité et aux protocoles d'intervention.
+              Formation professionnelle aux techniques de sécurité et aux protocoles d&apos;intervention.
             </p>
           </div>
 
           <div className="panel-soft bg-gradient-to-br from-accent-light to-white p-6">
             <h3 className="font-bold text-ink">Salaires compétitifs</h3>
             <p className="mt-2 text-sm text-muted">
-              Rémunération attractive selon l'expérience et les qualifications.
+              Rémunération attractive selon l&apos;expérience et les qualifications.
             </p>
           </div>
 
           <div className="panel-soft bg-gradient-to-br from-primary-light/80 to-white p-6">
             <h3 className="font-bold text-ink">Évolution de carrière</h3>
             <p className="mt-2 text-sm text-muted">
-              Perspectives d'évolution vers des postes d'encadrement et de spécialisation.
+              Perspectives d&apos;évolution vers des postes d&apos;encadrement et de spécialisation.
             </p>
           </div>
 
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <h3 className="font-bold text-ink">Équipements fournis</h3>
             <p className="mt-2 text-sm text-muted">
-              Uniformes et équipements de sécurité mis à disposition par l'entreprise.
+              Uniformes et équipements de sécurité mis à disposition par l&apos;entreprise.
             </p>
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function RecrutementPage() {
               </span>
               <div>
                 <h4 className="font-semibold text-ink">Intégration</h4>
-                <p className="text-sm text-muted">Formation d'intégration et prise de poste.</p>
+                <p className="text-sm text-muted">Formation d&apos;intégration et prise de poste.</p>
               </div>
             </li>
           </ol>

@@ -108,7 +108,7 @@ export default function NosEntreprisesPage() {
             de service cohérente et professionnelle dans tous les domaines essentiels à la vie urbaine.
           </p>
           <p className="mt-4 text-muted leading-relaxed">
-            Notre structure modulaire nous permet d'intégrer facilement de nouvelles divisions pour répondre 
+            Notre structure modulaire nous permet d&apos;intégrer facilement de nouvelles divisions pour répondre 
             aux besoins évolutifs de la ville et de ses habitants.
           </p>
         </div>
@@ -120,7 +120,7 @@ export default function NosEntreprisesPage() {
           <p className="text-muted leading-relaxed">
             ClearGroup étudie régulièrement de nouvelles opportunités pour étendre ses services. 
             Parmi les projets envisagés : ClearTaxi (transport individuel), ClearLogistics (logistique urbaine), 
-            ClearMedical (services médicaux d'urgence) et ClearEvents (organisation d'événements).
+            ClearMedical (services médicaux d&apos;urgence) et ClearEvents (organisation d&apos;événements).
           </p>
         </div>
       </section>

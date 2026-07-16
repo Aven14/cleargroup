@@ -13,7 +13,7 @@ export default function ContactPage() {
             <span className="text-gradient-brand"> ClearGroup</span>
           </h1>
           <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
-            Pour toute question sur nos services ou nos divisions, n'hésitez pas à nous contacter.
+            Pour toute question sur nos services ou nos divisions, n&apos;hésitez pas à nous contacter.
           </p>
         </div>
       </section>

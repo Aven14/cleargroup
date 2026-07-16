@@ -107,7 +107,7 @@ export default function ServicesPage() {
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Protocoles d'intervention éprouvés</span>
+              <span className="text-muted">Protocoles d&apos;intervention éprouvés</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />

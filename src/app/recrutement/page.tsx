@@ -77,7 +77,7 @@ export default function RecrutementPage() {
           <div className="panel-soft p-6">
             <h3 className="font-bold text-ink">Évolution de carrière</h3>
             <p className="mt-2 text-sm text-muted">
-              Perspectives d'évolution au sein de ClearGroup et de ses divisions.
+              Perspectives d&apos;évolution au sein de ClearGroup et de ses divisions.
             </p>
           </div>
 
@@ -118,7 +118,7 @@ export default function RecrutementPage() {
               </span>
               <div>
                 <h4 className="font-semibold text-ink">Intégration</h4>
-                <p className="text-sm text-muted">Formation d'intégration et prise de poste au sein de votre division.</p>
+                <p className="text-sm text-muted">Formation d&apos;intégration et prise de poste au sein de votre division.</p>
               </div>
             </li>
           </ol>

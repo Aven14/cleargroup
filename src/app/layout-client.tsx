@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { useAudio } from "@/contexts/audio-context";
 import { Navbar } from "@/components/layout/navbar";
 import { TransportBackground } from "@/components/layout/transport-background";
+import type { UserRole } from "@prisma/client";
+
+type NavUser = {
+  firstname: string;
+  lastname: string;
+  roles: UserRole[];
+};
 
 // Conteneur pour le lecteur audio intégré
 function AudioPlayerContainer() {
@@ -82,7 +89,7 @@ export function RootLayoutClient({
   user,
   children,
 }: Readonly<{
-  user: Awaited<ReturnType<typeof getCurrentUser>> | null;
+  user: NavUser | null;
   children: React.ReactNode;
 }>) {
   return (
@@ -95,7 +102,7 @@ export function RootLayoutClient({
 
       {/* Contenu principal avec effet de profondeur */}
       <main className="relative z-10 min-h-screen bg-transparent">
-        <Navbar user={user} className="glassmorphism" />
+        <Navbar user={user} />
 
         {/* Container principal avec padding adaptatif */}
         <div className="relative z-10 pt-16 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -31,7 +31,7 @@ export default function ClearSecurityPage() {
       </section>
 
       <section className="mb-12">
-        <h2 className="mb-6 text-xl font-bold text-ink">Nos domaines d'intervention</h2>
+        <h2 className="mb-6 text-xl font-bold text-ink">Nos domaines d&apos;intervention</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-surface shadow-card">
@@ -51,7 +51,7 @@ export default function ClearSecurityPage() {
               </svg>
             </div>
             <h3 className="font-bold text-ink">Sécurité événementielle</h3>
-            <p className="mt-2 text-sm text-muted">Gestion de la sécurité lors d'événements publics et privés.</p>
+            <p className="mt-2 text-sm text-muted">Gestion de la sécurité lors d&apos;événements publics et privés.</p>
           </div>
 
           <div className="panel-soft bg-gradient-to-br from-primary-light/80 to-white p-6">

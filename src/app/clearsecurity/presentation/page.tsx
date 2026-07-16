@@ -22,13 +22,13 @@ export default function PresentationPage() {
         <h2 className="mb-6 text-xl font-bold text-ink">Notre histoire</h2>
         <div className="panel-soft p-6">
           <p className="text-muted leading-relaxed">
-            Fondée en 2024, ClearSecurity est née de la volonté d'offrir à Vice City un service de sécurité privée de premier plan. 
-            Filiale de ClearGroup, nous bénéficions du soutien et de l'expertise d'un leader dans les services urbains.
+            Fondée en 2024, ClearSecurity est née de la volonté d&apos;offrir à Vice City un service de sécurité privée de premier plan. 
+            Filiale de ClearGroup, nous bénéficions du soutien et de l&apos;expertise d&apos;un leader dans les services urbains.
           </p>
           <p className="mt-4 text-muted leading-relaxed">
-            Depuis notre création, nous n'avons cessé de développer nos compétences et nos moyens pour répondre aux besoins 
-            croissants en matière de sécurité sur le territoire. Notre équipe d'agents professionnels intervient dans divers 
-            domaines : surveillance de sites, sécurité événementielle, patrouilles et contrôle d'accès.
+            Depuis notre création, nous n&apos;avons cessé de développer nos compétences et nos moyens pour répondre aux besoins 
+            croissants en matière de sécurité sur le territoire. Notre équipe d&apos;agents professionnels intervient dans divers 
+            domaines : surveillance de sites, sécurité événementielle, patrouilles et contrôle d&apos;accès.
           </p>
         </div>
       </section>
@@ -46,7 +46,7 @@ export default function PresentationPage() {
           <div className="panel-soft bg-gradient-to-br from-accent-light to-white p-6">
             <h3 className="font-bold text-ink">Réactivité</h3>
             <p className="mt-2 text-sm text-muted">
-              Intervention rapide 24h/24 pour répondre à toutes les situations d'urgence.
+              Intervention rapide 24h/24 pour répondre à toutes les situations d&apos;urgence.
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function PresentationPage() {
             le dialogue et la médiation lorsque cela est possible.
           </p>
           <p className="mt-4 text-muted leading-relaxed">
-            En tant que membre de ClearGroup, nous partageons la même vision d'excellence et d'innovation 
+            En tant que membre de ClearGroup, nous partageons la même vision d&apos;excellence et d&apos;innovation 
             au service de la communauté de Vice City.
           </p>
         </div>

@@ -13,7 +13,7 @@ export default function ContactPage() {
             <span className="text-gradient-brand"> ClearSecurity</span>
           </h1>
           <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
-            Pour toute demande de devis, information ou candidature, n'hésitez pas à nous contacter.
+            Pour toute demande de devis, information ou candidature, n&apos;hésitez pas à nous contacter.
           </p>
         </div>
       </section>

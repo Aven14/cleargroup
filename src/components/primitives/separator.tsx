@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface SeparatorProps extends React.HTMLAttributes<HTMLHRElement> {
@@ -7,7 +8,7 @@ interface SeparatorProps extends React.HTMLAttributes<HTMLHRElement> {
 }
 
 export const Separator = React.forwardRef<HTMLHRElement, SeparatorProps>(
-  ({ className, orientation = "horizontal", variant = "default", ...props }, ref) => {
+  ({ className, orientation = "horizontal", ...props }, ref) => {
     const horizontalClass = "h-0.5 flex-1 bg-border";
     const verticalClass = "w-0.5 flex-none bg-border";
 

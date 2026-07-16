@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface PaginationProps {
@@ -70,7 +69,7 @@ export const Pagination = ({
       </div>
       <div className="flex justify-end items-center gap-1">
         <div className="flex items-center gap-1">
-          {paginationRange().map((pageNumber, index) => {
+          {paginationRange().map((pageNumber) => {
             if (pageNumber === "...") {
               return (
                 <span key="dots" className="flex items-center justify-center rounded-md border px-3 py-2 text-sm font-medium">
@@ -83,7 +82,7 @@ export const Pagination = ({
             return (
               <button
                 key={pageNumber}
-                onClick={() => onPageChange(pageNumber)}
+                onClick={() => onPageChange(Number(pageNumber))}
                 className={cn(
                   "flex items-center justify-center rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   isActive && "bg-primary-100 text-primary-900"

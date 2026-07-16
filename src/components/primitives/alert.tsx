@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -5,7 +6,7 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   ({ className, variant = "default", ...props }, ref) => {
     const variants = {
       default: "bg-background text-muted-foreground",
@@ -30,8 +31,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
 );
 Alert.displayName = "Alert";
 
-// Sous- composants pour le titre et la description
-Alert.Title = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+const AlertTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
     <h4
       ref={ref}
@@ -40,9 +40,9 @@ Alert.Title = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
     />
   )
 );
-Alert.Title.displayName = "Alert.Title";
+AlertTitle.displayName = "AlertTitle";
 
-Alert.Description = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+const AlertDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
@@ -51,4 +51,6 @@ Alert.Description = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEleme
     />
   )
 );
-Alert.Description.displayName = "Alert.Description";
+AlertDescription.displayName = "AlertDescription";
+
+export { Alert, AlertTitle, AlertDescription };

@@ -13,7 +13,7 @@ export default function AProposPage() {
             <span className="text-gradient-brand"> ClearGroup</span>
           </h1>
           <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
-            Découvrez l'histoire, la mission et les valeurs de ClearGroup, groupe de services urbains de Vice City.
+            Découvrez l&apos;histoire, la mission et les valeurs de ClearGroup, groupe de services urbains de Vice City.
           </p>
         </div>
       </section>
@@ -24,11 +24,11 @@ export default function AProposPage() {
           <p className="text-muted leading-relaxed">
             Fondé en 2024, ClearGroup est né de la volonté de créer une structure cohérente pour regrouper 
             les différents services urbains essentiels à Vice City. Initialement centré autour de ClearBus, 
-            le réseau de transport en commun de la ville, le groupe s'est rapidement développé pour intégrer 
+            le réseau de transport en commun de la ville, le groupe s&apos;est rapidement développé pour intégrer 
             ClearSecurity, notre division de sécurité privée.
           </p>
           <p className="mt-4 text-muted leading-relaxed">
-            Cette approche intégrée nous permet d'offrir des services de qualité cohérente dans tous les 
+            Cette approche intégrée nous permet d&apos;offrir des services de qualité cohérente dans tous les 
             domaines critiques de la vie urbaine, tout en bénéficiant de synergies entre nos différentes divisions.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function AProposPage() {
           <div className="panel-soft bg-gradient-to-br from-accent-light to-white p-6">
             <h3 className="font-bold text-ink">Innovation</h3>
             <p className="mt-2 text-sm text-muted">
-              Nous cherchons constamment de nouvelles façons d'améliorer nos services et d'innover.
+              Nous cherchons constamment de nouvelles façons d&apos;améliorer nos services et d&apos;innover.
             </p>
           </div>
 
