@@ -1,0 +1,40 @@
+import { redirect } from "next/navigation";
+import { AdminPanel } from "@/components/admin/admin-panel";
+import { PageHeader } from "@/components/ui/page-header";
+import { getCurrentUser, ensureBootstrapAdmin } from "@/lib/session";
+import { hasRole } from "@/lib/roles";
+import { getActiveTickets } from "@/actions/tickets";
+import { getAdminLines } from "@/actions/admin";
+import { getAllUsers } from "@/actions/users";
+import { getLogStats, getAdminLogs } from "@/actions/logs";
+
+export default async function AdminPage() {
+  await ensureBootstrapAdmin();
+  const user = await getCurrentUser();
+  if (!user) redirect("/clearbus/connexion?redirect=/clearbus/admin");
+  if (!hasRole(user.roles, "ADMIN")) redirect("/clearbus/espace-personnel");
+
+  const [lines, tickets, users, logStats, logs] = await Promise.all([
+    getAdminLines(),
+    getActiveTickets(),
+    getAllUsers(),
+    getLogStats(),
+    getAdminLogs(100),
+  ]);
+
+  return (
+    <div className="page-enter mx-auto max-w-6xl px-4">
+      <PageHeader
+        title="Administration"
+        subtitle="Dashboard, utilisateurs, lignes, arrêts et billets."
+      />
+      <AdminPanel
+        lines={lines}
+        tickets={tickets}
+        users={users}
+        logStats={logStats}
+        logs={logs}
+      />
+    </div>
+  );
+}

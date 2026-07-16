@@ -1,0 +1,35 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/session";
+import { hasAnyRole } from "@/lib/roles";
+import { getMyActiveShift } from "@/actions/shifts";
+import { AnnouncementPanel } from "@/components/chauffeur/announcement-panel";
+import { PageHeader } from "@/components/ui/page-header";
+
+export default async function ChauffeurAnnoncesPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/clearbus/connexion");
+  if (!hasAnyRole(user.roles, ["DRIVER", "ADMIN"])) redirect("/clearbus/espace-personnel");
+
+  const shift = await getMyActiveShift();
+  if (!shift) {
+    redirect("/clearbus/chauffeur");
+  }
+
+  return (
+    <div className="page-enter mx-auto max-w-6xl px-4">
+      <PageHeader
+        title="Annonces arrêts"
+        subtitle="Déclenchez les sons pour chaque arrêt de votre ligne."
+      />
+      <Link href="/clearbus/chauffeur" className="btn-secondary mb-6 inline-flex text-sm">
+        ← Retour service
+      </Link>
+      <AnnouncementPanel
+        lineNumber={shift.line.number}
+        lineName={shift.line.name}
+        stops={shift.line.stops}
+      />
+    </div>
+  );
+}

@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CIVIL
+  DRIVER
+  CONTROLLER
+  ADMIN
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  firstname     String
+  lastname      String
+  roles         UserRole[]    @default([CIVIL])
+  createdAt     DateTime      @default(now())
+  sessions      Session[]
+  shifts        DriverShift[]
+  issuedTickets Ticket[]      @relation("IssuedTickets")
+  activityLogs  ActivityLog[] @relation("UserLogs")
+  issuedBans    BusBan[]      @relation("IssuedBans")
+
+  @@index([roles])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model Ticket {
+  id          String   @id @default(cuid())
+  firstname   String
+  lastname    String
+  ticketType  String
+  issuedById  String?
+  issuedBy    User?    @relation("IssuedTickets", fields: [issuedById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime @db.Timestamptz(3)
+  cancelled   Boolean  @default(false)
+  cancelledAt DateTime? @db.Timestamptz(3)
+
+  @@index([firstname, lastname])
+  @@index([expiresAt])
+  @@index([issuedById])
+  @@index([cancelled])
+}
+
+model TransportLine {
+  id        String        @id @default(cuid())
+  number    Int           @unique
+  name      String
+  color     String        @default("#1d4ed8")
+  createdAt DateTime      @default(now())
+  stops     Stop[]
+  shifts    DriverShift[]
+}
+
+model Stop {
+  id       String        @id @default(cuid())
+  name     String
+  slug     String
+  audioUrl String
+  order    Int           @default(0)
+  lineId   String
+  line     TransportLine @relation(fields: [lineId], references: [id], onDelete: Cascade)
+
+  @@unique([lineId, slug])
+}
+
+model DriverShift {
+  id               String        @id @default(cuid())
+  userId           String
+  lineId           String
+  currentStopId    String?
+  destinationStopId String?
+  startedAt        DateTime      @default(now())
+  endedAt          DateTime?
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  line             TransportLine @relation(fields: [lineId], references: [id], onDelete: Cascade)
+
+  @@index([userId, endedAt])
+  @@index([lineId, endedAt])
+}
+
+model LiveAnnouncement {
+  id        String   @id @default(cuid())
+  audioUrl  String
+  label     String
+  lineId    String
+  createdAt DateTime @default(now())
+  played    Boolean  @default(false)
+  
+  @@index([createdAt])
+  @@index([played])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation("UserLogs", fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String?
+  entityId  String?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([entity])
+}
+
+model RadioState {
+  id            String   @id @default(cuid())
+  trackIndex    Int      @default(0)
+  position      Float    @default(0)
+  isPlaying     Boolean  @default(false)
+  startedAt     BigInt?
+  playlistOrder String[] @default([])
+  lastSync      DateTime @default(now())
+
+  @@index([lastSync])
+}
+
+model BusBan {
+  id         String    @id @default(cuid())
+  firstname  String
+  lastname   String
+  reason     String?
+  bannedById String
+  bannedBy   User      @relation("IssuedBans", fields: [bannedById], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  liftedAt   DateTime?
+
+  @@index([firstname, lastname])
+  @@index([liftedAt])
+  @@index([createdAt])
+}

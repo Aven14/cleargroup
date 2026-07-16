@@ -1,0 +1,21 @@
+import Link from "next/link";
+import { RegisterForm } from "@/components/auth/register-form";
+import { PageHeader } from "@/components/ui/page-header";
+
+export default function InscriptionPage() {
+  return (
+    <div className="page-enter mx-auto max-w-md px-4">
+      <PageHeader
+        title="Inscription"
+        subtitle="Compte Civil par défaut. Précisez votre identité RP et votre vrai e-mail."
+      />
+      <RegisterForm />
+      <p className="mt-6 text-center text-sm text-muted">
+        Déjà inscrit ?{" "}
+        <Link href="/clearbus/connexion" className="font-semibold text-primary hover:underline">
+          Se connecter
+        </Link>
+      </p>
+    </div>
+  );
+}

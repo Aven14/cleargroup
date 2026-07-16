@@ -1,0 +1,19 @@
+return <Icon className="h-5 w-5" />;
+                          })}
+                        </span>
+                      )
+                      <span className="ml-3">{label}</span>
+                    </Link>
+                  ))}
+                </div>
+                <>
+                )
+                )
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+);
