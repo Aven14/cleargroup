@@ -8,7 +8,7 @@ export default function AlertesPage() {
   const [alertes, setAlertes] = useState([
     {
       id: 1,
-      type: "Manque d'effectif",
+      type: "Manque d&apos;effectif",
       lieu: "Centre-ville",
       description: "Besoin de renfort pour la surveillance du centre-ville",
       agentsDemandes: 3,
@@ -84,7 +84,7 @@ export default function AlertesPage() {
             <h3 className="mb-4 font-bold text-ink">Nouvelle alerte</h3>
             <div className="space-y-4">
               <div>
-                <label className="label-caps block mb-2">Type d'alerte</label>
+                <label className="label-caps block mb-2">Type d&apos;alerte</label>
                 <select
                   className="input-field w-full"
                   value={newAlerte.type}
@@ -93,7 +93,7 @@ export default function AlertesPage() {
                   <option>Intervention urgente</option>
                   <option>Escorte</option>
                   <option>Événement</option>
-                  <option>Manque d'effectif</option>
+                  <option>Manque d&apos;effectif</option>
                 </select>
               </div>
               <div>
@@ -116,7 +116,7 @@ export default function AlertesPage() {
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Nombre d'agents souhaités</label>
+                <label className="label-caps block mb-2">Nombre d&apos;agents souhaités</label>
                 <input
                   type="number"
                   className="input-field w-full"
@@ -126,7 +126,7 @@ export default function AlertesPage() {
                 />
               </div>
               <button onClick={handleCreateAlerte} className="btn-primary w-full">
-                Créer l'alerte
+                Créer l&apos;alerte
               </button>
             </div>
           </div>

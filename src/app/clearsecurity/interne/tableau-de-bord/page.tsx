@@ -5,7 +5,7 @@ export default function SecurityDashboardPage() {
     <div className="page-enter mx-auto max-w-6xl px-4">
       <PageHeader
         title="Tableau de bord"
-        subtitle="Vue d'ensemble des opérations de sécurité en temps réel"
+        subtitle="Vue d&apos;ensemble des opérations de sécurité en temps réel"
       />
 
       {/* Statistiques en temps réel */}
@@ -44,7 +44,7 @@ export default function SecurityDashboardPage() {
           <div className="panel-soft bg-gradient-to-br from-success/10 to-success/5 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted">Débriefings aujourd'hui</p>
+                <p className="text-sm text-muted">Débriefings aujourd&apos;hui</p>
                 <p className="mt-2 text-3xl font-extrabold text-ink">5</p>
               </div>
               <span className="text-2xl">📋</span>
@@ -81,7 +81,7 @@ export default function SecurityDashboardPage() {
             <div className="flex items-center gap-4 p-4 rounded-md bg-accent/10 border border-accent/20">
               <span className="text-2xl">🚨</span>
               <div className="flex-1">
-                <p className="font-semibold text-ink">Manque d'effectif</p>
+                <p className="font-semibold text-ink">Manque d&apos;effectif</p>
                 <p className="text-sm text-muted">Centre-ville · 3 agents demandés</p>
               </div>
               <span className="text-xs text-muted">Il y a 5 min</span>

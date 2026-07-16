@@ -12,6 +12,7 @@ enum UserRole {
   DRIVER
   CONTROLLER
   ADMIN
+  SECURITY
 }
 
 model User {
@@ -27,6 +28,13 @@ model User {
   issuedTickets Ticket[]      @relation("IssuedTickets")
   activityLogs  ActivityLog[] @relation("UserLogs")
   issuedBans    BusBan[]      @relation("IssuedBans")
+  securityShifts SecurityServiceShift[]
+  createdPatrols SecurityPatrol[] @relation("CreatedPatrols")
+  patrolMember  SecurityPatrol[] @relation("PatrolMembers")
+  createdAlerts SecurityAlert[]
+  alertResponses SecurityAlertResponse[]
+  createdDebriefings SecurityDebriefing[]
+  detainedPersons SecurityDetainee[]
 
   @@index([roles])
 }
@@ -152,4 +160,112 @@ model BusBan {
   @@index([firstname, lastname])
   @@index([liftedAt])
   @@index([createdAt])
+}
+
+model SecurityServiceShift {
+  id          String   @id @default(cuid())
+  userId      String
+  vehicle     String?
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, endedAt])
+  @@index([endedAt])
+}
+
+model SecurityPatrol {
+  id          String   @id @default(cuid())
+  agentId     String
+  coequipierId String?
+  sector      String
+  vehicle     String
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  missionType String   @default("Patrouille mobile")
+  observations String?
+  agent       User     @relation("CreatedPatrols", fields: [agentId], references: [id], onDelete: Cascade)
+  coequipier   User?    @relation("PatrolMembers", fields: [coequipierId], references: [id], onDelete: SetNull)
+
+  @@index([agentId, endedAt])
+  @@index([endedAt])
+}
+
+model SecurityAlert {
+  id              String   @id @default(cuid())
+  type            String
+  location        String
+  description     String
+  agentsRequested Int      @default(1)
+  createdById     String
+  active          Boolean  @default(true)
+  closedAt        DateTime?
+  createdBy       User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  responses       SecurityAlertResponse[]
+
+  @@index([createdById, active])
+  @@index([active])
+  @@index([closedAt])
+}
+
+model SecurityAlertResponse {
+  id        String   @id @default(cuid())
+  alertId   String
+  userId    String
+  respondedAt DateTime @default(now())
+  alert     SecurityAlert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([alertId])
+  @@index([userId])
+}
+
+model SecurityDebriefing {
+  id            String   @id @default(cuid())
+  title         String
+  date          DateTime @default(now())
+  location      String
+  agentsPresent String[]
+  interventionType String
+  summary       String
+  procedure     String
+  result        String
+  incidents     String?
+  observations  String?
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([createdById])
+  @@index([date])
+}
+
+model SecurityDetainee {
+  id              String   @id @default(cuid())
+  firstname       String
+  lastname        String
+  enteredAt       DateTime @default(now())
+  detentionTime   Int      @default(30)
+  reason          String
+  agentId         String
+  releasedAt      DateTime?
+  agent           User     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, releasedAt])
+  @@index([releasedAt])
+  @@index([enteredAt])
+}
+
+model SecurityEvent {
+  id          String   @id @default(cuid())
+  name        String
+  date        DateTime
+  startTime   String
+  endTime     String
+  description String
+  location    String
+  agentIds    String[]
+  isPublic    Boolean  @default(true)
+
+  @@index([date])
+  @@index([isPublic])
 }

@@ -115,7 +115,7 @@ export default function PlanningPage() {
             <h3 className="mb-4 font-bold text-ink">Nouvel événement</h3>
             <div className="space-y-4">
               <div>
-                <label className="label-caps block mb-2">Nom de l'événement</label>
+                <label className="label-caps block mb-2">Nom de l&apos;événement</label>
                 <input
                   type="text"
                   className="input-field w-full"
@@ -169,7 +169,7 @@ export default function PlanningPage() {
                 <label className="label-caps block mb-2">Description</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
-                  placeholder="Description de l'événement..."
+                  placeholder="Description de l&apos;événement..."
                   value={newEvenement.description}
                   onChange={(e) => setNewEvenement({ ...newEvenement, description: e.target.value })}
                 />
@@ -194,7 +194,7 @@ export default function PlanningPage() {
                 <label htmlFor="public" className="text-sm text-ink">Événement public (visible par tous)</label>
               </div>
               <button onClick={handleCreateEvenement} className="btn-primary w-full">
-                Créer l'événement
+                Créer l&apos;événement
               </button>
             </div>
           </div>

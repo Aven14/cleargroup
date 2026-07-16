@@ -47,7 +47,7 @@ export default function ParametresPage() {
               <h3 className="mb-4 font-bold text-ink">Paramètres généraux</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="label-caps block mb-2">Nom de l'organisation</label>
+                  <label className="label-caps block mb-2">Nom de l&apos;organisation</label>
                   <input
                     type="text"
                     className="input-field w-full"
@@ -79,7 +79,7 @@ export default function ParametresPage() {
                     defaultChecked
                   />
                   <label htmlFor="notifications" className="text-sm text-ink">
-                    Notifications d'alertes en temps réel
+                    Notifications d&apos;alertes en temps réel
                   </label>
                 </div>
               </div>

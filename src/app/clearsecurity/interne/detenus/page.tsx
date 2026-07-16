@@ -12,7 +12,7 @@ export default function DetenusPage() {
       prenom: "John",
       heureEntree: "14:30",
       tempsDetention: 60,
-      motif: "Trouble à l'ordre public",
+      motif: "Trouble à l&apos;ordre public",
       agentResponsable: "Jean Dupont",
       statut: "En détention",
     },
@@ -22,7 +22,7 @@ export default function DetenusPage() {
       prenom: "Jane",
       heureEntree: "15:00",
       tempsDetention: 30,
-      motif: "Refus d'obtempérer",
+      motif: "Refus d&apos;obtempérer",
       agentResponsable: "Marie Martin",
       statut: "Libérable",
     },
@@ -167,7 +167,7 @@ export default function DetenusPage() {
               <tr className="border-b border-line/70">
                 <th className="text-left p-3 text-sm font-semibold text-ink">Nom</th>
                 <th className="text-left p-3 text-sm font-semibold text-ink">Prénom</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Heure d'entrée</th>
+                <th className="text-left p-3 text-sm font-semibold text-ink">Heure d&apos;entrée</th>
                 <th className="text-left p-3 text-sm font-semibold text-ink">Temps détention</th>
                 <th className="text-left p-3 text-sm font-semibold text-ink">Temps restant</th>
                 <th className="text-left p-3 text-sm font-semibold text-ink">Motif</th>

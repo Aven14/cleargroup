@@ -70,7 +70,7 @@ export default function DebriefingsPage() {
     <div className="page-enter mx-auto max-w-6xl px-4">
       <PageHeader
         title="Débriefings"
-        subtitle="Compte-rendus d'intervention et rapports de mission"
+        subtitle="Compte-rendus d&apos;intervention et rapports de mission"
       />
 
       <section className="mb-12">
@@ -130,7 +130,7 @@ export default function DebriefingsPage() {
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Type d'intervention</label>
+                <label className="label-caps block mb-2">Type d&apos;intervention</label>
                 <select
                   className="input-field w-full"
                   value={newDebriefing.typeIntervention}
@@ -147,7 +147,7 @@ export default function DebriefingsPage() {
                 <label className="label-caps block mb-2">Résumé</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
-                  placeholder="Résumé de l'intervention..."
+                  placeholder="Résumé de l&apos;intervention..."
                   value={newDebriefing.resume}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, resume: e.target.value })}
                 />
@@ -156,7 +156,7 @@ export default function DebriefingsPage() {
                 <label className="label-caps block mb-2">Déroulement</label>
                 <textarea
                   className="input-field w-full min-h-[120px]"
-                  placeholder="Déroulement détaillé de l'intervention..."
+                  placeholder="Déroulement détaillé de l&apos;intervention..."
                   value={newDebriefing.deroulement}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, deroulement: e.target.value })}
                 />
@@ -165,7 +165,7 @@ export default function DebriefingsPage() {
                 <label className="label-caps block mb-2">Résultat</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
-                  placeholder="Résultat de l'intervention..."
+                  placeholder="Résultat de l&apos;intervention..."
                   value={newDebriefing.resultat}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, resultat: e.target.value })}
                 />
