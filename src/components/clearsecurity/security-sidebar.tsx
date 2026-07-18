@@ -108,7 +108,8 @@ export function SecuritySidebar() {
 
         {internalItems.length > 0 && (
           <>
-            <div className="mt-6 mb-2">
+            <div className="my-4 border-t border-line/70" />
+            <div className="mb-2">
               <p className="px-3 py-1 text-xs font-semibold text-accent uppercase tracking-wider">
                 Interne
               </p>
