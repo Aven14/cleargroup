@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { AdminPanel } from "@/components/admin/admin-panel";
 import { PageHeader } from "@/components/ui/page-header";
