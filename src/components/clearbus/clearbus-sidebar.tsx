@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-type SecurityNavItem = {
+type ClearBusNavItem = {
   href: string;
   label: string;
   icon: string;
@@ -12,23 +12,16 @@ type SecurityNavItem = {
   isInternal?: boolean;
 };
 
-const securityNavItems: SecurityNavItem[] = [
-  { href: "/clearsecurity", label: "Accueil", icon: "🏠", matchPrefix: "/clearsecurity", isInternal: false },
-  { href: "/clearsecurity/services", label: "Services", icon: "🛡️", matchPrefix: "/clearsecurity/services", isInternal: false },
-  { href: "/clearsecurity/recrutement", label: "Recrutement", icon: "📝", matchPrefix: "/clearsecurity/recrutement", isInternal: false },
-  { href: "/clearsecurity/contact", label: "Contact", icon: "📞", matchPrefix: "/clearsecurity/contact", isInternal: false },
-  { href: "/clearsecurity/interne", label: "Tableau de bord", icon: "📊", matchPrefix: "/clearsecurity/interne", isInternal: true },
-  { href: "/clearsecurity/interne/prise-service", label: "Prise de service", icon: "👤", matchPrefix: "/clearsecurity/interne/prise-service", isInternal: true },
-  { href: "/clearsecurity/interne/patrouilles", label: "Patrouilles", icon: "🚔", matchPrefix: "/clearsecurity/interne/patrouilles", isInternal: true },
-  { href: "/clearsecurity/interne/debriefings", label: "Débriefings", icon: "📋", matchPrefix: "/clearsecurity/interne/debriefings", isInternal: true },
-  { href: "/clearsecurity/interne/alertes", label: "Alertes", icon: "🚨", matchPrefix: "/clearsecurity/interne/alertes", isInternal: true },
-  { href: "/clearsecurity/interne/detenus", label: "Personnes détenues", icon: "🔒", matchPrefix: "/clearsecurity/interne/detenus", isInternal: true },
-  { href: "/clearsecurity/interne/agents", label: "Agents", icon: "👥", matchPrefix: "/clearsecurity/interne/agents", isInternal: true },
-  { href: "/clearsecurity/interne/planning", label: "Planning", icon: "📅", matchPrefix: "/clearsecurity/interne/planning", isInternal: true },
-  { href: "/clearsecurity/interne/parametres", label: "Paramètres", icon: "⚙️", matchPrefix: "/clearsecurity/interne/parametres", isInternal: true },
+const clearBusNavItems: ClearBusNavItem[] = [
+  { href: "/clearbus", label: "Accueil", icon: "🏠", matchPrefix: "/clearbus", isInternal: false },
+  { href: "/clearbus/tableau-de-bord", label: "Tableau de bord", icon: "📊", matchPrefix: "/clearbus/tableau-de-bord", isInternal: false },
+  { href: "/clearbus/lignes", label: "Lignes", icon: "🚌", matchPrefix: "/clearbus/lignes", isInternal: false },
+  { href: "/clearbus/espace-personnel", label: "Espace personnel", icon: "👤", matchPrefix: "/clearbus/espace-personnel", isInternal: false },
+  { href: "/clearbus/chauffeur", label: "Espace chauffeur", icon: "🚗", matchPrefix: "/clearbus/chauffeur", isInternal: true },
+  { href: "/clearbus/controleur", label: "Contrôle billets", icon: "🎫", matchPrefix: "/clearbus/controleur", isInternal: true },
 ];
 
-function SecurityNavLink({
+function ClearBusNavLink({
   href,
   label,
   icon,
@@ -58,7 +51,7 @@ function SecurityNavLink({
   );
 }
 
-export function SecuritySidebar() {
+export function ClearBusSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -66,8 +59,8 @@ export function SecuritySidebar() {
     router.push("/");
   };
 
-  const publicItems = securityNavItems.filter((item) => !item.isInternal);
-  const internalItems = securityNavItems.filter((item) => item.isInternal);
+  const publicItems = clearBusNavItems.filter((item) => !item.isInternal);
+  const internalItems = clearBusNavItems.filter((item) => item.isInternal);
 
   return (
     <aside className="fixed left-0 top-0 z-50 flex h-screen w-56 flex-col border-r border-line/70 bg-surface/85 shadow-elevated backdrop-blur-md">
@@ -81,7 +74,7 @@ export function SecuritySidebar() {
           </svg>
           Retour à ClearGroup
         </button>
-        <h2 className="text-lg font-bold text-ink">ClearSecurity</h2>
+        <h2 className="text-lg font-bold text-ink">ClearBus</h2>
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
@@ -91,7 +84,7 @@ export function SecuritySidebar() {
           </p>
         </div>
         {publicItems.map((item) => (
-          <SecurityNavLink
+          <ClearBusNavLink
             key={item.href}
             href={item.href}
             label={item.label}
@@ -109,12 +102,12 @@ export function SecuritySidebar() {
         {internalItems.length > 0 && (
           <>
             <div className="mt-6 mb-2">
-              <p className="px-3 py-1 text-xs font-semibold text-accent uppercase tracking-wider">
+              <p className="px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
                 Interne
               </p>
             </div>
             {internalItems.map((item) => (
-              <SecurityNavLink
+              <ClearBusNavLink
                 key={item.href}
                 href={item.href}
                 label={item.label}
@@ -137,7 +130,7 @@ export function SecuritySidebar() {
           href="/"
           className="block rounded-md px-3 py-2.5 text-sm font-medium text-muted hover:bg-primary-light/40 hover:text-primary transition"
         >
-          Quitter ClearSecurity
+          Quitter ClearBus
         </Link>
       </div>
     </aside>
