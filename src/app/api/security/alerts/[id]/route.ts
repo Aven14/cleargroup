@@ -52,7 +52,7 @@ export async function POST(
   const auth = await requireUser(["SECURITY", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
-  const response = await prisma.securityAlertResponse.create({
+  await prisma.securityAlertResponse.create({
     data: {
       alertId: params.id,
       userId: auth.user.id,

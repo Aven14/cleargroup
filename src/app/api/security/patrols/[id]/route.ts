@@ -13,7 +13,7 @@ export async function PATCH(
   const body = await request.json();
   const { missionType, observations, ended } = body;
 
-  const updateData: any = {};
+  const updateData: { missionType?: string; observations?: string; endedAt?: Date } = {};
   if (missionType !== undefined) updateData.missionType = missionType;
   if (observations !== undefined) updateData.observations = observations;
   if (ended) updateData.endedAt = new Date();

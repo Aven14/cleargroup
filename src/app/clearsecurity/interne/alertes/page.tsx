@@ -29,7 +29,6 @@ export default function AlertesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [alertes, setAlertes] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newAlerte, setNewAlerte] = useState({
     type: "Intervention urgente",
@@ -39,21 +38,8 @@ export default function AlertesPage() {
   });
 
   useEffect(() => {
-    loadCurrentUser();
     loadAlertes();
   }, []);
-
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/auth/user');
-      if (response.ok) {
-        const user = await response.json();
-        setCurrentUser(user);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
-    }
-  };
 
   const loadAlertes = async () => {
     try {

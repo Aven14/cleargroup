@@ -101,7 +101,7 @@ export async function getActiveLineWithTracking(lineNumber: number) {
   }
 }
 
-export async function updateDriverPosition(shiftId: string, stopId: string) {
+export async function updateDriverPosition(shiftId: string, _stopId: string) {
   try {
     const user = await getCurrentUser();
     if (!user) return { success: false, error: "Non authentifié" };
