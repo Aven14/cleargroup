@@ -36,7 +36,7 @@ export default async function RootLayout({
           <TransportBackground />
           <Navbar user={user} />
           <main className="relative z-10 min-h-screen bg-transparent pt-8 pb-28">
-            <div className="panel px-4 py-6">
+            <div className="panel ml-56 pl-4 pr-4 py-6">
               {children}
             </div>
           </main>
