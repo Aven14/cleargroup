@@ -5,8 +5,9 @@ import { requireUser } from "@/lib/session";
 // PATCH - Libérer un détenu
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   const auth = await requireUser(["SECURITY", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
@@ -30,8 +31,9 @@ export async function PATCH(
 // DELETE - Supprimer un détenu
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   const auth = await requireUser(["SECURITY", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 

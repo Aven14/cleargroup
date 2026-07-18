@@ -64,13 +64,7 @@ const divisions = [
 
 export default async function HomePage() {
 
-  const [user, { lineCount, activeLines }] = await Promise.all([
-
-    getCurrentUser(),
-
-    getHomeNetworkData(),
-
-  ]);
+  const { lineCount, activeLines } = await getHomeNetworkData();
 
   return (
 
