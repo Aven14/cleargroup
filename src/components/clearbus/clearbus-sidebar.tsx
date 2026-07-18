@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 type ClearBusNavItem = {
   href: string;
@@ -10,6 +11,7 @@ type ClearBusNavItem = {
   icon: string;
   matchPrefix?: string;
   isInternal?: boolean;
+  isAdmin?: boolean;
 };
 
 const clearBusNavItems: ClearBusNavItem[] = [
@@ -17,6 +19,7 @@ const clearBusNavItems: ClearBusNavItem[] = [
   { href: "/clearbus/tableau-de-bord", label: "Tableau de bord", icon: "📊", matchPrefix: "/clearbus/tableau-de-bord", isInternal: false },
   { href: "/clearbus/lignes", label: "Lignes", icon: "🚌", matchPrefix: "/clearbus/lignes", isInternal: false },
   { href: "/clearbus/espace-personnel", label: "Espace personnel", icon: "👤", matchPrefix: "/clearbus/espace-personnel", isInternal: false },
+  { href: "/clearbus/admin", label: "Administration", icon: "⚙️", matchPrefix: "/clearbus/admin", isInternal: false, isAdmin: true },
   { href: "/clearbus/chauffeur", label: "Espace chauffeur", icon: "🚗", matchPrefix: "/clearbus/chauffeur", isInternal: true },
   { href: "/clearbus/controleur", label: "Contrôle billets", icon: "🎫", matchPrefix: "/clearbus/controleur", isInternal: true },
 ];
@@ -54,12 +57,32 @@ function ClearBusNavLink({
 export function ClearBusSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [user, setUser] = useState<{ roles: string[] } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement de l\'utilisateur:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
+  }, []);
 
   const handleBack = () => {
     router.push("/");
   };
 
-  const publicItems = clearBusNavItems.filter((item) => !item.isInternal);
+  const isAdmin = user?.roles?.includes('ADMIN');
+  const publicItems = clearBusNavItems.filter((item) => !item.isInternal && (!item.isAdmin || isAdmin));
   const internalItems = clearBusNavItems.filter((item) => item.isInternal);
 
   return (
