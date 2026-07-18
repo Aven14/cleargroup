@@ -29,7 +29,6 @@ export default function PatrouillesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [patrouilles, setPatrouilles] = useState<Patrol[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newPatrouille, setNewPatrouille] = useState({
     coequipier: "",
@@ -40,21 +39,8 @@ export default function PatrouillesPage() {
   });
 
   useEffect(() => {
-    loadCurrentUser();
     loadPatrouilles();
   }, []);
-
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/auth/user');
-      if (response.ok) {
-        const user = await response.json();
-        setCurrentUser(user);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
-    }
-  };
 
   const loadPatrouilles = async () => {
     try {

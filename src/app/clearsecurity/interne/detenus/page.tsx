@@ -21,7 +21,6 @@ export default function DetenusPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [detenus, setDetenus] = useState<Detenu[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newDetenu, setNewDetenu] = useState({
     nom: "",
@@ -31,21 +30,8 @@ export default function DetenusPage() {
   });
 
   useEffect(() => {
-    loadCurrentUser();
     loadDetenus();
   }, []);
-
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch('/api/auth/user');
-      if (response.ok) {
-        const user = await response.json();
-        setCurrentUser(user);
-      }
-    } catch (error) {
-      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
-    }
-  };
 
   const loadDetenus = async () => {
     try {
@@ -121,7 +107,7 @@ export default function DetenusPage() {
     const interval = setInterval(() => {
       setDetenus(
         detenus.map((d) => {
-          const tempsRestant = calculateTempsRestant(d.enteredAt, d.detentionTime);
+          calculateTempsRestant(d.enteredAt, d.detentionTime);
           return {
             ...d,
           };

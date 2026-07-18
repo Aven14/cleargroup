@@ -72,10 +72,6 @@ export default async function HomePage() {
 
   ]);
 
-  const espaceHref = user ? "/clearbus/espace-personnel" : "/clearbus/connexion";
-
-
-
   return (
 
     <div className="page-enter mx-auto max-w-6xl px-4">

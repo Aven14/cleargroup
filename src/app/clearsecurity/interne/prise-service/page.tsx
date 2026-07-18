@@ -21,8 +21,7 @@ export default function PriseServicePage() {
   const [vehicle, setVehicle] = useState("");
   const [serviceStartTime, setServiceStartTime] = useState<Date | null>(null);
   const [currentShift, setCurrentShift] = useState<Shift | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{ firstname: string; lastname: string } | null>(null);
 
   useEffect(() => {
     loadCurrentUser();
@@ -56,8 +55,6 @@ export default function PriseServicePage() {
       }
     } catch (error) {
       console.error('Erreur lors du chargement du shift:', error);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -101,6 +101,7 @@ export async function getActiveLineWithTracking(lineNumber: number) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function updateDriverPosition(shiftId: string, _stopId: string) {
   try {
     const user = await getCurrentUser();
