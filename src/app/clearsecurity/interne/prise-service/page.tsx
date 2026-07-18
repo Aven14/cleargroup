@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { getCurrentUser } from "@/lib/session";
 
 interface Shift {
   id: string;
@@ -31,8 +30,15 @@ export default function PriseServicePage() {
   }, []);
 
   const loadCurrentUser = async () => {
-    const user = await getCurrentUser();
-    setCurrentUser(user);
+    try {
+      const response = await fetch('/api/auth/user');
+      if (response.ok) {
+        const user = await response.json();
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
+    }
   };
 
   const loadCurrentShift = async () => {
