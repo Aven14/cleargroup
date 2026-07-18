@@ -8,7 +8,7 @@ export default function SecurityInterneLayout({
   return (
     <div className="min-h-screen bg-transparent">
       <SecuritySidebar />
-      <main className="relative z-10 min-h-screen bg-transparent pt-8 pb-28">
+      <main className="relative z-10 min-h-screen bg-transparent pt-8 pb-28 ml-56">
         {children}
       </main>
     </div>
