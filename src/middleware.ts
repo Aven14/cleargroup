@@ -6,6 +6,7 @@ const PROTECTED_PREFIXES = [
   "/controleur",
   "/admin",
   "/espace-personnel",
+  "/clearsecurity/interne",
 ];
 
 export function middleware(request: NextRequest) {
@@ -19,7 +20,7 @@ export function middleware(request: NextRequest) {
   const session = request.cookies.get("ctb_session")?.value;
 
   if (!session) {
-    const login = new URL("/connexion", request.url);
+    const login = new URL("/clearbus/connexion", request.url);
     login.searchParams.set("redirect", pathname);
     return NextResponse.redirect(login);
   }
@@ -33,5 +34,6 @@ export const config = {
     "/controleur/:path*",
     "/admin/:path*",
     "/espace-personnel",
+    "/clearsecurity/interne/:path*",
   ],
 };

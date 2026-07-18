@@ -22,7 +22,7 @@ type NavItem = {
   children?: NavItem[];
 };
 
-function linksForRoles(roles: UserRole[], isInClearBus: boolean): NavItem[] {
+function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean): NavItem[] {
   const links: NavItem[] = [];
 
   if (isInClearBus) {
@@ -35,6 +35,20 @@ function linksForRoles(roles: UserRole[], isInClearBus: boolean): NavItem[] {
     }
     if (hasRole(roles, "CONTROLLER") || hasRole(roles, "ADMIN")) {
       links.push({ href: "/clearbus/controleur", label: "Contrôle" });
+    }
+  }
+  if (isInClearSecurity) {
+    if (hasRole(roles, "SECURITY") || hasRole(roles, "ADMIN")) {
+      links.push(
+        { href: "/clearsecurity/interne/tableau-de-bord", label: "Tableau de bord" },
+        { href: "/clearsecurity/interne/prise-service", label: "Prise de service" },
+        { href: "/clearsecurity/interne/patrouilles", label: "Patrouilles" },
+        { href: "/clearsecurity/interne/alertes", label: "Alertes" },
+        { href: "/clearsecurity/interne/detenus", label: "Personnes détenues" },
+        { href: "/clearsecurity/interne/debriefings", label: "Débriefings" },
+        { href: "/clearsecurity/interne/agents", label: "Agents" },
+        { href: "/clearsecurity/interne/planning", label: "Planning" }
+      );
     }
   }
   if (hasRole(roles, "ADMIN")) {
@@ -95,7 +109,7 @@ export function Navbar({ user }: { user: NavUser | null }) {
       { href: "/actualites", label: "Actualités" },
       { href: "/a-propos", label: "À propos" },
       { href: "/contact", label: "Contact" },
-      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles, isInClearBus) : []),
+      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles, isInClearBus, isInClearSecurity) : []),
     ];
   }, [user, pathname]);
 
