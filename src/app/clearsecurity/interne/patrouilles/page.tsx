@@ -31,7 +31,6 @@ export default function PatrouillesPage() {
   const [loading, setLoading] = useState(true);
 
   const [newPatrouille, setNewPatrouille] = useState({
-    coequipier: "",
     secteur: "",
     vehicule: "",
     type: "Patrouille mobile",
@@ -62,7 +61,6 @@ export default function PatrouillesPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          coequipierId: newPatrouille.coequipier || null,
           sector: newPatrouille.secteur,
           vehicle: newPatrouille.vehicule,
           missionType: newPatrouille.type,
@@ -72,7 +70,6 @@ export default function PatrouillesPage() {
       if (response.ok) {
         await loadPatrouilles();
         setNewPatrouille({
-          coequipier: "",
           secteur: "",
           vehicule: "",
           type: "Patrouille mobile",
@@ -142,16 +139,6 @@ export default function PatrouillesPage() {
           <div className="panel-soft p-6 mb-6">
             <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
             <div className="space-y-4">
-              <div>
-                <label className="label-caps block mb-2">Coéquipier (optionnel)</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  placeholder="Nom du coéquipier"
-                  value={newPatrouille.coequipier}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, coequipier: e.target.value })}
-                />
-              </div>
               <div>
                 <label className="label-caps block mb-2">Secteur</label>
                 <input

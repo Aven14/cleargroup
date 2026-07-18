@@ -29,6 +29,17 @@ export default function DetenusPage() {
     motif: "",
   });
 
+  const handleTempsDetentionChange = (value: string) => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue) || numValue < 1) {
+      setNewDetenu({ ...newDetenu, tempsDetention: 1 });
+    } else if (numValue > 120) {
+      setNewDetenu({ ...newDetenu, tempsDetention: 120 });
+    } else {
+      setNewDetenu({ ...newDetenu, tempsDetention: numValue });
+    }
+  };
+
   useEffect(() => {
     loadDetenus();
   }, []);
@@ -163,13 +174,14 @@ export default function DetenusPage() {
                 </div>
               </div>
               <div>
-                <label className="label-caps block mb-2">Temps de détention (minutes)</label>
+                <label className="label-caps block mb-2">Temps de détention (minutes, max 120)</label>
                 <input
                   type="number"
                   className="input-field w-full"
                   min="1"
+                  max="120"
                   value={newDetenu.tempsDetention}
-                  onChange={(e) => setNewDetenu({ ...newDetenu, tempsDetention: parseInt(e.target.value) })}
+                  onChange={(e) => handleTempsDetentionChange(e.target.value)}
                 />
               </div>
               <div>

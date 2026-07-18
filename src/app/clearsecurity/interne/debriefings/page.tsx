@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default function DebriefingsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ firstname: string; lastname: string } | null>(null);
   const [debriefings, setDebriefings] = useState([
     {
       id: 1,
@@ -35,6 +36,21 @@ export default function DebriefingsPage() {
     observations: "",
   });
 
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const user = await response.json();
+          setCurrentUser(user);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement de l\'utilisateur:', error);
+      }
+    };
+    loadCurrentUser();
+  }, []);
+
   const handleCreateDebriefing = () => {
     const debriefing = {
       id: debriefings.length + 1,
@@ -48,7 +64,7 @@ export default function DebriefingsPage() {
       resultat: newDebriefing.resultat,
       incidents: newDebriefing.incidents,
       observations: newDebriefing.observations,
-      auteur: "Jean Dupont", // TODO: Récupérer l'agent connecté
+      auteur: currentUser ? `${currentUser.firstname} ${currentUser.lastname}` : "Agent inconnu",
     };
     setDebriefings([...debriefings, debriefing]);
     setNewDebriefing({
