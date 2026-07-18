@@ -1,22 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { getCurrentUser } from "@/lib/session";
+
+interface Alert {
+  id: string;
+  type: string;
+  location: string;
+  description: string;
+  agentsRequested: number;
+  active: boolean;
+  closedAt: string | null;
+  createdAt: string;
+  createdBy: {
+    id: string;
+    firstname: string;
+    lastname: string;
+  };
+  responses: Array<{
+    user: {
+      firstname: string;
+      lastname: string;
+    };
+  }>;
+}
 
 export default function AlertesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [alertes, setAlertes] = useState([
-    {
-      id: 1,
-      type: "Manque d&apos;effectif",
-      lieu: "Centre-ville",
-      description: "Besoin de renfort pour la surveillance du centre-ville",
-      agentsDemandes: 3,
-      agentsAcceptes: ["Jean Dupont", "Marie Martin"],
-      createur: "Pierre Bernard",
-      active: true,
-    },
-  ]);
+  const [alertes, setAlertes] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newAlerte, setNewAlerte] = useState({
     type: "Intervention urgente",
@@ -25,39 +39,95 @@ export default function AlertesPage() {
     agentsDemandes: 1,
   });
 
-  const handleCreateAlerte = () => {
-    const alerte = {
-      id: alertes.length + 1,
-      type: newAlerte.type,
-      lieu: newAlerte.lieu,
-      description: newAlerte.description,
-      agentsDemandes: newAlerte.agentsDemandes,
-      agentsAcceptes: [],
-      createur: "Jean Dupont", // TODO: Récupérer l'agent connecté
-      active: true,
-    };
-    setAlertes([...alertes, alerte]);
-    setNewAlerte({
-      type: "Intervention urgente",
-      lieu: "",
-      description: "",
-      agentsDemandes: 1,
-    });
-    setShowCreateForm(false);
+  useEffect(() => {
+    loadCurrentUser();
+    loadAlertes();
+  }, []);
+
+  const loadCurrentUser = async () => {
+    const user = await getCurrentUser();
+    setCurrentUser(user);
   };
 
-  const handleAcceptAlerte = (id: number) => {
-    setAlertes(
-      alertes.map((a) =>
-        a.id === id
-          ? { ...a, agentsAcceptes: [...a.agentsAcceptes, "Jean Dupont"] }
-          : a
-      )
-    );
+  const loadAlertes = async () => {
+    try {
+      const response = await fetch('/api/security/alerts');
+      if (response.ok) {
+        const data = await response.json();
+        setAlertes(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des alertes:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCloseAlerte = (id: number) => {
-    setAlertes(alertes.map((a) => (a.id === id ? { ...a, active: false } : a)));
+  const handleCreateAlerte = async () => {
+    try {
+      const response = await fetch('/api/security/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: newAlerte.type,
+          location: newAlerte.lieu,
+          description: newAlerte.description,
+          agentsRequested: newAlerte.agentsDemandes,
+        }),
+      });
+      if (response.ok) {
+        await loadAlertes();
+        setNewAlerte({
+          type: "Intervention urgente",
+          lieu: "",
+          description: "",
+          agentsDemandes: 1,
+        });
+        setShowCreateForm(false);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de l&apos;alerte:', error);
+    }
+  };
+
+  const handleAcceptAlerte = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/alerts/${id}`, {
+        method: 'POST',
+      });
+      if (response.ok) {
+        await loadAlertes();
+      }
+    } catch (error) {
+      console.error('Erreur lors de l&apos;acceptation de l&apos;alerte:', error);
+    }
+  };
+
+  const handleCloseAlerte = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/alerts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active: false }),
+      });
+      if (response.ok) {
+        await loadAlertes();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la clôture de l&apos;alerte:', error);
+    }
+  };
+
+  const formatRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return 'À l&apos;instant';
+    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `Il y a ${diffHours} h`;
+    return `Il y a ${Math.floor(diffHours / 24)} j`;
   };
 
   return (
@@ -133,66 +203,72 @@ export default function AlertesPage() {
         )}
 
         <div className="space-y-4">
-          {alertes.map((alerte) => (
-            <div key={alerte.id} className={`panel-soft p-6 w-full ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl">🚨</span>
-                  <div>
-                    <h3 className="font-bold text-ink">{alerte.type}</h3>
-                    <p className="text-sm text-muted">{alerte.lieu}</p>
+          {loading ? (
+            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
+          ) : alertes.length === 0 ? (
+            <div className="panel-soft p-6 text-center text-muted">Aucune alerte</div>
+          ) : (
+            alertes.map((alerte) => (
+              <div key={alerte.id} className={`panel-soft p-6 w-full ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl">🚨</span>
+                    <div>
+                      <h3 className="font-bold text-ink">{alerte.type}</h3>
+                      <p className="text-sm text-muted">{alerte.location}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${alerte.active ? 'bg-accent/20 text-accent' : 'bg-muted text-muted'}`}>
+                      {alerte.active ? 'Active' : 'Clôturée'}
+                    </span>
+                    {alerte.active && (
+                      <button
+                        onClick={() => handleCloseAlerte(alerte.id)}
+                        className="text-sm text-muted hover:text-primary"
+                      >
+                        Clôturer
+                      </button>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${alerte.active ? 'bg-accent/20 text-accent' : 'bg-muted text-muted'}`}>
-                    {alerte.active ? 'Active' : 'Clôturée'}
-                  </span>
-                  {alerte.active && (
-                    <button
-                      onClick={() => handleCloseAlerte(alerte.id)}
-                      className="text-sm text-muted hover:text-primary"
-                    >
-                      Clôturer
-                    </button>
-                  )}
+                <p className="text-sm text-ink mb-4">{alerte.description}</p>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-muted">
+                    {alerte.responses.length} / {alerte.agentsRequested} agents acceptés
+                  </p>
+                  <p className="text-xs text-muted">Créée par {alerte.createdBy?.firstname} {alerte.createdBy?.lastname} · {formatRelativeTime(alerte.createdAt)}</p>
                 </div>
-              </div>
-              <p className="text-sm text-ink mb-4">{alerte.description}</p>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-muted">
-                  {alerte.agentsAcceptes.length} / {alerte.agentsDemandes} agents acceptés
-                </p>
-                <p className="text-xs text-muted">Créée par {alerte.createur}</p>
-              </div>
-              {alerte.agentsAcceptes.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs text-muted mb-2">Agents ayant accepté :</p>
-                  <div className="flex flex-wrap gap-2">
-                    {alerte.agentsAcceptes.map((agent, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-success/20 text-success rounded text-xs">
-                        {agent}
-                      </span>
-                    ))}
+                {alerte.responses.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-xs text-muted mb-2">Agents ayant accepté :</p>
+                    <div className="flex flex-wrap gap-2">
+                      {alerte.responses.map((response, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-success/20 text-success rounded text-xs">
+                          {response.user?.firstname} {response.user?.lastname}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {alerte.active && alerte.agentsAcceptes.length < alerte.agentsDemandes && (
-                <button
-                  onClick={() => handleAcceptAlerte(alerte.id)}
-                  className="btn-primary w-full"
-                >
-                  Accepter cette alerte
-                </button>
-              )}
-            </div>
-          ))}
+                )}
+                {alerte.active && alerte.responses.length < alerte.agentsRequested && (
+                  <button
+                    onClick={() => handleAcceptAlerte(alerte.id)}
+                    className="btn-primary w-full"
+                  >
+                    Accepter cette alerte
+                  </button>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </section>
 
       <section>
         <h2 className="mb-6 text-xl font-bold text-ink">Historique des alertes</h2>
         <div className="panel-soft p-6">
-          <p className="text-muted text-center">Aucune alerte clôturée pour le moment</p>
+          <p className="text-muted text-center">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>

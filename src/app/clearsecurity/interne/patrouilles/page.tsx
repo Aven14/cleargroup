@@ -1,47 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { getCurrentUser } from "@/lib/session";
+
+interface Patrol {
+  id: string;
+  agentId: string;
+  coequipierId: string | null;
+  sector: string;
+  vehicle: string;
+  startedAt: string;
+  endedAt: string | null;
+  missionType: string;
+  observations: string;
+  agent: {
+    id: string;
+    firstname: string;
+    lastname: string;
+  };
+  coequipier: {
+    id: string;
+    firstname: string;
+    lastname: string;
+  } | null;
+}
 
 export default function PatrouillesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [patrouilles, setPatrouilles] = useState<Array<{
-    id: number;
-    agent: string;
-    coequipier: string | null;
-    secteur: string;
-    vehicule: string;
-    debut: string;
-    fin: string | null;
-    type: string;
-    observations: string;
-    active: boolean;
-  }>>([
-    {
-      id: 1,
-      agent: "Jean Dupont",
-      coequipier: "Marie Martin",
-      secteur: "Centre-ville",
-      vehicule: "SEC-001",
-      debut: "14:30",
-      fin: null,
-      type: "Patrouille mobile",
-      observations: "Ronde normale",
-      active: true,
-    },
-    {
-      id: 2,
-      agent: "Pierre Bernard",
-      coequipier: null,
-      secteur: "Quartier Nord",
-      vehicule: "SEC-002",
-      debut: "15:00",
-      fin: null,
-      type: "Intervention",
-      observations: "Intervention en cours",
-      active: true,
-    },
-  ]);
+  const [patrouilles, setPatrouilles] = useState<Patrol[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newPatrouille, setNewPatrouille] = useState({
     coequipier: "",
@@ -51,42 +40,92 @@ export default function PatrouillesPage() {
     observations: "",
   });
 
-  const handleCreatePatrouille = () => {
-    const patrouille = {
-      id: patrouilles.length + 1,
-      agent: "Jean Dupont", // TODO: Récupérer l'agent connecté
-      coequipier: newPatrouille.coequipier || null,
-      secteur: newPatrouille.secteur,
-      vehicule: newPatrouille.vehicule,
-      debut: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-      fin: null,
-      type: newPatrouille.type,
-      observations: newPatrouille.observations,
-      active: true,
-    };
-    setPatrouilles([...patrouilles, patrouille]);
-    setNewPatrouille({
-      coequipier: "",
-      secteur: "",
-      vehicule: "",
-      type: "Patrouille mobile",
-      observations: "",
-    });
-    setShowCreateForm(false);
+  useEffect(() => {
+    loadCurrentUser();
+    loadPatrouilles();
+  }, []);
+
+  const loadCurrentUser = async () => {
+    const user = await getCurrentUser();
+    setCurrentUser(user);
   };
 
-  const handleEndPatrouille = (id: number) => {
-    setPatrouilles(
-      patrouilles.map((p) =>
-        p.id === id
-          ? { ...p, fin: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }), active: false }
-          : p
-      )
-    );
+  const loadPatrouilles = async () => {
+    try {
+      const response = await fetch('/api/security/patrols');
+      if (response.ok) {
+        const data = await response.json();
+        setPatrouilles(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des patrouilles:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdateType = (id: number, type: string) => {
-    setPatrouilles(patrouilles.map((p) => (p.id === id ? { ...p, type } : p)));
+  const handleCreatePatrouille = async () => {
+    try {
+      const response = await fetch('/api/security/patrols', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          coequipierId: newPatrouille.coequipier || null,
+          sector: newPatrouille.secteur,
+          vehicle: newPatrouille.vehicule,
+          missionType: newPatrouille.type,
+          observations: newPatrouille.observations,
+        }),
+      });
+      if (response.ok) {
+        await loadPatrouilles();
+        setNewPatrouille({
+          coequipier: "",
+          secteur: "",
+          vehicule: "",
+          type: "Patrouille mobile",
+          observations: "",
+        });
+        setShowCreateForm(false);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la patrouille:', error);
+    }
+  };
+
+  const handleEndPatrouille = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/patrols/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ended: true }),
+      });
+      if (response.ok) {
+        await loadPatrouilles();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la fin de patrouille:', error);
+    }
+  };
+
+  const handleUpdateType = async (id: string, type: string) => {
+    try {
+      const response = await fetch(`/api/security/patrols/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ missionType: type }),
+      });
+      if (response.ok) {
+        await loadPatrouilles();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du type:', error);
+    }
+  };
+
+  const formatHeure = (dateString: string | null) => {
+    if (!dateString) return "--:--";
+    return new Date(dateString).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
@@ -171,71 +210,80 @@ export default function PatrouillesPage() {
         )}
 
         <div className="space-y-4">
-          {patrouilles.map((patrouille) => (
-            <div key={patrouille.id} className="panel-soft p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl">🚔</span>
+          {loading ? (
+            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
+          ) : patrouilles.length === 0 ? (
+            <div className="panel-soft p-6 text-center text-muted">Aucune patrouille</div>
+          ) : (
+            patrouilles.map((patrouille) => {
+              const active = !patrouille.endedAt;
+              return (
+                <div key={patrouille.id} className="panel-soft p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-3xl">🚔</span>
+                      <div>
+                        <h3 className="font-bold text-ink">
+                          {patrouille.sector} - {patrouille.missionType}
+                        </h3>
+                        <p className="text-sm text-muted">
+                          {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
+                        {active ? 'En cours' : 'Terminée'}
+                      </span>
+                      {active && (
+                        <button
+                          onClick={() => handleEndPatrouille(patrouille.id)}
+                          className="text-sm text-muted hover:text-primary"
+                        >
+                          Terminer
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2 mb-4">
+                    <div>
+                      <p className="text-xs text-muted">Début</p>
+                      <p className="font-semibold text-ink">{formatHeure(patrouille.startedAt)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted">Fin</p>
+                      <p className="font-semibold text-ink">{formatHeure(patrouille.endedAt)}</p>
+                    </div>
+                  </div>
+                  <div className="mb-4">
+                    <p className="text-xs text-muted mb-2">Type de mission</p>
+                    <select
+                      className="input-field w-full"
+                      value={patrouille.missionType}
+                      onChange={(e) => handleUpdateType(patrouille.id, e.target.value)}
+                      disabled={!active}
+                    >
+                      <option>Patrouille mobile</option>
+                      <option>Intervention</option>
+                      <option>Escorte</option>
+                      <option>Événement</option>
+                    </select>
+                  </div>
                   <div>
-                    <h3 className="font-bold text-ink">
-                      {patrouille.secteur} - {patrouille.type}
-                    </h3>
-                    <p className="text-sm text-muted">
-                      {patrouille.agent} {patrouille.coequipier && `+ ${patrouille.coequipier}`} · {patrouille.vehicule}
-                    </p>
+                    <p className="text-xs text-muted mb-2">Observations</p>
+                    <p className="text-sm text-ink">{patrouille.observations}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${patrouille.active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
-                    {patrouille.active ? 'En cours' : 'Terminée'}
-                  </span>
-                  {patrouille.active && (
-                    <button
-                      onClick={() => handleEndPatrouille(patrouille.id)}
-                      className="text-sm text-muted hover:text-primary"
-                    >
-                      Terminer
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2 mb-4">
-                <div>
-                  <p className="text-xs text-muted">Début</p>
-                  <p className="font-semibold text-ink">{patrouille.debut}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted">Fin</p>
-                  <p className="font-semibold text-ink">{patrouille.fin || "--:--"}</p>
-                </div>
-              </div>
-              <div className="mb-4">
-                <p className="text-xs text-muted mb-2">Type de mission</p>
-                <select
-                  className="input-field w-full"
-                  value={patrouille.type}
-                  onChange={(e) => handleUpdateType(patrouille.id, e.target.value)}
-                  disabled={!patrouille.active}
-                >
-                  <option>Patrouille mobile</option>
-                  <option>Intervention</option>
-                  <option>Escorte</option>
-                  <option>Événement</option>
-                </select>
-              </div>
-              <div>
-                <p className="text-xs text-muted mb-2">Observations</p>
-                <p className="text-sm text-ink">{patrouille.observations}</p>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </section>
 
       <section>
         <h2 className="mb-6 text-xl font-bold text-ink">Historique des patrouilles</h2>
         <div className="panel-soft p-6">
-          <p className="text-muted text-center">Aucune patrouille terminée pour le moment</p>
+          <p className="text-muted text-center">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>

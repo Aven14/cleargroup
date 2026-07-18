@@ -1,25 +1,93 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { getCurrentUser } from "@/lib/session";
+
+interface Shift {
+  id: string;
+  userId: string;
+  vehicle: string | null;
+  startedAt: string;
+  endedAt: string | null;
+  user: {
+    id: string;
+    firstname: string;
+    lastname: string;
+  };
+}
 
 export default function PriseServicePage() {
   const [isInService, setIsInService] = useState(false);
   const [vehicle, setVehicle] = useState("");
   const [serviceStartTime, setServiceStartTime] = useState<Date | null>(null);
+  const [currentShift, setCurrentShift] = useState<Shift | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleStartService = () => {
-    setIsInService(true);
-    setServiceStartTime(new Date());
-    // TODO: Enregistrer dans la base de données
+  useEffect(() => {
+    loadCurrentUser();
+    loadCurrentShift();
+  }, []);
+
+  const loadCurrentUser = async () => {
+    const user = await getCurrentUser();
+    setCurrentUser(user);
   };
 
-  const handleEndService = () => {
-    setIsInService(false);
-    setServiceStartTime(null);
-    setVehicle("");
-    // TODO: Enregistrer dans la base de données
+  const loadCurrentShift = async () => {
+    try {
+      const response = await fetch('/api/security/shifts');
+      if (response.ok) {
+        const shifts = await response.json();
+        const activeShift = shifts.find((s: Shift) => !s.endedAt);
+        if (activeShift) {
+          setCurrentShift(activeShift);
+          setIsInService(true);
+          setServiceStartTime(new Date(activeShift.startedAt));
+          setVehicle(activeShift.vehicle || "");
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement du shift:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStartService = async () => {
+    try {
+      const response = await fetch('/api/security/shifts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vehicle }),
+      });
+      if (response.ok) {
+        const shift = await response.json();
+        setCurrentShift(shift);
+        setIsInService(true);
+        setServiceStartTime(new Date(shift.startedAt));
+      }
+    } catch (error) {
+      console.error('Erreur lors de la prise de service:', error);
+    }
+  };
+
+  const handleEndService = async () => {
+    if (!currentShift) return;
+    try {
+      const response = await fetch(`/api/security/shifts/${currentShift.id}`, {
+        method: 'PATCH',
+      });
+      if (response.ok) {
+        setIsInService(false);
+        setServiceStartTime(null);
+        setVehicle("");
+        setCurrentShift(null);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la fin de service:', error);
+    }
   };
 
   const formatTime = (date: Date | null) => {
@@ -45,7 +113,7 @@ export default function PriseServicePage() {
                 <input 
                   type="text" 
                   className="input-field w-full" 
-                  defaultValue="Dupont"
+                  value={currentUser?.lastname || ""}
                   disabled
                 />
               </div>
@@ -54,7 +122,7 @@ export default function PriseServicePage() {
                 <input 
                   type="text" 
                   className="input-field w-full" 
-                  defaultValue="Jean"
+                  value={currentUser?.firstname || ""}
                   disabled
                 />
               </div>

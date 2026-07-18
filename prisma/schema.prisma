@@ -200,12 +200,14 @@ model SecurityAlert {
   createdById     String
   active          Boolean  @default(true)
   closedAt        DateTime?
+  createdAt       DateTime @default(now())
   createdBy       User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   responses       SecurityAlertResponse[]
 
   @@index([createdById, active])
   @@index([active])
   @@index([closedAt])
+  @@index([createdAt])
 }
 
 model SecurityAlertResponse {

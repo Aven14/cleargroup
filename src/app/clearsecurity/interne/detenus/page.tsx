@@ -2,31 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { getCurrentUser } from "@/lib/session";
+
+interface Detenu {
+  id: string;
+  firstname: string;
+  lastname: string;
+  enteredAt: string;
+  detentionTime: number;
+  reason: string;
+  agent: {
+    firstname: string;
+    lastname: string;
+  };
+  releasedAt: string | null;
+}
 
 export default function DetenusPage() {
   const [showAddForm, setShowAddForm] = useState(false);
-  const [detenus, setDetenus] = useState([
-    {
-      id: 1,
-      nom: "Smith",
-      prenom: "John",
-      heureEntree: "14:30",
-      tempsDetention: 60,
-      motif: "Trouble à l&apos;ordre public",
-      agentResponsable: "Jean Dupont",
-      statut: "En détention",
-    },
-    {
-      id: 2,
-      nom: "Doe",
-      prenom: "Jane",
-      heureEntree: "15:00",
-      tempsDetention: 30,
-      motif: "Refus d&apos;obtempérer",
-      agentResponsable: "Marie Martin",
-      statut: "Libérable",
-    },
-  ]);
+  const [detenus, setDetenus] = useState<Detenu[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newDetenu, setNewDetenu] = useState({
     nom: "",
@@ -35,13 +31,34 @@ export default function DetenusPage() {
     motif: "",
   });
 
+  useEffect(() => {
+    loadCurrentUser();
+    loadDetenus();
+  }, []);
+
+  const loadCurrentUser = async () => {
+    const user = await getCurrentUser();
+    setCurrentUser(user);
+  };
+
+  const loadDetenus = async () => {
+    try {
+      const response = await fetch('/api/security/detainees');
+      if (response.ok) {
+        const data = await response.json();
+        setDetenus(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des détenus:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Calcul du temps restant
-  const calculateTempsRestant = (heureEntree: string, tempsDetention: number) => {
-    const [heures, minutes] = heureEntree.split(':').map(Number);
-    const entree = new Date();
-    entree.setHours(heures, minutes);
-    
-    const fin = new Date(entree.getTime() + tempsDetention * 60000);
+  const calculateTempsRestant = (enteredAt: string, detentionTime: number) => {
+    const entree = new Date(enteredAt);
+    const fin = new Date(entree.getTime() + detentionTime * 60000);
     const maintenant = new Date();
     const diff = fin.getTime() - maintenant.getTime();
     
@@ -49,29 +66,48 @@ export default function DetenusPage() {
     return Math.floor(diff / 60000);
   };
 
-  const handleAddDetenu = () => {
-    const detenu = {
-      id: detenus.length + 1,
-      nom: newDetenu.nom,
-      prenom: newDetenu.prenom,
-      heureEntree: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-      tempsDetention: newDetenu.tempsDetention,
-      motif: newDetenu.motif,
-      agentResponsable: "Jean Dupont", // TODO: Récupérer l'agent connecté
-      statut: "En détention",
-    };
-    setDetenus([...detenus, detenu]);
-    setNewDetenu({
-      nom: "",
-      prenom: "",
-      tempsDetention: 30,
-      motif: "",
-    });
-    setShowAddForm(false);
+  const formatHeure = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   };
 
-  const handleReleaseDetenu = (id: number) => {
-    setDetenus(detenus.filter((d) => d.id !== id));
+  const handleAddDetenu = async () => {
+    try {
+      const response = await fetch('/api/security/detainees', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstname: newDetenu.prenom,
+          lastname: newDetenu.nom,
+          detentionTime: newDetenu.tempsDetention,
+          reason: newDetenu.motif,
+        }),
+      });
+      if (response.ok) {
+        await loadDetenus();
+        setNewDetenu({
+          nom: "",
+          prenom: "",
+          tempsDetention: 30,
+          motif: "",
+        });
+        setShowAddForm(false);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l&apos;ajout du détenu:', error);
+    }
+  };
+
+  const handleReleaseDetenu = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/detainees/${id}`, {
+        method: 'PATCH',
+      });
+      if (response.ok) {
+        await loadDetenus();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la libération du détenu:', error);
+    }
   };
 
   // Mise à jour automatique des statuts
@@ -79,10 +115,9 @@ export default function DetenusPage() {
     const interval = setInterval(() => {
       setDetenus(
         detenus.map((d) => {
-          const tempsRestant = calculateTempsRestant(d.heureEntree, d.tempsDetention);
+          const tempsRestant = calculateTempsRestant(d.enteredAt, d.detentionTime);
           return {
             ...d,
-            statut: tempsRestant <= 0 ? "Libérable" : "En détention",
           };
         })
       );
@@ -177,33 +212,43 @@ export default function DetenusPage() {
               </tr>
             </thead>
             <tbody>
-              {detenus.map((detenu) => {
-                const tempsRestant = calculateTempsRestant(detenu.heureEntree, detenu.tempsDetention);
-                return (
-                  <tr key={detenu.id} className="border-b border-line/70">
-                    <td className="p-3 text-sm text-ink">{detenu.nom}</td>
-                    <td className="p-3 text-sm text-ink">{detenu.prenom}</td>
-                    <td className="p-3 text-sm text-ink">{detenu.heureEntree}</td>
-                    <td className="p-3 text-sm text-ink">{detenu.tempsDetention} min</td>
-                    <td className="p-3 text-sm text-ink">{tempsRestant} min</td>
-                    <td className="p-3 text-sm text-ink">{detenu.motif}</td>
-                    <td className="p-3 text-sm text-ink">{detenu.agentResponsable}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${tempsRestant <= 0 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
-                        {tempsRestant <= 0 ? '🟢 Libérable' : '⚠️ En détention'}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <button
-                        onClick={() => handleReleaseDetenu(detenu.id)}
-                        className="text-sm text-muted hover:text-primary"
-                      >
-                        Libérer
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="p-3 text-center text-muted">Chargement...</td>
+                </tr>
+              ) : detenus.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="p-3 text-center text-muted">Aucun détenu</td>
+                </tr>
+              ) : (
+                detenus.map((detenu) => {
+                  const tempsRestant = calculateTempsRestant(detenu.enteredAt, detenu.detentionTime);
+                  return (
+                    <tr key={detenu.id} className="border-b border-line/70">
+                      <td className="p-3 text-sm text-ink">{detenu.lastname}</td>
+                      <td className="p-3 text-sm text-ink">{detenu.firstname}</td>
+                      <td className="p-3 text-sm text-ink">{formatHeure(detenu.enteredAt)}</td>
+                      <td className="p-3 text-sm text-ink">{detenu.detentionTime} min</td>
+                      <td className="p-3 text-sm text-ink">{tempsRestant} min</td>
+                      <td className="p-3 text-sm text-ink">{detenu.reason}</td>
+                      <td className="p-3 text-sm text-ink">{detenu.agent?.firstname} {detenu.agent?.lastname}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${tempsRestant <= 0 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
+                          {tempsRestant <= 0 ? '🟢 Libérable' : '⚠️ En détention'}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <button
+                          onClick={() => handleReleaseDetenu(detenu.id)}
+                          className="text-sm text-muted hover:text-primary"
+                        >
+                          Libérer
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
@@ -212,7 +257,7 @@ export default function DetenusPage() {
       <section>
         <h2 className="mb-6 text-xl font-bold text-ink">Historique complet</h2>
         <div className="panel-soft p-6">
-          <p className="text-muted text-center">Aucune personne libérée pour le moment</p>
+          <p className="text-muted text-center">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>
