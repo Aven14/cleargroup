@@ -61,7 +61,7 @@ export default function AlertesPage() {
   };
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Alertes"
         subtitle="Système de demande de renfort et gestion des urgences"

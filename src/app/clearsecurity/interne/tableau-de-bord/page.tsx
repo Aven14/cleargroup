@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/ui/page-header";
 
 export default function SecurityDashboardPage() {
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Tableau de bord"
         subtitle="Vue d&apos;ensemble des opérations de sécurité en temps réel"

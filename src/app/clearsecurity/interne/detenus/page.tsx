@@ -92,7 +92,7 @@ export default function DetenusPage() {
   }, [detenus]);
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Personnes détenues"
         subtitle="Gestion des personnes placées en cellule"

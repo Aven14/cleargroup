@@ -28,7 +28,7 @@ export default function PriseServicePage() {
   };
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Prise de service"
         subtitle="Gérez votre statut de service et vos informations de prise de poste"

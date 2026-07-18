@@ -74,7 +74,7 @@ export default function PlanningPage() {
   };
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Planning"
         subtitle="Calendrier des événements et affectations des agents"

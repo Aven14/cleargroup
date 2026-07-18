@@ -67,7 +67,7 @@ export default function DebriefingsPage() {
   };
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Débriefings"
         subtitle="Compte-rendus d&apos;intervention et rapports de mission"

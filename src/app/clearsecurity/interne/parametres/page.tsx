@@ -17,7 +17,7 @@ export default function ParametresPage() {
   ];
 
   return (
-    <div className="page-enter mx-auto max-w-6xl px-4">
+    <div className="page-enter">
       <PageHeader
         title="Paramètres"
         subtitle="Configuration du module ClearSecurity"
