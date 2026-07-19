@@ -146,7 +146,7 @@ body {
 
   box-shadow: var(--shadow-card);
 
-  max-width: 800px;
+  max-width: 860px;
 
   margin: 0 auto;
 
@@ -166,7 +166,7 @@ body {
 
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-  max-width: 800px;
+  max-width: 860px;
 
   margin: 0 auto;
 
@@ -192,7 +192,7 @@ body {
 
   box-shadow: var(--shadow-panel-strong);
 
-  max-width: 800px;
+  max-width: 860px;
 
   margin: 0 auto;
 

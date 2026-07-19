@@ -88,7 +88,7 @@ export default function SecurityDashboardPage() {
 
       {/* Statistiques en temps réel */}
       <section className="mb-12">
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <div className="flex items-center justify-between">
               <div>

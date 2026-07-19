@@ -201,7 +201,7 @@ export default function AlertesPage() {
             <div className="panel-soft p-6 text-center text-muted">Aucune alerte</div>
           ) : (
             alertes.map((alerte) => (
-              <div key={alerte.id} className={`panel-soft p-6 w-full ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
+              <div key={alerte.id} className={`panel-soft p-6 ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
                     <span className="text-3xl">🚨</span>
