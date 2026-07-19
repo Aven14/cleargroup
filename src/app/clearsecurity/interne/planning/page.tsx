@@ -45,7 +45,7 @@ export default function PlanningPage() {
 
   useEffect(() => {
     if (selectedDate) {
-      setNewEvenement({ ...newEvenement, date: selectedDate.toISOString().split('T')[0] });
+      setNewEvenement(prev => ({ ...prev, date: selectedDate.toISOString().split('T')[0] }));
     }
   }, [selectedDate]);
 
@@ -182,7 +182,6 @@ export default function PlanningPage() {
               // Jours du mois
               for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                const dateStr = date.toISOString().split('T')[0];
                 const dayEvenements = getEvenementsForDate(date);
                 const isToday = date.toDateString() === new Date().toDateString();
                 const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();

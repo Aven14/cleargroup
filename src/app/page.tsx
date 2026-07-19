@@ -2,8 +2,6 @@ import Link from "next/link";
 
 import { getHomeNetworkData } from "@/actions/lines";
 
-import { getCurrentUser } from "@/lib/session";
-
 
 
 const divisions = [
