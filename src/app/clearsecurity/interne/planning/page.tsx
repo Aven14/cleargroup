@@ -146,7 +146,7 @@ export default function PlanningPage() {
               onClick={goToToday}
               className="px-3 py-1 rounded-md bg-surface text-sm text-muted hover:bg-primary-light/40 transition"
             >
-              Aujourd'hui
+              Aujourd&#39;hui
             </button>
           </div>
           <button
