@@ -125,79 +125,80 @@ export default function PatrouillesPage() {
       />
 
       <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-ink">Patrouilles actives</h2>
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="btn-primary"
-          >
-            {showCreateForm ? "Annuler" : "Créer une patrouille"}
-          </button>
-        </div>
-
-        {showCreateForm && (
-          <div className="panel-soft p-6 mb-6">
-            <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="label-caps block mb-2">Secteur</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  placeholder="Ex: Centre-ville"
-                  value={newPatrouille.secteur}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, secteur: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="label-caps block mb-2">Véhicule</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  placeholder="Ex: SEC-001"
-                  value={newPatrouille.vehicule}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, vehicule: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="label-caps block mb-2">Type de mission</label>
-                <select
-                  className="input-field w-full"
-                  value={newPatrouille.type}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, type: e.target.value })}
-                >
-                  <option>Patrouille mobile</option>
-                  <option>Intervention</option>
-                  <option>Escorte</option>
-                  <option>Événement</option>
-                </select>
-              </div>
-              <div>
-                <label className="label-caps block mb-2">Observations</label>
-                <textarea
-                  className="input-field w-full min-h-[80px]"
-                  placeholder="Observations sur la mission..."
-                  value={newPatrouille.observations}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
-                />
-              </div>
-              <button onClick={handleCreatePatrouille} className="btn-primary w-full">
-                Créer la patrouille
-              </button>
-            </div>
+        <div className="panel-soft p-6 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-ink">Patrouilles actives</h2>
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="btn-primary"
+            >
+              {showCreateForm ? "Annuler" : "Créer une patrouille"}
+            </button>
           </div>
-        )}
 
-        <div className="space-y-4">
-          {loading ? (
-            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
-          ) : patrouilles.length === 0 ? (
-            <div className="panel-soft p-6 text-center text-muted">Aucune patrouille</div>
-          ) : (
-            patrouilles.map((patrouille) => {
-              const active = !patrouille.endedAt;
-              return (
-                <div key={patrouille.id} className="panel-soft p-6">
+          {showCreateForm && (
+            <div className="panel-soft p-6 mb-6 bg-surface border border-line">
+              <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="label-caps block mb-2">Secteur</label>
+                  <input
+                    type="text"
+                    className="input-field w-full"
+                    placeholder="Ex: Centre-ville"
+                    value={newPatrouille.secteur}
+                    onChange={(e) => setNewPatrouille({ ...newPatrouille, secteur: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label-caps block mb-2">Véhicule</label>
+                  <input
+                    type="text"
+                    className="input-field w-full"
+                    placeholder="Ex: SEC-001"
+                    value={newPatrouille.vehicule}
+                    onChange={(e) => setNewPatrouille({ ...newPatrouille, vehicule: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label-caps block mb-2">Type de mission</label>
+                  <select
+                    className="input-field w-full"
+                    value={newPatrouille.type}
+                    onChange={(e) => setNewPatrouille({ ...newPatrouille, type: e.target.value })}
+                  >
+                    <option>Patrouille mobile</option>
+                    <option>Intervention</option>
+                    <option>Escorte</option>
+                    <option>Événement</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label-caps block mb-2">Observations</label>
+                  <textarea
+                    className="input-field w-full min-h-[80px]"
+                    placeholder="Observations sur la mission..."
+                    value={newPatrouille.observations}
+                    onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
+                  />
+                </div>
+                <button onClick={handleCreatePatrouille} className="btn-primary w-full">
+                  Créer la patrouille
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {loading ? (
+              <div className="panel-soft p-6 text-center text-muted bg-surface border border-line">Chargement...</div>
+            ) : patrouilles.length === 0 ? (
+              <div className="panel-soft p-6 text-center text-muted bg-surface border border-line">Aucune patrouille</div>
+            ) : (
+              patrouilles.map((patrouille) => {
+                const active = !patrouille.endedAt;
+                return (
+                <div key={patrouille.id} className="panel-soft p-6 bg-surface border border-line">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <span className="text-3xl">🚔</span>
@@ -256,6 +257,7 @@ export default function PatrouillesPage() {
               );
             })
           )}
+        </div>
         </div>
       </section>
 
