@@ -196,10 +196,16 @@ export default function PatrouillesPage() {
           ) : (
             patrouilles.map((patrouille) => {
               const active = !patrouille.endedAt;
+              const borderClass = active ? 'border-green-400' : 'border-gray-200 opacity-60';
+              const bgClass = active ? 'bg-green-100' : 'bg-gray-100';
+              const statusClass = active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600';
+              const statusText = active ? 'En cours' : 'Terminée';
+              const statusIcon = active ? '●' : '○';
+              
               return (
-                <div key={patrouille.id} className="bg-white border-2 rounded-lg p-5 hover:border-gray-300 transition-colors ${active ? 'border-green-400' : 'border-gray-200 opacity-60'}`}>
+                <div key={patrouille.id} className={`bg-white border-2 rounded-lg p-5 hover:border-gray-300 transition-colors ${borderClass}`}>
                   <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${active ? 'bg-green-100' : 'bg-gray-100'}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${bgClass}`}>
                       🚔
                     </div>
                     <div className="flex-1">
@@ -210,8 +216,8 @@ export default function PatrouillesPage() {
                         {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
                       </p>
                     </div>
-                    <span className={`text-xs font-medium px-2 py-1 rounded ${active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {active ? '● En cours' : '○ Terminée'}
+                    <span className={`text-xs font-medium px-2 py-1 rounded ${statusClass}`}>
+                      {statusIcon} {statusText}
                     </span>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 mb-4">
