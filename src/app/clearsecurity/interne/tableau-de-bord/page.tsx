@@ -80,7 +80,7 @@ export default function SecurityDashboardPage() {
     return `Il y a ${Math.floor(diffHours / 24)} j`;
   };
   return (
-    <div className="page-enter compact-layout">
+    <div className="page-enter">
       <PageHeader
         title="Tableau de bord"
         subtitle="Vue d&apos;ensemble des opérations de sécurité en temps réel"

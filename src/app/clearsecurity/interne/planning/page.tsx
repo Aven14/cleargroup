@@ -114,7 +114,7 @@ export default function PlanningPage() {
   };
 
   return (
-    <div className="page-enter compact-layout">
+    <div className="page-enter">
       <PageHeader
         title="Planning"
         subtitle="Calendrier des événements et affectations des agents"

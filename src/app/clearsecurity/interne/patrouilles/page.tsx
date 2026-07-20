@@ -118,15 +118,15 @@ export default function PatrouillesPage() {
   };
 
   return (
-    <div className="page-enter compact-layout">
+    <div className="page-enter">
       <PageHeader
         title="Patrouilles"
         subtitle="Gestion des patrouilles et des missions en cours"
       />
 
-      <section className="mb-6">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-bold text-ink">Patrouilles actives</h2>
+      <section className="mb-12">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-ink">Patrouilles actives</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="btn-primary"
@@ -136,11 +136,11 @@ export default function PatrouillesPage() {
         </div>
 
         {showCreateForm && (
-          <div className="panel-soft mb-4">
-            <h3 className="mb-2 font-bold text-ink">Nouvelle patrouille</h3>
-            <div className="space-y-2">
+          <div className="panel-soft p-6 mb-6">
+            <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
+            <div className="space-y-4">
               <div>
-                <label className="label-caps block">Secteur</label>
+                <label className="label-caps block mb-2">Secteur</label>
                 <input
                   type="text"
                   className="input-field w-full"
@@ -150,7 +150,7 @@ export default function PatrouillesPage() {
                 />
               </div>
               <div>
-                <label className="label-caps block">Véhicule</label>
+                <label className="label-caps block mb-2">Véhicule</label>
                 <input
                   type="text"
                   className="input-field w-full"
@@ -160,7 +160,7 @@ export default function PatrouillesPage() {
                 />
               </div>
               <div>
-                <label className="label-caps block">Type de mission</label>
+                <label className="label-caps block mb-2">Type de mission</label>
                 <select
                   className="input-field w-full"
                   value={newPatrouille.type}
@@ -173,9 +173,9 @@ export default function PatrouillesPage() {
                 </select>
               </div>
               <div>
-                <label className="label-caps block">Observations</label>
+                <label className="label-caps block mb-2">Observations</label>
                 <textarea
-                  className="input-field w-full min-h-[50px]"
+                  className="input-field w-full min-h-[80px]"
                   placeholder="Observations sur la mission..."
                   value={newPatrouille.observations}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
@@ -188,54 +188,54 @@ export default function PatrouillesPage() {
           </div>
         )}
 
-        <div className="space-y-2">
+        <div className="space-y-4">
           {loading ? (
-            <div className="panel-soft text-center text-muted">Chargement...</div>
+            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
           ) : patrouilles.length === 0 ? (
-            <div className="panel-soft text-center text-muted">Aucune patrouille</div>
+            <div className="panel-soft p-6 text-center text-muted">Aucune patrouille</div>
           ) : (
             patrouilles.map((patrouille) => {
               const active = !patrouille.endedAt;
               return (
-                <div key={patrouille.id} className="panel-soft">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">🚔</span>
+                <div key={patrouille.id} className="panel-soft p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <span className="text-3xl">🚔</span>
                       <div>
                         <h3 className="font-bold text-ink">
                           {patrouille.sector} - {patrouille.missionType}
                         </h3>
-                        <p className="text-muted text-xs">
+                        <p className="text-sm text-muted">
                           {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
                         {active ? 'En cours' : 'Terminée'}
                       </span>
                       {active && (
                         <button
                           onClick={() => handleEndPatrouille(patrouille.id)}
-                          className="text-xs text-muted hover:text-primary"
+                          className="text-sm text-muted hover:text-primary"
                         >
                           Terminer
                         </button>
                       )}
                     </div>
                   </div>
-                  <div className="grid gap-2 md:grid-cols-2 mb-2">
+                  <div className="grid gap-4 md:grid-cols-2 mb-4">
                     <div>
-                      <p className="text-muted text-xs">Début</p>
-                      <p className="font-semibold text-ink text-xs">{formatHeure(patrouille.startedAt)}</p>
+                      <p className="text-xs text-muted">Début</p>
+                      <p className="font-semibold text-ink">{formatHeure(patrouille.startedAt)}</p>
                     </div>
                     <div>
-                      <p className="text-muted text-xs">Fin</p>
-                      <p className="font-semibold text-ink text-xs">{formatHeure(patrouille.endedAt)}</p>
+                      <p className="text-xs text-muted">Fin</p>
+                      <p className="font-semibold text-ink">{formatHeure(patrouille.endedAt)}</p>
                     </div>
                   </div>
-                  <div className="mb-2">
-                    <p className="text-muted text-xs mb-1">Type de mission</p>
+                  <div className="mb-4">
+                    <p className="text-xs text-muted mb-2">Type de mission</p>
                     <select
                       className="input-field w-full"
                       value={patrouille.missionType}
@@ -249,8 +249,8 @@ export default function PatrouillesPage() {
                     </select>
                   </div>
                   <div>
-                    <p className="text-muted text-xs mb-1">Observations</p>
-                    <p className="text-ink text-xs">{patrouille.observations}</p>
+                    <p className="text-xs text-muted mb-2">Observations</p>
+                    <p className="text-sm text-ink">{patrouille.observations}</p>
                   </div>
                 </div>
               );
@@ -260,9 +260,9 @@ export default function PatrouillesPage() {
       </section>
 
       <section>
-        <h2 className="mb-3 font-bold text-ink">Historique des patrouilles</h2>
-        <div className="panel-soft">
-          <p className="text-muted text-center text-xs">Fonctionnalité à venir</p>
+        <h2 className="mb-6 text-xl font-bold text-ink">Historique des patrouilles</h2>
+        <div className="panel-soft p-6">
+          <p className="text-muted text-center">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>

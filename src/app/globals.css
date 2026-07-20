@@ -146,11 +146,11 @@ body {
 
   box-shadow: var(--shadow-card);
 
-  max-width: 900px;
+  max-width: 1100px;
 
   margin: 0 auto;
 
-  padding: 0.75rem;
+  padding: 1.5rem;
 
 }
 
@@ -196,99 +196,16 @@ body {
 
   box-shadow: var(--shadow-panel-strong);
 
-  max-width: 900px;
+  max-width: 1100px;
 
   margin: 0 auto;
 
-  padding: 0.75rem;
+  padding: 1.5rem;
 
 }
 
 
 
-/* Compact layout for ClearSecurity internal pages */
-
-.compact-layout {
-
-  --compact-spacing: 0.5rem;
-
-}
-
-
-
-.compact-layout h2 {
-
-  font-size: 0.875rem;
-
-  font-weight: 600;
-
-  margin-bottom: 0.5rem;
-
-}
-
-
-
-.compact-layout h3 {
-
-  font-size: 0.75rem;
-
-  font-weight: 600;
-
-  margin-bottom: 0.375rem;
-
-}
-
-
-
-.compact-layout .label-caps {
-
-  font-size: 0.5rem;
-
-  margin-bottom: 0.125rem;
-
-}
-
-
-
-.compact-layout .input-field {
-
-  padding: 0.375rem 0.5rem;
-
-  font-size: 0.75rem;
-
-  min-height: 32px;
-
-}
-
-
-
-.compact-layout .btn-primary,
-
-.compact-layout .btn-secondary {
-
-  padding: 0.375rem 0.75rem;
-
-  font-size: 0.75rem;
-
-  min-height: 32px;
-
-}
-
-
-
-.compact-layout .panel-soft {
-
-  padding: 0.5rem;
-
-}
-
-
-
-.compact-layout textarea.input-field {
-
-  min-height: 40px;
-
-}
 
 
 
