@@ -118,51 +118,51 @@ export default function PatrouillesPage() {
   };
 
   return (
-    <div className="page-enter">
+    <div className="page-enter compact-layout">
       <PageHeader
         title="Patrouilles"
         subtitle="Gestion des patrouilles et des missions en cours"
       />
 
-      <section className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-ink">Patrouilles actives</h2>
+      <section className="mb-6">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-bold text-ink">Patrouilles actives</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="btn-primary py-2 text-sm"
+            className="btn-primary"
           >
             {showCreateForm ? "Annuler" : "Créer une patrouille"}
           </button>
         </div>
 
         {showCreateForm && (
-          <div className="panel-soft mb-6">
-            <h3 className="mb-3 font-bold text-ink text-sm">Nouvelle patrouille</h3>
-            <div className="space-y-3">
+          <div className="panel-soft mb-4">
+            <h3 className="mb-2 font-bold text-ink">Nouvelle patrouille</h3>
+            <div className="space-y-2">
               <div>
-                <label className="label-caps block mb-1 text-xs">Secteur</label>
+                <label className="label-caps block">Secteur</label>
                 <input
                   type="text"
-                  className="input-field w-full py-2 text-sm"
+                  className="input-field w-full"
                   placeholder="Ex: Centre-ville"
                   value={newPatrouille.secteur}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, secteur: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-1 text-xs">Véhicule</label>
+                <label className="label-caps block">Véhicule</label>
                 <input
                   type="text"
-                  className="input-field w-full py-2 text-sm"
+                  className="input-field w-full"
                   placeholder="Ex: SEC-001"
                   value={newPatrouille.vehicule}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, vehicule: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-1 text-xs">Type de mission</label>
+                <label className="label-caps block">Type de mission</label>
                 <select
-                  className="input-field w-full py-2 text-sm"
+                  className="input-field w-full"
                   value={newPatrouille.type}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, type: e.target.value })}
                 >
@@ -173,45 +173,45 @@ export default function PatrouillesPage() {
                 </select>
               </div>
               <div>
-                <label className="label-caps block mb-1 text-xs">Observations</label>
+                <label className="label-caps block">Observations</label>
                 <textarea
-                  className="input-field w-full min-h-[60px] py-2 text-sm"
+                  className="input-field w-full min-h-[50px]"
                   placeholder="Observations sur la mission..."
                   value={newPatrouille.observations}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
                 />
               </div>
-              <button onClick={handleCreatePatrouille} className="btn-primary w-full py-2 text-sm">
+              <button onClick={handleCreatePatrouille} className="btn-primary w-full">
                 Créer la patrouille
               </button>
             </div>
           </div>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {loading ? (
-            <div className="panel-soft text-center text-muted text-sm">Chargement...</div>
+            <div className="panel-soft text-center text-muted">Chargement...</div>
           ) : patrouilles.length === 0 ? (
-            <div className="panel-soft text-center text-muted text-sm">Aucune patrouille</div>
+            <div className="panel-soft text-center text-muted">Aucune patrouille</div>
           ) : (
             patrouilles.map((patrouille) => {
               const active = !patrouille.endedAt;
               return (
                 <div key={patrouille.id} className="panel-soft">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">🚔</span>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🚔</span>
                       <div>
-                        <h3 className="font-bold text-ink text-sm">
+                        <h3 className="font-bold text-ink">
                           {patrouille.sector} - {patrouille.missionType}
                         </h3>
-                        <p className="text-xs text-muted">
+                        <p className="text-muted text-xs">
                           {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
                         {active ? 'En cours' : 'Terminée'}
                       </span>
                       {active && (
@@ -224,20 +224,20 @@ export default function PatrouillesPage() {
                       )}
                     </div>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2 mb-3">
+                  <div className="grid gap-2 md:grid-cols-2 mb-2">
                     <div>
-                      <p className="text-xs text-muted">Début</p>
-                      <p className="font-semibold text-ink text-sm">{formatHeure(patrouille.startedAt)}</p>
+                      <p className="text-muted text-xs">Début</p>
+                      <p className="font-semibold text-ink text-xs">{formatHeure(patrouille.startedAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted">Fin</p>
-                      <p className="font-semibold text-ink text-sm">{formatHeure(patrouille.endedAt)}</p>
+                      <p className="text-muted text-xs">Fin</p>
+                      <p className="font-semibold text-ink text-xs">{formatHeure(patrouille.endedAt)}</p>
                     </div>
                   </div>
-                  <div className="mb-3">
-                    <p className="text-xs text-muted mb-1">Type de mission</p>
+                  <div className="mb-2">
+                    <p className="text-muted text-xs mb-1">Type de mission</p>
                     <select
-                      className="input-field w-full py-2 text-sm"
+                      className="input-field w-full"
                       value={patrouille.missionType}
                       onChange={(e) => handleUpdateType(patrouille.id, e.target.value)}
                       disabled={!active}
@@ -249,8 +249,8 @@ export default function PatrouillesPage() {
                     </select>
                   </div>
                   <div>
-                    <p className="text-xs text-muted mb-1">Observations</p>
-                    <p className="text-xs text-ink">{patrouille.observations}</p>
+                    <p className="text-muted text-xs mb-1">Observations</p>
+                    <p className="text-ink text-xs">{patrouille.observations}</p>
                   </div>
                 </div>
               );
@@ -260,9 +260,9 @@ export default function PatrouillesPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-ink">Historique des patrouilles</h2>
+        <h2 className="mb-3 font-bold text-ink">Historique des patrouilles</h2>
         <div className="panel-soft">
-          <p className="text-muted text-center text-sm">Fonctionnalité à venir</p>
+          <p className="text-muted text-center text-xs">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>

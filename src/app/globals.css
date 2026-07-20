@@ -204,6 +204,80 @@ body {
 
 
 
+/* Compact layout for ClearSecurity internal pages */
+
+.compact-layout {
+
+  --compact-spacing: 0.5rem;
+
+}
+
+
+
+.compact-layout h2 {
+
+  font-size: 1rem;
+
+  font-weight: 600;
+
+  margin-bottom: 0.75rem;
+
+}
+
+
+
+.compact-layout h3 {
+
+  font-size: 0.875rem;
+
+  font-weight: 600;
+
+  margin-bottom: 0.5rem;
+
+}
+
+
+
+.compact-layout .label-caps {
+
+  font-size: 0.625rem;
+
+  margin-bottom: 0.25rem;
+
+}
+
+
+
+.compact-layout .input-field {
+
+  padding: 0.5rem 0.75rem;
+
+  font-size: 0.875rem;
+
+}
+
+
+
+.compact-layout .btn-primary,
+
+.compact-layout .btn-secondary {
+
+  padding: 0.5rem 1rem;
+
+  font-size: 0.875rem;
+
+}
+
+
+
+.compact-layout .panel-soft {
+
+  padding: 0.75rem;
+
+}
+
+
+
 .btn-primary {
 
   @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white transition;
