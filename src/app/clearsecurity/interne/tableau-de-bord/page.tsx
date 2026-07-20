@@ -89,7 +89,7 @@ export default function SecurityDashboardPage() {
       {/* Statistiques en temps réel */}
       <section className="mb-12">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Agents en service</p>
@@ -99,7 +99,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="panel-soft bg-gradient-to-br from-accent-light to-white p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Patrouilles actives</p>
@@ -109,7 +109,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="panel-soft bg-gradient-to-br from-primary-light/80 to-white p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Alertes actives</p>
@@ -119,7 +119,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="panel-soft bg-gradient-to-br from-success/10 to-success/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Débriefings aujourd&apos;hui</p>
@@ -129,7 +129,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="panel-soft bg-gradient-to-br from-warning/10 to-warning/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Personnes détenues</p>
@@ -139,10 +139,10 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted">Activité récente</p>
+                <p className="text-sm text-muted">Activité totale</p>
                 <p className="mt-2 text-3xl font-extrabold text-ink">{loading ? '-' : (stats?.activeShifts || 0) + (stats?.activePatrols || 0) + (stats?.activeAlerts || 0)}</p>
               </div>
               <span className="text-2xl">⚡</span>
@@ -151,77 +151,71 @@ export default function SecurityDashboardPage() {
         </div>
       </section>
 
-      {/* Dernières alertes */}
-      <section className="mb-12">
-        <h2 className="mb-6 text-xl font-bold text-ink">Dernières alertes</h2>
-        <div className="panel-soft p-6">
-          <div className="space-y-4">
-            {loading ? (
-              <p className="text-muted text-center">Chargement...</p>
-            ) : recentAlerts.length === 0 ? (
-              <p className="text-muted text-center">Aucune alerte active</p>
-            ) : (
-              recentAlerts.map((alert) => (
-                <div key={alert.createdAt} className="flex items-center gap-4 p-4 rounded-md bg-accent/10 border border-accent/20">
-                  <span className="text-2xl">🚨</span>
-                  <div className="flex-1">
-                    <p className="font-semibold text-ink">{alert.type}</p>
-                    <p className="text-sm text-muted">{alert.location}</p>
-                  </div>
-                  <span className="text-xs text-muted">{formatRelativeTime(alert.createdAt)}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Derniers services commencés */}
-      <section className="mb-12">
-        <h2 className="mb-6 text-xl font-bold text-ink">Derniers services commencés</h2>
-        <div className="panel-soft p-6">
-          <div className="space-y-4">
-            {loading ? (
-              <p className="text-muted text-center">Chargement...</p>
-            ) : recentShifts.length === 0 ? (
-              <p className="text-muted text-center">Aucun service en cours</p>
-            ) : (
-              recentShifts.map((shift) => (
-                <div key={shift.startedAt} className="flex items-center gap-4 p-4 rounded-md bg-primary/10 border border-primary/20">
-                  <span className="text-2xl">👤</span>
-                  <div className="flex-1">
-                    <p className="font-semibold text-ink">{shift.user?.firstname} {shift.user?.lastname}</p>
-                    <p className="text-sm text-muted">Prise de service · Véhicule: {shift.vehicle || 'N/A'}</p>
-                  </div>
-                  <span className="text-xs text-muted">{formatRelativeTime(shift.startedAt)}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Dernières patrouilles créées */}
+      {/* Activité récente */}
       <section>
-        <h2 className="mb-6 text-xl font-bold text-ink">Dernières patrouilles créées</h2>
-        <div className="panel-soft p-6">
-          <div className="space-y-4">
-            {loading ? (
-              <p className="text-muted text-center">Chargement...</p>
-            ) : recentPatrols.length === 0 ? (
-              <p className="text-muted text-center">Aucune patrouille active</p>
-            ) : (
-              recentPatrols.map((patrol) => (
-                <div key={patrol.startedAt} className="flex items-center gap-4 p-4 rounded-md bg-accent-light border border-accent/20">
-                  <span className="text-2xl">🚔</span>
-                  <div className="flex-1">
-                    <p className="font-semibold text-ink">Patrouille {patrol.sector}</p>
-                    <p className="text-sm text-muted">{patrol.agent?.firstname} {patrol.agent?.lastname} · {patrol.missionType}</p>
+        <h2 className="mb-6 text-xl font-bold text-ink">Activité récente</h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Alertes</h3>
+            <div className="space-y-3">
+              {loading ? (
+                <p className="text-muted text-center">Chargement...</p>
+              ) : recentAlerts.length === 0 ? (
+                <p className="text-muted text-center">Aucune alerte</p>
+              ) : (
+                recentAlerts.slice(0, 3).map((alert) => (
+                  <div key={alert.createdAt} className="flex items-center gap-3 p-3 rounded-md bg-accent/10">
+                    <span className="text-xl">🚨</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-ink text-sm">{alert.type}</p>
+                      <p className="text-xs text-muted">{alert.location}</p>
+                    </div>
                   </div>
-                  <span className="text-xs text-muted">{formatRelativeTime(patrol.startedAt)}</span>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Services</h3>
+            <div className="space-y-3">
+              {loading ? (
+                <p className="text-muted text-center">Chargement...</p>
+              ) : recentShifts.length === 0 ? (
+                <p className="text-muted text-center">Aucun service</p>
+              ) : (
+                recentShifts.slice(0, 3).map((shift) => (
+                  <div key={shift.startedAt} className="flex items-center gap-3 p-3 rounded-md bg-primary/10">
+                    <span className="text-xl">👤</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-ink text-sm">{shift.user?.firstname} {shift.user?.lastname}</p>
+                      <p className="text-xs text-muted">{shift.vehicle || 'N/A'}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="panel-soft p-6 md:col-span-2">
+            <h3 className="mb-4 font-bold text-ink">Patrouilles</h3>
+            <div className="grid gap-3 md:grid-cols-2">
+              {loading ? (
+                <p className="text-muted text-center col-span-full">Chargement...</p>
+              ) : recentPatrols.length === 0 ? (
+                <p className="text-muted text-center col-span-full">Aucune patrouille</p>
+              ) : (
+                recentPatrols.slice(0, 4).map((patrol) => (
+                  <div key={patrol.startedAt} className="flex items-center gap-3 p-3 rounded-md bg-accent-light">
+                    <span className="text-xl">🚔</span>
+                    <div className="flex-1">
+                      <p className="font-semibold text-ink text-sm">{patrol.sector}</p>
+                      <p className="text-xs text-muted">{patrol.agent?.firstname} {patrol.agent?.lastname}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </section>

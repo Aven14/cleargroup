@@ -194,46 +194,36 @@ export default function AlertesPage() {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {loading ? (
-            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
+            <div className="panel-soft p-6 text-center text-muted col-span-full">Chargement...</div>
           ) : alertes.length === 0 ? (
-            <div className="panel-soft p-6 text-center text-muted">Aucune alerte</div>
+            <div className="panel-soft p-6 text-center text-muted col-span-full">Aucune alerte</div>
           ) : (
             alertes.map((alerte) => (
               <div key={alerte.id} className={`panel-soft p-6 ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <span className="text-3xl">🚨</span>
                     <div>
                       <h3 className="font-bold text-ink">{alerte.type}</h3>
                       <p className="text-sm text-muted">{alerte.location}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${alerte.active ? 'bg-accent/20 text-accent' : 'bg-muted text-muted'}`}>
-                      {alerte.active ? 'Active' : 'Clôturée'}
-                    </span>
-                    {alerte.active && (
-                      <button
-                        onClick={() => handleCloseAlerte(alerte.id)}
-                        className="text-sm text-muted hover:text-primary"
-                      >
-                        Clôturer
-                      </button>
-                    )}
-                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${alerte.active ? 'bg-accent/20 text-accent' : 'bg-muted text-muted'}`}>
+                    {alerte.active ? 'Active' : 'Clôturée'}
+                  </span>
                 </div>
                 <p className="text-sm text-ink mb-4">{alerte.description}</p>
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-muted">
                     {alerte.responses.length} / {alerte.agentsRequested} agents acceptés
                   </p>
-                  <p className="text-xs text-muted">Créée par {alerte.createdBy?.firstname} {alerte.createdBy?.lastname} · {formatRelativeTime(alerte.createdAt)}</p>
+                  <p className="text-xs text-muted">{formatRelativeTime(alerte.createdAt)}</p>
                 </div>
                 {alerte.responses.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-xs text-muted mb-2">Agents ayant accepté :</p>
+                    <p className="text-xs text-muted mb-2">Agents :</p>
                     <div className="flex flex-wrap gap-2">
                       {alerte.responses.map((response, idx) => (
                         <span key={idx} className="px-2 py-1 bg-success/20 text-success rounded text-xs">
@@ -243,14 +233,24 @@ export default function AlertesPage() {
                     </div>
                   </div>
                 )}
-                {alerte.active && alerte.responses.length < alerte.agentsRequested && (
-                  <button
-                    onClick={() => handleAcceptAlerte(alerte.id)}
-                    className="btn-primary w-full"
-                  >
-                    Accepter cette alerte
-                  </button>
-                )}
+                <div className="flex gap-2">
+                  {alerte.active && alerte.responses.length < alerte.agentsRequested && (
+                    <button
+                      onClick={() => handleAcceptAlerte(alerte.id)}
+                      className="btn-primary flex-1"
+                    >
+                      Accepter
+                    </button>
+                  )}
+                  {alerte.active && (
+                    <button
+                      onClick={() => handleCloseAlerte(alerte.id)}
+                      className="btn-secondary flex-1"
+                    >
+                      Clôturer
+                    </button>
+                  )}
+                </div>
               </div>
             ))
           )}

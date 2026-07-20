@@ -329,7 +329,7 @@ export default function PlanningPage() {
 
         <section>
           <h2 className="mb-6 text-xl font-bold text-ink">Événements à venir</h2>
-          <div className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
             {evenements
               .filter(e => new Date(e.date) >= new Date(new Date().setHours(0,0,0,0)))
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())

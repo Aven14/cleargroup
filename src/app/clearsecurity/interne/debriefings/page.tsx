@@ -211,7 +211,7 @@ export default function DebriefingsPage() {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {debriefings.map((debriefing) => (
             <div key={debriefing.id} className="panel-soft p-6">
               <div className="flex items-start justify-between mb-4">
@@ -219,7 +219,7 @@ export default function DebriefingsPage() {
                   <h3 className="font-bold text-ink">{debriefing.titre}</h3>
                   <p className="text-sm text-muted">{debriefing.date} · {debriefing.lieu}</p>
                 </div>
-                <span className="text-xs text-muted">Auteur: {debriefing.auteur}</span>
+                <span className="text-xs text-muted">{debriefing.auteur}</span>
               </div>
               <div className="mb-4">
                 <p className="text-xs text-muted mb-2">Type: {debriefing.typeIntervention}</p>

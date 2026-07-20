@@ -161,7 +161,7 @@ export default function AgentsPage() {
       <section>
         <h2 className="mb-6 text-xl font-bold text-ink">Statistiques</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="panel-soft bg-gradient-to-br from-success/10 to-success/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Disponibles</p>
@@ -172,7 +172,7 @@ export default function AgentsPage() {
               <span className="text-2xl">🟢</span>
             </div>
           </div>
-          <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">En mission</p>
@@ -180,10 +180,10 @@ export default function AgentsPage() {
                   {agents.filter(a => getAgentStatus(a.id).statut === "En mission").length}
                 </p>
               </div>
-              <span className="text-2xl">�</span>
+              <span className="text-2xl">🔵</span>
             </div>
           </div>
-          <div className="panel-soft bg-gradient-to-br from-muted/50 to-muted/30 p-6">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Hors service</p>

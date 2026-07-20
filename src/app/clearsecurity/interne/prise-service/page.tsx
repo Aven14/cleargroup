@@ -107,7 +107,7 @@ export default function PriseServicePage() {
 
       <section className="mb-12">
         <div className="panel-soft p-6">
-          <h2 className="mb-6 text-lg font-bold text-ink">Informations de service</h2>
+          <h2 className="mb-6 text-xl font-bold text-ink">Informations de service</h2>
           
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -178,7 +178,7 @@ export default function PriseServicePage() {
 
       {isInService && (
         <section>
-          <div className="panel-soft bg-gradient-to-br from-success/10 to-success/5 p-6">
+          <div className="panel-soft p-6 bg-success/10">
             <div className="flex items-center gap-4">
               <span className="text-4xl">✅</span>
               <div>

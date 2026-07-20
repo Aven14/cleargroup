@@ -200,61 +200,58 @@ export default function DetenusPage() {
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-line/70">
-                <th className="text-left p-3 text-sm font-semibold text-ink">Nom</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Prénom</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Heure d&apos;entrée</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Temps détention</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Temps restant</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Motif</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Agent responsable</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Statut</th>
-                <th className="text-left p-3 text-sm font-semibold text-ink">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={9} className="p-3 text-center text-muted">Chargement...</td>
-                </tr>
-              ) : detenus.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="p-3 text-center text-muted">Aucun détenu</td>
-                </tr>
-              ) : (
-                detenus.map((detenu) => {
-                  const tempsRestant = calculateTempsRestant(detenu.enteredAt, detenu.detentionTime);
-                  return (
-                    <tr key={detenu.id} className="border-b border-line/70">
-                      <td className="p-3 text-sm text-ink">{detenu.lastname}</td>
-                      <td className="p-3 text-sm text-ink">{detenu.firstname}</td>
-                      <td className="p-3 text-sm text-ink">{formatHeure(detenu.enteredAt)}</td>
-                      <td className="p-3 text-sm text-ink">{detenu.detentionTime} min</td>
-                      <td className="p-3 text-sm text-ink">{tempsRestant} min</td>
-                      <td className="p-3 text-sm text-ink">{detenu.reason}</td>
-                      <td className="p-3 text-sm text-ink">{detenu.agent?.firstname} {detenu.agent?.lastname}</td>
-                      <td className="p-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${tempsRestant <= 0 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
-                          {tempsRestant <= 0 ? '🟢 Libérable' : '⚠️ En détention'}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <button
-                          onClick={() => handleReleaseDetenu(detenu.id)}
-                          className="text-sm text-muted hover:text-primary"
-                        >
-                          Libérer
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {loading ? (
+            <div className="panel-soft p-6 text-center text-muted col-span-full">Chargement...</div>
+          ) : detenus.length === 0 ? (
+            <div className="panel-soft p-6 text-center text-muted col-span-full">Aucun détenu</div>
+          ) : (
+            detenus.map((detenu) => {
+              const tempsRestant = calculateTempsRestant(detenu.enteredAt, detenu.detentionTime);
+              return (
+                <div key={detenu.id} className="panel-soft p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">👤</span>
+                      <div>
+                        <h3 className="font-bold text-ink">{detenu.firstname} {detenu.lastname}</h3>
+                        <p className="text-sm text-muted">Agent: {detenu.agent?.firstname} {detenu.agent?.lastname}</p>
+                      </div>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tempsRestant <= 0 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
+                      {tempsRestant <= 0 ? '🟢 Libérable' : '⚠️ En détention'}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted">Entrée:</span>
+                      <span className="text-sm font-semibold text-ink">{formatHeure(detenu.enteredAt)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted">Durée:</span>
+                      <span className="text-sm font-semibold text-ink">{detenu.detentionTime} min</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted">Restant:</span>
+                      <span className={`text-sm font-semibold ${tempsRestant <= 0 ? 'text-success' : 'text-warning'}`}>{tempsRestant} min</span>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted mb-1">Motif:</p>
+                      <p className="text-sm text-ink">{detenu.reason}</p>
+                    </div>
+                    {tempsRestant <= 0 && (
+                      <button
+                        onClick={() => handleReleaseDetenu(detenu.id)}
+                        className="btn-primary w-full"
+                      >
+                        Libérer
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </section>
 
