@@ -1,34 +1,47 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+
+interface Debriefing {
+  id: string;
+  titre: string;
+  date: string;
+  lieu: string;
+  typeIntervention: string;
+  agentsPresents: string[];
+  resume: string;
+  deroulement: string;
+  resultat: string;
+  incidents: string;
+  observations: string;
+  auteur: string;
+}
 
 export default function DebriefingsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ firstname: string; lastname: string } | null>(null);
-  const [debriefings, setDebriefings] = useState([
+  const [debriefings, setDebriefings] = useState<Debriefing[]>([
     {
-      id: 1,
-      titre: "Intervention Centre-ville",
-      date: "2024-01-15",
+      id: "1",
+      titre: "Patrouille centre-ville",
+      date: "20/07/2026",
       lieu: "Centre-ville",
+      typeIntervention: "Patrouille mobile",
       agentsPresents: ["Jean Dupont", "Marie Martin"],
-      typeIntervention: "Intervention",
-      resume: "Intervention suite à signalement de trouble",
-      deroulement: "Arrivée sur place à 14h30. Situation calme après intervention verbale.",
-      resultat: "Situation résolue sans incident",
-      incidents: "Aucun",
-      observations: "Intervention bien gérée",
+      resume: "Patrouille de routine dans le centre-ville",
+      deroulement: "Déroulement normal sans incident",
+      resultat: "Aucune intervention requise",
+      incidents: "",
+      observations: "Zone calme",
       auteur: "Jean Dupont",
     },
   ]);
-
   const [newDebriefing, setNewDebriefing] = useState({
     titre: "",
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toLocaleDateString("fr-FR"),
     lieu: "",
+    typeIntervention: "Patrouille mobile",
     agentsPresents: "",
-    typeIntervention: "Intervention",
     resume: "",
     deroulement: "",
     resultat: "",
@@ -36,43 +49,29 @@ export default function DebriefingsPage() {
     observations: "",
   });
 
-  useEffect(() => {
-    const loadCurrentUser = async () => {
-      try {
-        const response = await fetch('/api/auth/user');
-        if (response.ok) {
-          const user = await response.json();
-          setCurrentUser(user);
-        }
-      } catch (error) {
-        console.error('Erreur lors du chargement de l\'utilisateur:', error);
-      }
-    };
-    loadCurrentUser();
-  }, []);
-
   const handleCreateDebriefing = () => {
-    const debriefing = {
-      id: debriefings.length + 1,
+    const agentsArray = newDebriefing.agentsPresents.split(',').map(a => a.trim()).filter(a => a);
+    const debriefing: Debriefing = {
+      id: Date.now().toString(),
       titre: newDebriefing.titre,
       date: newDebriefing.date,
       lieu: newDebriefing.lieu,
-      agentsPresents: newDebriefing.agentsPresents.split(',').map(a => a.trim()),
       typeIntervention: newDebriefing.typeIntervention,
+      agentsPresents: agentsArray,
       resume: newDebriefing.resume,
       deroulement: newDebriefing.deroulement,
       resultat: newDebriefing.resultat,
       incidents: newDebriefing.incidents,
       observations: newDebriefing.observations,
-      auteur: currentUser ? `${currentUser.firstname} ${currentUser.lastname}` : "Agent inconnu",
+      auteur: "Agent actuel",
     };
     setDebriefings([...debriefings, debriefing]);
     setNewDebriefing({
       titre: "",
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toLocaleDateString("fr-FR"),
       lieu: "",
+      typeIntervention: "Patrouille mobile",
       agentsPresents: "",
-      typeIntervention: "Intervention",
       resume: "",
       deroulement: "",
       resultat: "",
@@ -85,138 +84,137 @@ export default function DebriefingsPage() {
   return (
     <div className="page-enter">
       <PageHeader
-        title="Débriefings"
-        subtitle="Compte-rendus d&apos;intervention et rapports de mission"
+        title="Debriefings"
+        subtitle="Comptes-rendus et rapports d'intervention"
       />
 
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-ink">Débriefings récents</h2>
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="btn-primary"
-          >
-            {showCreateForm ? "Annuler" : "Nouveau débriefing"}
-          </button>
-        </div>
+      <section className="mb-8">
+        <button
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className="btn-primary"
+        >
+          {showCreateForm ? "Annuler" : "Créer un debriefing"}
+        </button>
 
         {showCreateForm && (
-          <div className="panel-soft p-6 mb-6">
-            <h3 className="mb-4 font-bold text-ink">Nouveau débriefing</h3>
+          <div className="mt-4 p-6 bg-white border border-gray-200 rounded-lg">
+            <h3 className="mb-4 font-bold text-gray-900">Nouveau debriefing</h3>
             <div className="space-y-4">
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Titre</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Ex: Patrouille centre-ville"
+                  value={newDebriefing.titre}
+                  onChange={(e) => setNewDebriefing({ ...newDebriefing, titre: e.target.value })}
+                />
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="label-caps block mb-2">Titre</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Date</label>
                   <input
                     type="text"
-                    className="input-field w-full"
-                    placeholder="Titre du rapport"
-                    value={newDebriefing.titre}
-                    onChange={(e) => setNewDebriefing({ ...newDebriefing, titre: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="label-caps block mb-2">Date</label>
-                  <input
-                    type="date"
-                    className="input-field w-full"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={newDebriefing.date}
                     onChange={(e) => setNewDebriefing({ ...newDebriefing, date: e.target.value })}
                   />
                 </div>
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Lieu</label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ex: Centre-ville"
+                    value={newDebriefing.lieu}
+                    onChange={(e) => setNewDebriefing({ ...newDebriefing, lieu: e.target.value })}
+                  />
+                </div>
               </div>
               <div>
-                <label className="label-caps block mb-2">Lieu</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  placeholder="Ex: Centre-ville"
-                  value={newDebriefing.lieu}
-                  onChange={(e) => setNewDebriefing({ ...newDebriefing, lieu: e.target.value })}
-                />
+                <label className="block mb-2 text-sm font-medium text-gray-700">Type d'intervention</label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={newDebriefing.typeIntervention}
+                  onChange={(e) => setNewDebriefing({ ...newDebriefing, typeIntervention: e.target.value })}
+                >
+                  <option>Patrouille mobile</option>
+                  <option>Intervention</option>
+                  <option>Escorte</option>
+                  <option>Événement</option>
+                </select>
               </div>
               <div>
-                <label className="label-caps block mb-2">Agents présents (séparés par des virgules)</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Agents présents (séparés par des virgules)</label>
                 <input
                   type="text"
-                  className="input-field w-full"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ex: Jean Dupont, Marie Martin"
                   value={newDebriefing.agentsPresents}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, agentsPresents: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Type d&apos;intervention</label>
-                <select
-                  className="input-field w-full"
-                  value={newDebriefing.typeIntervention}
-                  onChange={(e) => setNewDebriefing({ ...newDebriefing, typeIntervention: e.target.value })}
-                >
-                  <option>Intervention</option>
-                  <option>Patrouille</option>
-                  <option>Escorte</option>
-                  <option>Événement</option>
-                  <option>Surveillance</option>
-                </select>
-              </div>
-              <div>
-                <label className="label-caps block mb-2">Résumé</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Résumé</label>
                 <textarea
-                  className="input-field w-full min-h-[80px]"
-                  placeholder="Résumé de l&apos;intervention..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  placeholder="Résumé de l'intervention..."
                   value={newDebriefing.resume}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, resume: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Déroulement</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Déroulement</label>
                 <textarea
-                  className="input-field w-full min-h-[120px]"
-                  placeholder="Déroulement détaillé de l&apos;intervention..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  placeholder="Déroulement de l'intervention..."
                   value={newDebriefing.deroulement}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, deroulement: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Résultat</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Résultat</label>
                 <textarea
-                  className="input-field w-full min-h-[80px]"
-                  placeholder="Résultat de l&apos;intervention..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  placeholder="Résultat de l'intervention..."
                   value={newDebriefing.resultat}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, resultat: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Incidents</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Incidents (optionnel)</label>
                 <textarea
-                  className="input-field w-full min-h-[80px]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
                   placeholder="Incidents survenus..."
                   value={newDebriefing.incidents}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, incidents: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Observations</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Observations (optionnel)</label>
                 <textarea
-                  className="input-field w-full min-h-[80px]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
                   placeholder="Observations supplémentaires..."
                   value={newDebriefing.observations}
                   onChange={(e) => setNewDebriefing({ ...newDebriefing, observations: e.target.value })}
                 />
               </div>
               <button onClick={handleCreateDebriefing} className="btn-primary w-full">
-                Enregistrer le débriefing
+                Enregistrer le debriefing
               </button>
             </div>
           </div>
         )}
+      </section>
 
+      <section>
+        <h2 className="mb-4 text-lg font-bold text-gray-900">Debriefings récents</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {debriefings.map((debriefing) => (
-            <div key={debriefing.id} className="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-              <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-100">
+            <div key={debriefing.id} className="p-6 bg-white border border-gray-200 rounded-lg">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-base">{debriefing.titre}</h3>
+                  <h3 className="font-bold text-gray-900">{debriefing.titre}</h3>
                   <p className="text-sm text-gray-500">{debriefing.date} · {debriefing.lieu}</p>
                 </div>
                 <span className="text-xs text-gray-400">{debriefing.auteur}</span>
@@ -225,7 +223,7 @@ export default function DebriefingsPage() {
                 <p className="text-xs text-gray-500 mb-2">Type: {debriefing.typeIntervention}</p>
                 <p className="text-xs text-gray-500 mb-2">Agents: {debriefing.agentsPresents.join(', ')}</p>
               </div>
-              <div className="mb-4 p-3 bg-gray-50 rounded-md">
+              <div className="mb-4 p-4 bg-gray-50 rounded">
                 <p className="text-sm text-gray-700 mb-2"><strong>Résumé:</strong> {debriefing.resume}</p>
                 <p className="text-sm text-gray-700 mb-2"><strong>Déroulement:</strong> {debriefing.deroulement}</p>
                 <p className="text-sm text-gray-700 mb-2"><strong>Résultat:</strong> {debriefing.resultat}</p>

@@ -36,7 +36,7 @@ export default function PriseServicePage() {
         setCurrentUser(user);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
+      console.error('Erreur lors du chargement de l\'utilisateur:', error);
     }
   };
 
@@ -105,26 +105,26 @@ export default function PriseServicePage() {
         subtitle="Gérez votre statut de service et vos informations de prise de poste"
       />
 
-      <section className="mb-12">
-        <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-          <h2 className="mb-6 text-xl font-bold text-gray-900">Informations de service</h2>
+      <section className="mb-8">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <h2 className="mb-4 text-lg font-bold text-gray-900">Informations de service</h2>
           
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="label-caps block mb-2">Nom</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Nom</label>
                 <input 
                   type="text" 
-                  className="input-field w-full" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={currentUser?.lastname || ""}
                   disabled
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Prénom</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Prénom</label>
                 <input 
                   type="text" 
-                  className="input-field w-full" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={currentUser?.firstname || ""}
                   disabled
                 />
@@ -132,10 +132,10 @@ export default function PriseServicePage() {
             </div>
 
             <div>
-              <label className="label-caps block mb-2">Véhicule utilisé (optionnel)</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Véhicule utilisé (optionnel)</label>
               <input 
                 type="text" 
-                className="input-field w-full" 
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Ex: SEC-001"
                 value={vehicle}
                 onChange={(e) => setVehicle(e.target.value)}
@@ -144,10 +144,10 @@ export default function PriseServicePage() {
             </div>
 
             <div>
-              <label className="label-caps block mb-2">Heure de prise de service</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Heure de prise de service</label>
               <input 
                 type="text" 
-                className="input-field w-full" 
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formatTime(serviceStartTime)}
                 disabled
               />
@@ -157,7 +157,7 @@ export default function PriseServicePage() {
               {!isInService ? (
                 <button
                   onClick={handleStartService}
-                  className="btn-primary w-full flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <span className="text-lg">🟢</span>
                   Prendre mon service
@@ -165,7 +165,7 @@ export default function PriseServicePage() {
               ) : (
                 <button
                   onClick={handleEndService}
-                  className="w-full flex items-center justify-center gap-2 rounded-md bg-red-600/90 px-3 py-2.5 text-sm font-semibold text-white shadow-card transition hover:bg-red-700"
+                  className="w-full px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
                 >
                   <span className="text-lg">🔴</span>
                   Fin de service
@@ -178,7 +178,7 @@ export default function PriseServicePage() {
 
       {isInService && (
         <section>
-          <div className="bg-white border-2 border-green-400 rounded-lg p-6">
+          <div className="p-6 bg-green-50 border border-green-400 rounded-lg">
             <div className="flex items-center gap-4">
               <span className="text-4xl">✅</span>
               <div>

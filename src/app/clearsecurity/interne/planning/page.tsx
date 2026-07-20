@@ -1,83 +1,62 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+
+interface Evenement {
+  id: string;
+  nom: string;
+  date: string;
+  heureDebut: string;
+  heureFin: string;
+  lieu: string;
+  description: string;
+  agents: string[];
+  public: boolean;
+}
 
 export default function PlanningPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [evenements, setEvenements] = useState([
+  const [evenements, setEvenements] = useState<Evenement[]>([
     {
-      id: 1,
-      nom: "Formation sécurité",
-      date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().split('T')[0],
-      heureDebut: "09:00",
-      heureFin: "17:00",
-      description: "Formation obligatoire pour tous les agents",
-      lieu: "Centre de formation",
-      agents: ["Jean Dupont", "Marie Martin", "Pierre Bernard"],
+      id: "1",
+      nom: "Patrouille centre-ville",
+      date: new Date().toISOString().split('T')[0],
+      heureDebut: "08:00",
+      heureFin: "12:00",
+      lieu: "Centre-ville",
+      description: "Patrouille de routine dans le centre-ville",
+      agents: ["Jean Dupont", "Marie Martin"],
       public: true,
     },
     {
-      id: 2,
-      nom: "Événement Centre-ville",
-      date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
-      heureDebut: "18:00",
-      heureFin: "23:00",
-      description: "Surveillance événement public",
-      lieu: "Centre-ville",
-      agents: ["Sophie Petit"],
-      public: true,
+      id: "2",
+      nom: "Surveillance événement",
+      date: new Date().toISOString().split('T')[0],
+      heureDebut: "14:00",
+      heureFin: "18:00",
+      lieu: "Salle des fêtes",
+      description: "Surveillance de l'événement public",
+      agents: ["Pierre Bernard"],
+      public: false,
     },
   ]);
-
   const [newEvenement, setNewEvenement] = useState({
     nom: "",
-    date: selectedDate ? selectedDate.toISOString().split('T')[0] : "",
+    date: new Date().toISOString().split('T')[0],
     heureDebut: "",
     heureFin: "",
-    description: "",
     lieu: "",
+    description: "",
     agents: "",
-    public: true,
+    public: false,
   });
 
-  useEffect(() => {
-    if (selectedDate) {
-      setNewEvenement(prev => ({ ...prev, date: selectedDate.toISOString().split('T')[0] }));
-    }
-  }, [selectedDate]);
-
-  const handleCreateEvenement = () => {
-    const evenement = {
-      id: evenements.length + 1,
-      nom: newEvenement.nom,
-      date: newEvenement.date,
-      heureDebut: newEvenement.heureDebut,
-      heureFin: newEvenement.heureFin,
-      description: newEvenement.description,
-      lieu: newEvenement.lieu,
-      agents: newEvenement.agents.split(',').map(a => a.trim()).filter(a => a),
-      public: newEvenement.public,
-    };
-    setEvenements([...evenements, evenement]);
-    setNewEvenement({
-      nom: "",
-      date: "",
-      heureDebut: "",
-      heureFin: "",
-      description: "",
-      lieu: "",
-      agents: "",
-      public: true,
-    });
-    setShowCreateForm(false);
-  };
-
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   };
 
   const getDaysInMonth = (date: Date) => {
@@ -86,187 +65,148 @@ export default function PlanningPage() {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
+    const startingDayOfWeek = firstDay.getDay();
     
-    return { daysInMonth, startDayOfWeek };
+    const days = [];
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(new Date(year, month, i));
+    }
+    return days;
   };
 
-  const getEvenementsForDate = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    return evenements.filter(e => e.date === dateStr);
-  };
-
-  const goToPreviousMonth = () => {
+  const handlePreviousMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
   };
 
-  const goToNextMonth = () => {
+  const handleNextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
   };
 
-  const goToToday = () => {
-    setCurrentDate(new Date());
+  const handleCreateEvenement = () => {
+    const agentsArray = newEvenement.agents.split(',').map(a => a.trim()).filter(a => a);
+    const evenement: Evenement = {
+      id: Date.now().toString(),
+      nom: newEvenement.nom,
+      date: newEvenement.date,
+      heureDebut: newEvenement.heureDebut,
+      heureFin: newEvenement.heureFin,
+      lieu: newEvenement.lieu,
+      description: newEvenement.description,
+      agents: agentsArray,
+      public: newEvenement.public,
+    };
+    setEvenements([...evenements, evenement]);
+    setNewEvenement({
+      nom: "",
+      date: new Date().toISOString().split('T')[0],
+      heureDebut: "",
+      heureFin: "",
+      lieu: "",
+      description: "",
+      agents: "",
+      public: false,
+    });
+    setShowCreateForm(false);
   };
 
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-    setShowCreateForm(true);
-  };
+  const days = getDaysInMonth(currentDate);
+  const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
   return (
     <div className="page-enter">
       <PageHeader
         title="Planning"
-        subtitle="Calendrier des événements et affectations des agents"
+        subtitle="Gestion du planning et des événements de sécurité"
       />
 
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={goToPreviousMonth}
-              className="p-2 rounded-md bg-surface text-muted hover:bg-primary-light/40 transition"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
+      <section className="mb-8">
+        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between mb-4">
+            <button onClick={handlePreviousMonth} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+              ← Précédent
             </button>
-            <h2 className="text-xl font-bold text-ink">
-              {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+            <h2 className="text-xl font-bold text-gray-900">
+              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
-            <button
-              onClick={goToNextMonth}
-              className="p-2 rounded-md bg-surface text-muted hover:bg-primary-light/40 transition"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            <button
-              onClick={goToToday}
-              className="px-3 py-1 rounded-md bg-surface text-sm text-muted hover:bg-primary-light/40 transition"
-            >
-              Aujourd&#39;hui
+            <button onClick={handleNextMonth} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+              Suivant →
             </button>
           </div>
-          <button
-            onClick={() => {
-              setSelectedDate(new Date());
-              setShowCreateForm(true);
-            }}
-            className="btn-primary"
-          >
-            Nouvel événement
-          </button>
-        </div>
-
-        {/* Calendrier */}
-        <div className="panel-soft p-6">
-          <div className="grid grid-cols-7 gap-2 mb-4">
-            {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
-              <div key={day} className="text-center text-sm font-semibold text-muted">
+          
+          <div className="grid grid-cols-7 gap-2 mb-2">
+            {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((day) => (
+              <div key={day} className="text-center text-sm font-medium text-gray-500">
                 {day}
               </div>
             ))}
           </div>
+          
           <div className="grid grid-cols-7 gap-2">
-            {(() => {
-              const { daysInMonth, startDayOfWeek } = getDaysInMonth(currentDate);
-              const days = [];
-              
-              // Jours vides avant le premier jour du mois
-              for (let i = 0; i < startDayOfWeek; i++) {
-                days.push(<div key={`empty-${i}`} className="h-24" />);
-              }
-              
-              // Jours du mois
-              for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                const dayEvenements = getEvenementsForDate(date);
-                const isToday = date.toDateString() === new Date().toDateString();
-                const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
-                
-                days.push(
-                  <div
-                    key={day}
-                    onClick={() => handleDateClick(date)}
-                    className={`h-24 p-2 rounded-md cursor-pointer transition ${
-                      isToday ? 'bg-primary/20 border-2 border-primary' : 
-                      isSelected ? 'bg-accent/20 border-2 border-accent' : 
-                      'bg-surface hover:bg-primary-light/20'
-                    }`}
-                  >
-                    <div className="text-sm font-semibold text-ink mb-1">
-                      {day}
-                    </div>
-                    <div className="space-y-1">
-                      {dayEvenements.slice(0, 2).map((evenement) => (
-                        <div
-                          key={evenement.id}
-                          className={`text-xs px-1 py-0.5 rounded truncate ${
-                            evenement.public ? 'bg-accent/80 text-white' : 'bg-primary/80 text-white'
-                          }`}
-                        >
-                          {evenement.nom}
-                        </div>
-                      ))}
-                      {dayEvenements.length > 2 && (
-                        <div className="text-xs text-muted">
-                          +{dayEvenements.length - 2} autre{dayEvenements.length - 2 > 1 ? 's' : ''}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-              
-              return days;
-            })()}
+            {days.map((day, idx) => (
+              <div
+                key={idx}
+                className={`p-2 border rounded-md text-center cursor-pointer transition-colors ${
+                  day
+                    ? "hover:bg-blue-50 border-gray-200"
+                    : "border-transparent"
+                } ${
+                  selectedDate && day && day.toDateString() === selectedDate.toDateString()
+                    ? "bg-blue-100 border-blue-400"
+                    : ""
+                }`}
+                onClick={() => day && setSelectedDate(day)}
+              >
+                {day ? day.getDate() : ""}
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold text-gray-900">Événements du {formatDate(selectedDate.toISOString())}</h2>
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="btn-primary"
+          >
+            {showCreateForm ? "Annuler" : "Créer un événement"}
+          </button>
         </div>
 
         {showCreateForm && (
-          <div className="panel-soft p-6 mt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-ink">
-                {selectedDate ? `Nouvel événement - ${formatDate(selectedDate.toISOString().split('T')[0])}` : 'Nouvel événement'}
-              </h3>
-              <button
-                onClick={() => setShowCreateForm(false)}
-                className="text-muted hover:text-ink"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+          <div className="mb-4 p-6 bg-white border border-gray-200 rounded-lg">
+            <h3 className="mb-4 font-bold text-gray-900">Nouvel événement</h3>
             <div className="space-y-4">
               <div>
-                <label className="label-caps block mb-2">Nom de l&apos;événement</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Nom de l'événement</label>
                 <input
                   type="text"
-                  className="input-field w-full"
-                  placeholder="Ex: Formation sécurité"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Ex: Patrouille centre-ville"
                   value={newEvenement.nom}
                   onChange={(e) => setNewEvenement({ ...newEvenement, nom: e.target.value })}
                 />
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="label-caps block mb-2">Date</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Date</label>
                   <input
                     type="date"
-                    className="input-field w-full"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={newEvenement.date}
                     onChange={(e) => setNewEvenement({ ...newEvenement, date: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="label-caps block mb-2">Lieu</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Lieu</label>
                   <input
                     type="text"
-                    className="input-field w-full"
-                    placeholder="Ex: Centre de formation"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ex: Centre-ville"
                     value={newEvenement.lieu}
                     onChange={(e) => setNewEvenement({ ...newEvenement, lieu: e.target.value })}
                   />
@@ -274,38 +214,38 @@ export default function PlanningPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="label-caps block mb-2">Heure de début</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Heure de début</label>
                   <input
                     type="time"
-                    className="input-field w-full"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={newEvenement.heureDebut}
                     onChange={(e) => setNewEvenement({ ...newEvenement, heureDebut: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="label-caps block mb-2">Heure de fin</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-700">Heure de fin</label>
                   <input
                     type="time"
-                    className="input-field w-full"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={newEvenement.heureFin}
                     onChange={(e) => setNewEvenement({ ...newEvenement, heureFin: e.target.value })}
                   />
                 </div>
               </div>
               <div>
-                <label className="label-caps block mb-2">Description</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Description</label>
                 <textarea
-                  className="input-field w-full min-h-[80px]"
-                  placeholder="Description de l&apos;événement..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  placeholder="Description de l'événement..."
                   value={newEvenement.description}
                   onChange={(e) => setNewEvenement({ ...newEvenement, description: e.target.value })}
                 />
               </div>
               <div>
-                <label className="label-caps block mb-2">Agents affectés (séparés par des virgules)</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Agents (séparés par des virgules)</label>
                 <input
                   type="text"
-                  className="input-field w-full"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ex: Jean Dupont, Marie Martin"
                   value={newEvenement.agents}
                   onChange={(e) => setNewEvenement({ ...newEvenement, agents: e.target.value })}
@@ -318,56 +258,53 @@ export default function PlanningPage() {
                   checked={newEvenement.public}
                   onChange={(e) => setNewEvenement({ ...newEvenement, public: e.target.checked })}
                 />
-                <label htmlFor="public" className="text-sm text-ink">Événement public (visible par tous)</label>
+                <label htmlFor="public" className="text-sm text-gray-700">Événement public (visible par tous)</label>
               </div>
               <button onClick={handleCreateEvenement} className="btn-primary w-full">
-                Créer l&apos;événement
+                Créer l'événement
               </button>
             </div>
           </div>
         )}
 
-        <section>
-          <h2 className="mb-6 text-xl font-bold text-gray-900">Événements à venir</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {evenements
-              .filter(e => new Date(e.date) >= new Date(new Date().setHours(0,0,0,0)))
-              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-              .map((evenement) => (
-              <div key={evenement.id} className="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
-                <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-100">
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-base">{evenement.nom}</h3>
-                    <p className="text-sm text-gray-500">{formatDate(evenement.date)}</p>
-                  </div>
-                  {evenement.public && (
-                    <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-                      Public
-                    </span>
-                  )}
+        <div className="grid gap-4 md:grid-cols-2">
+          {evenements
+            .filter(e => new Date(e.date).toDateString() === selectedDate.toDateString())
+            .sort((a, b) => a.heureDebut.localeCompare(b.heureDebut))
+            .map((evenement) => (
+            <div key={evenement.id} className="p-6 bg-white border border-gray-200 rounded-lg">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="font-bold text-gray-900">{evenement.nom}</h3>
+                  <p className="text-sm text-gray-500">{formatDate(evenement.date)}</p>
                 </div>
-                <div className="mb-4">
-                  <p className="text-sm text-gray-500 mb-2">
-                    {evenement.heureDebut} - {evenement.heureFin} · {evenement.lieu}
-                  </p>
-                  <p className="text-sm text-gray-700">{evenement.description}</p>
-                </div>
-                {evenement.agents.length > 0 && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-2">Agents affectés :</p>
-                    <div className="flex flex-wrap gap-2">
-                      {evenement.agents.map((agent, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                          {agent}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                {evenement.public && (
+                  <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                    Public
+                  </span>
                 )}
               </div>
-            ))}
-          </div>
-        </section>
+              <div className="mb-4">
+                <p className="text-sm text-gray-500 mb-2">
+                  {evenement.heureDebut} - {evenement.heureFin} · {evenement.lieu}
+                </p>
+                <p className="text-sm text-gray-700">{evenement.description}</p>
+              </div>
+              {evenement.agents.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">Agents affectés :</p>
+                  <div className="flex flex-wrap gap-2">
+                    {evenement.agents.map((agent, idx) => (
+                      <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                        {agent}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

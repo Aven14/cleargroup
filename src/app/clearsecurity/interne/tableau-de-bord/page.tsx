@@ -73,23 +73,24 @@ export default function SecurityDashboardPage() {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return 'À l&apos;instant';
+    if (diffMins < 1) return 'À l\'instant';
     if (diffMins < 60) return `Il y a ${diffMins} min`;
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `Il y a ${diffHours} h`;
     return `Il y a ${Math.floor(diffHours / 24)} j`;
   };
+
   return (
     <div className="page-enter">
       <PageHeader
         title="Tableau de bord"
-        subtitle="Vue d&apos;ensemble des opérations de sécurité en temps réel"
+        subtitle="Vue d'ensemble des opérations de sécurité en temps réel"
       />
 
-      {/* Statistiques en temps réel */}
-      <section className="mb-12">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+      <section className="mb-8">
+        <h2 className="mb-4 text-lg font-bold text-gray-900">Statistiques en temps réel</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Agents en service</p>
@@ -99,7 +100,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Patrouilles actives</p>
@@ -109,7 +110,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Alertes actives</p>
@@ -119,17 +120,17 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Débriefings aujourd&apos;hui</p>
+                <p className="text-sm text-gray-500">Débriefings aujourd'hui</p>
                 <p className="mt-2 text-3xl font-extrabold text-gray-900">{loading ? '-' : stats?.todayDebriefings || 0}</p>
               </div>
               <span className="text-2xl">📋</span>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Personnes détenues</p>
@@ -139,7 +140,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Activité totale</p>
@@ -151,11 +152,10 @@ export default function SecurityDashboardPage() {
         </div>
       </section>
 
-      {/* Activité récente */}
       <section>
-        <h2 className="mb-6 text-xl font-bold text-gray-900">Activité récente</h2>
+        <h2 className="mb-4 text-lg font-bold text-gray-900">Activité récente</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <h3 className="mb-4 font-bold text-gray-900">Alertes</h3>
             <div className="space-y-3">
               {loading ? (
@@ -164,7 +164,7 @@ export default function SecurityDashboardPage() {
                 <p className="text-gray-500 text-center">Aucune alerte</p>
               ) : (
                 recentAlerts.slice(0, 3).map((alert) => (
-                  <div key={alert.createdAt} className="flex items-center gap-3 p-3 rounded-md bg-red-50 border border-red-100">
+                  <div key={alert.createdAt} className="flex items-center gap-3 p-3 bg-red-50 border border-red-100 rounded">
                     <span className="text-xl">🚨</span>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900 text-sm">{alert.type}</p>
@@ -176,7 +176,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <h3 className="mb-4 font-bold text-gray-900">Services</h3>
             <div className="space-y-3">
               {loading ? (
@@ -185,7 +185,7 @@ export default function SecurityDashboardPage() {
                 <p className="text-gray-500 text-center">Aucun service</p>
               ) : (
                 recentShifts.slice(0, 3).map((shift) => (
-                  <div key={shift.startedAt} className="flex items-center gap-3 p-3 rounded-md bg-blue-50 border border-blue-100">
+                  <div key={shift.startedAt} className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded">
                     <span className="text-xl">👤</span>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900 text-sm">{shift.user?.firstname} {shift.user?.lastname}</p>
@@ -197,7 +197,7 @@ export default function SecurityDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white border-2 border-gray-200 rounded-lg p-6 md:col-span-2">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg md:col-span-2">
             <h3 className="mb-4 font-bold text-gray-900">Patrouilles</h3>
             <div className="grid gap-3 md:grid-cols-2">
               {loading ? (
@@ -206,7 +206,7 @@ export default function SecurityDashboardPage() {
                 <p className="text-gray-500 text-center col-span-full">Aucune patrouille</p>
               ) : (
                 recentPatrols.slice(0, 4).map((patrol) => (
-                  <div key={patrol.startedAt} className="flex items-center gap-3 p-3 rounded-md bg-green-50 border border-green-100">
+                  <div key={patrol.startedAt} className="flex items-center gap-3 p-3 bg-green-50 border border-green-100 rounded">
                     <span className="text-xl">🚔</span>
                     <div className="flex-1">
                       <p className="font-semibold text-gray-900 text-sm">{patrol.sector}</p>
