@@ -109,7 +109,7 @@ export default function AgentsPage() {
   };
 
   return (
-    <div className="page-enter">
+    <div className="page-enter compact-layout">
       <PageHeader
         title="Agents"
         subtitle="Liste des agents de sécurité et leur statut en temps réel"

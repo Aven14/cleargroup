@@ -123,7 +123,7 @@ export default function AlertesPage() {
   };
 
   return (
-    <div className="page-enter">
+    <div className="page-enter compact-layout">
       <PageHeader
         title="Alertes"
         subtitle="Système de demande de renfort et gestion des urgences"
