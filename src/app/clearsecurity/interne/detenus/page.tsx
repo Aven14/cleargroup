@@ -202,47 +202,49 @@ export default function DetenusPage() {
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {loading ? (
-            <div className="panel-soft p-6 text-center text-muted col-span-full">Chargement...</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Chargement...</div>
           ) : detenus.length === 0 ? (
-            <div className="panel-soft p-6 text-center text-muted col-span-full">Aucun détenu</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Aucun détenu</div>
           ) : (
             detenus.map((detenu) => {
               const tempsRestant = calculateTempsRestant(detenu.enteredAt, detenu.detentionTime);
               return (
-                <div key={detenu.id} className="panel-soft p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">👤</span>
-                      <div>
-                        <h3 className="font-bold text-ink">{detenu.firstname} {detenu.lastname}</h3>
-                        <p className="text-sm text-muted">Agent: {detenu.agent?.firstname} {detenu.agent?.lastname}</p>
-                      </div>
+                <div key={detenu.id} className="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-2xl">
+                      👤
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tempsRestant <= 0 ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
-                      {tempsRestant <= 0 ? '🟢 Libérable' : '⚠️ En détention'}
-                    </span>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-gray-900 text-base">{detenu.firstname} {detenu.lastname}</h3>
+                      <p className="text-xs text-gray-500">Agent: {detenu.agent?.firstname} {detenu.agent?.lastname}</p>
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted">Entrée:</span>
-                      <span className="text-sm font-semibold text-ink">{formatHeure(detenu.enteredAt)}</span>
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Entrée</span>
+                      <span className="font-medium text-gray-900">{formatHeure(detenu.enteredAt)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted">Durée:</span>
-                      <span className="text-sm font-semibold text-ink">{detenu.detentionTime} min</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Durée</span>
+                      <span className="font-medium text-gray-900">{detenu.detentionTime} min</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted">Restant:</span>
-                      <span className={`text-sm font-semibold ${tempsRestant <= 0 ? 'text-success' : 'text-warning'}`}>{tempsRestant} min</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Restant</span>
+                      <span className={`font-medium ${tempsRestant <= 0 ? 'text-green-600' : 'text-orange-600'}`}>{tempsRestant} min</span>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted mb-1">Motif:</p>
-                      <p className="text-sm text-ink">{detenu.reason}</p>
-                    </div>
+                  </div>
+                  <div className="mb-4 p-3 bg-gray-50 rounded-md">
+                    <p className="text-xs text-gray-500 mb-1">Motif</p>
+                    <p className="text-sm text-gray-700">{detenu.reason}</p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-xs font-medium px-2 py-1 rounded ${tempsRestant <= 0 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                      {tempsRestant <= 0 ? '✓ Libérable' : '⏱ En détention'}
+                    </span>
                     {tempsRestant <= 0 && (
                       <button
                         onClick={() => handleReleaseDetenu(detenu.id)}
-                        className="btn-primary w-full"
+                        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
                       >
                         Libérer
                       </button>

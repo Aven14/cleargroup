@@ -196,37 +196,37 @@ export default function AlertesPage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {loading ? (
-            <div className="panel-soft p-6 text-center text-muted col-span-full">Chargement...</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Chargement...</div>
           ) : alertes.length === 0 ? (
-            <div className="panel-soft p-6 text-center text-muted col-span-full">Aucune alerte</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Aucune alerte</div>
           ) : (
             alertes.map((alerte) => (
-              <div key={alerte.id} className={`panel-soft p-6 ${alerte.active ? 'border-l-4 border-accent' : 'opacity-50'}`}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🚨</span>
-                    <div>
-                      <h3 className="font-bold text-ink">{alerte.type}</h3>
-                      <p className="text-sm text-muted">{alerte.location}</p>
-                    </div>
+              <div key={alerte.id} className={`bg-white border-2 rounded-lg p-5 hover:border-gray-300 transition-colors ${alerte.active ? 'border-red-400' : 'border-gray-200 opacity-60'}`}>
+                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${alerte.active ? 'bg-red-100' : 'bg-gray-100'}`}>
+                    🚨
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${alerte.active ? 'bg-accent/20 text-accent' : 'bg-muted text-muted'}`}>
-                    {alerte.active ? 'Active' : 'Clôturée'}
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 text-base">{alerte.type}</h3>
+                    <p className="text-xs text-gray-500">{alerte.location}</p>
+                  </div>
+                  <span className={`text-xs font-medium px-2 py-1 rounded ${alerte.active ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
+                    {alerte.active ? '● Active' : '○ Clôturée'}
                   </span>
                 </div>
-                <p className="text-sm text-ink mb-4">{alerte.description}</p>
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-muted">
-                    {alerte.responses.length} / {alerte.agentsRequested} agents acceptés
-                  </p>
-                  <p className="text-xs text-muted">{formatRelativeTime(alerte.createdAt)}</p>
+                <p className="text-sm text-gray-700 mb-4">{alerte.description}</p>
+                <div className="flex items-center justify-between mb-4 text-sm">
+                  <span className="text-gray-500">
+                    {alerte.responses.length} / {alerte.agentsRequested} agents
+                  </span>
+                  <span className="text-gray-400 text-xs">{formatRelativeTime(alerte.createdAt)}</span>
                 </div>
                 {alerte.responses.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-xs text-muted mb-2">Agents :</p>
+                  <div className="mb-4 p-3 bg-gray-50 rounded-md">
+                    <p className="text-xs text-gray-500 mb-2">Agents acceptés</p>
                     <div className="flex flex-wrap gap-2">
                       {alerte.responses.map((response, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-success/20 text-success rounded text-xs">
+                        <span key={idx} className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
                           {response.user?.firstname} {response.user?.lastname}
                         </span>
                       ))}
@@ -237,7 +237,7 @@ export default function AlertesPage() {
                   {alerte.active && alerte.responses.length < alerte.agentsRequested && (
                     <button
                       onClick={() => handleAcceptAlerte(alerte.id)}
-                      className="btn-primary flex-1"
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
                     >
                       Accepter
                     </button>
@@ -245,7 +245,7 @@ export default function AlertesPage() {
                   {alerte.active && (
                     <button
                       onClick={() => handleCloseAlerte(alerte.id)}
-                      className="btn-secondary flex-1"
+                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 transition-colors"
                     >
                       Clôturer
                     </button>

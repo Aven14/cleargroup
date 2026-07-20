@@ -328,36 +328,36 @@ export default function PlanningPage() {
         )}
 
         <section>
-          <h2 className="mb-6 text-xl font-bold text-ink">Événements à venir</h2>
+          <h2 className="mb-6 text-xl font-bold text-gray-900">Événements à venir</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {evenements
               .filter(e => new Date(e.date) >= new Date(new Date().setHours(0,0,0,0)))
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map((evenement) => (
-              <div key={evenement.id} className="panel-soft p-6">
-                <div className="flex items-start justify-between mb-4">
+              <div key={evenement.id} className="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+                <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-100">
                   <div>
-                    <h3 className="font-bold text-ink">{evenement.nom}</h3>
-                    <p className="text-sm text-muted">{formatDate(evenement.date)}</p>
+                    <h3 className="font-bold text-gray-900 text-base">{evenement.nom}</h3>
+                    <p className="text-sm text-gray-500">{formatDate(evenement.date)}</p>
                   </div>
                   {evenement.public && (
-                    <span className="px-2 py-1 bg-accent/20 text-accent rounded text-xs font-semibold">
+                    <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
                       Public
                     </span>
                   )}
                 </div>
                 <div className="mb-4">
-                  <p className="text-sm text-muted mb-2">
+                  <p className="text-sm text-gray-500 mb-2">
                     {evenement.heureDebut} - {evenement.heureFin} · {evenement.lieu}
                   </p>
-                  <p className="text-sm text-ink">{evenement.description}</p>
+                  <p className="text-sm text-gray-700">{evenement.description}</p>
                 </div>
                 {evenement.agents.length > 0 && (
                   <div>
-                    <p className="text-xs text-muted mb-2">Agents affectés :</p>
+                    <p className="text-xs text-gray-500 mb-2">Agents affectés :</p>
                     <div className="flex flex-wrap gap-2">
                       {evenement.agents.map((agent, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-primary/20 text-primary rounded text-xs">
+                        <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                           {agent}
                         </span>
                       ))}

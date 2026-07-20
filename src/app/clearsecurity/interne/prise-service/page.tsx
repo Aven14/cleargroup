@@ -106,8 +106,8 @@ export default function PriseServicePage() {
       />
 
       <section className="mb-12">
-        <div className="panel-soft p-6">
-          <h2 className="mb-6 text-xl font-bold text-ink">Informations de service</h2>
+        <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+          <h2 className="mb-6 text-xl font-bold text-gray-900">Informations de service</h2>
           
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -178,12 +178,12 @@ export default function PriseServicePage() {
 
       {isInService && (
         <section>
-          <div className="panel-soft p-6 bg-success/10">
+          <div className="bg-white border-2 border-green-400 rounded-lg p-6">
             <div className="flex items-center gap-4">
               <span className="text-4xl">✅</span>
               <div>
-                <h3 className="font-bold text-ink">Service en cours</h3>
-                <p className="text-sm text-muted">
+                <h3 className="font-bold text-gray-900">Service en cours</h3>
+                <p className="text-sm text-gray-500">
                   Vous êtes actuellement en service depuis {formatTime(serviceStartTime)}
                 </p>
               </div>

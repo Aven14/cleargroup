@@ -188,54 +188,44 @@ export default function PatrouillesPage() {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {loading ? (
-            <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Chargement...</div>
           ) : patrouilles.length === 0 ? (
-            <div className="panel-soft p-6 text-center text-muted">Aucune patrouille</div>
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-muted col-span-full">Aucune patrouille</div>
           ) : (
             patrouilles.map((patrouille) => {
               const active = !patrouille.endedAt;
               return (
-                <div key={patrouille.id} className="panel-soft p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl">🚔</span>
-                      <div>
-                        <h3 className="font-bold text-ink">
-                          {patrouille.sector} - {patrouille.missionType}
-                        </h3>
-                        <p className="text-sm text-muted">
-                          {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
-                        </p>
-                      </div>
+                <div key={patrouille.id} className="bg-white border-2 rounded-lg p-5 hover:border-gray-300 transition-colors ${active ? 'border-green-400' : 'border-gray-200 opacity-60'}`}>
+                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${active ? 'bg-green-100' : 'bg-gray-100'}`}>
+                      🚔
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-success/20 text-success' : 'bg-muted text-muted'}`}>
-                        {active ? 'En cours' : 'Terminée'}
-                      </span>
-                      {active && (
-                        <button
-                          onClick={() => handleEndPatrouille(patrouille.id)}
-                          className="text-sm text-muted hover:text-primary"
-                        >
-                          Terminer
-                        </button>
-                      )}
+                    <div className="flex-1">
+                      <h3 className="font-bold text-gray-900 text-base">
+                        {patrouille.sector} - {patrouille.missionType}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
+                      </p>
                     </div>
+                    <span className={`text-xs font-medium px-2 py-1 rounded ${active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {active ? '● En cours' : '○ Terminée'}
+                    </span>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 mb-4">
                     <div>
-                      <p className="text-xs text-muted">Début</p>
-                      <p className="font-semibold text-ink">{formatHeure(patrouille.startedAt)}</p>
+                      <p className="text-xs text-gray-500">Début</p>
+                      <p className="font-medium text-gray-900">{formatHeure(patrouille.startedAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted">Fin</p>
-                      <p className="font-semibold text-ink">{formatHeure(patrouille.endedAt)}</p>
+                      <p className="text-xs text-gray-500">Fin</p>
+                      <p className="font-medium text-gray-900">{formatHeure(patrouille.endedAt)}</p>
                     </div>
                   </div>
                   <div className="mb-4">
-                    <p className="text-xs text-muted mb-2">Type de mission</p>
+                    <p className="text-xs text-gray-500 mb-2">Type de mission</p>
                     <select
                       className="input-field w-full"
                       value={patrouille.missionType}
@@ -248,10 +238,18 @@ export default function PatrouillesPage() {
                       <option>Événement</option>
                     </select>
                   </div>
-                  <div>
-                    <p className="text-xs text-muted mb-2">Observations</p>
-                    <p className="text-sm text-ink">{patrouille.observations}</p>
+                  <div className="mb-4 p-3 bg-gray-50 rounded-md">
+                    <p className="text-xs text-gray-500 mb-1">Observations</p>
+                    <p className="text-sm text-gray-700">{patrouille.observations}</p>
                   </div>
+                  {active && (
+                    <button
+                      onClick={() => handleEndPatrouille(patrouille.id)}
+                      className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Terminer la patrouille
+                    </button>
+                  )}
                 </div>
               );
             })

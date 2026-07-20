@@ -213,27 +213,27 @@ export default function DebriefingsPage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {debriefings.map((debriefing) => (
-            <div key={debriefing.id} className="panel-soft p-6">
-              <div className="flex items-start justify-between mb-4">
+            <div key={debriefing.id} className="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+              <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-100">
                 <div>
-                  <h3 className="font-bold text-ink">{debriefing.titre}</h3>
-                  <p className="text-sm text-muted">{debriefing.date} · {debriefing.lieu}</p>
+                  <h3 className="font-bold text-gray-900 text-base">{debriefing.titre}</h3>
+                  <p className="text-sm text-gray-500">{debriefing.date} · {debriefing.lieu}</p>
                 </div>
-                <span className="text-xs text-muted">{debriefing.auteur}</span>
+                <span className="text-xs text-gray-400">{debriefing.auteur}</span>
               </div>
               <div className="mb-4">
-                <p className="text-xs text-muted mb-2">Type: {debriefing.typeIntervention}</p>
-                <p className="text-xs text-muted mb-2">Agents: {debriefing.agentsPresents.join(', ')}</p>
+                <p className="text-xs text-gray-500 mb-2">Type: {debriefing.typeIntervention}</p>
+                <p className="text-xs text-gray-500 mb-2">Agents: {debriefing.agentsPresents.join(', ')}</p>
               </div>
-              <div className="mb-4">
-                <p className="text-sm text-ink mb-2"><strong>Résumé:</strong> {debriefing.resume}</p>
-                <p className="text-sm text-ink mb-2"><strong>Déroulement:</strong> {debriefing.deroulement}</p>
-                <p className="text-sm text-ink mb-2"><strong>Résultat:</strong> {debriefing.resultat}</p>
+              <div className="mb-4 p-3 bg-gray-50 rounded-md">
+                <p className="text-sm text-gray-700 mb-2"><strong>Résumé:</strong> {debriefing.resume}</p>
+                <p className="text-sm text-gray-700 mb-2"><strong>Déroulement:</strong> {debriefing.deroulement}</p>
+                <p className="text-sm text-gray-700 mb-2"><strong>Résultat:</strong> {debriefing.resultat}</p>
                 {debriefing.incidents && (
-                  <p className="text-sm text-ink mb-2"><strong>Incidents:</strong> {debriefing.incidents}</p>
+                  <p className="text-sm text-gray-700 mb-2"><strong>Incidents:</strong> {debriefing.incidents}</p>
                 )}
                 {debriefing.observations && (
-                  <p className="text-sm text-ink"><strong>Observations:</strong> {debriefing.observations}</p>
+                  <p className="text-sm text-gray-700"><strong>Observations:</strong> {debriefing.observations}</p>
                 )}
               </div>
             </div>
