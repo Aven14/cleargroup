@@ -118,27 +118,28 @@ export default function PlanningPage() {
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Planning"
         subtitle="Gestion du planning et des événements de sécurité"
       />
 
       <section className="mb-8">
-        <div className="p-6 bg-white border border-gray-200 rounded-lg">
+        <div className="panel-soft p-6">
           <div className="flex items-center justify-between mb-4">
-            <button onClick={handlePreviousMonth} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+            <button onClick={handlePreviousMonth} className="px-4 py-2 bg-gray-100 text-muted rounded-md hover:bg-gray-200 transition-colors">
               ← Précédent
             </button>
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-ink">
               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
             </h2>
-            <button onClick={handleNextMonth} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+            <button onClick={handleNextMonth} className="px-4 py-2 bg-gray-100 text-muted rounded-md hover:bg-gray-200 transition-colors">
               Suivant →
             </button>
           </div>
           
           <div className="grid grid-cols-7 gap-2 mb-2">
             {["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"].map((day) => (
-              <div key={day} className="text-center text-sm font-medium text-gray-500">
+              <div key={day} className="text-center text-sm font-medium text-muted">
                 {day}
               </div>
             ))}
@@ -168,7 +169,7 @@ export default function PlanningPage() {
 
       <section className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-gray-900">Événements du {formatDate(selectedDate.toISOString())}</h2>
+          <h2 className="text-lg font-bold text-ink">Événements du {formatDate(selectedDate.toISOString())}</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="btn-primary"
@@ -178,14 +179,14 @@ export default function PlanningPage() {
         </div>
 
         {showCreateForm && (
-          <div className="mb-4 p-6 bg-white border border-gray-200 rounded-lg">
-            <h3 className="mb-4 font-bold text-gray-900">Nouvel événement</h3>
+          <div className="mb-4 panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Nouvel événement</h3>
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Nom de l&apos;événement</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Nom de l&apos;événement</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: Patrouille centre-ville"
                   value={newEvenement.nom}
                   onChange={(e) => setNewEvenement({ ...newEvenement, nom: e.target.value })}
@@ -193,19 +194,19 @@ export default function PlanningPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Date</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Date</label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     value={newEvenement.date}
                     onChange={(e) => setNewEvenement({ ...newEvenement, date: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Lieu</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Lieu</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     placeholder="Ex: Centre-ville"
                     value={newEvenement.lieu}
                     onChange={(e) => setNewEvenement({ ...newEvenement, lieu: e.target.value })}
@@ -214,38 +215,38 @@ export default function PlanningPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Heure de début</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Heure de début</label>
                   <input
                     type="time"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     value={newEvenement.heureDebut}
                     onChange={(e) => setNewEvenement({ ...newEvenement, heureDebut: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Heure de fin</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Heure de fin</label>
                   <input
                     type="time"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     value={newEvenement.heureFin}
                     onChange={(e) => setNewEvenement({ ...newEvenement, heureFin: e.target.value })}
                   />
                 </div>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Description</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Description</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  className="input-field w-full min-h-[80px]"
                   placeholder="Description de l'événement..."
                   value={newEvenement.description}
                   onChange={(e) => setNewEvenement({ ...newEvenement, description: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Agents (séparés par des virgules)</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Agents (séparés par des virgules)</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: Jean Dupont, Marie Martin"
                   value={newEvenement.agents}
                   onChange={(e) => setNewEvenement({ ...newEvenement, agents: e.target.value })}
@@ -258,7 +259,7 @@ export default function PlanningPage() {
                   checked={newEvenement.public}
                   onChange={(e) => setNewEvenement({ ...newEvenement, public: e.target.checked })}
                 />
-                <label htmlFor="public" className="text-sm text-gray-700">Événement public (visible par tous)</label>
+                <label htmlFor="public" className="text-sm text-muted">Événement public (visible par tous)</label>
               </div>
               <button onClick={handleCreateEvenement} className="btn-primary w-full">
                 Créer l&apos;événement
@@ -272,11 +273,11 @@ export default function PlanningPage() {
             .filter(e => new Date(e.date).toDateString() === selectedDate.toDateString())
             .sort((a, b) => a.heureDebut.localeCompare(b.heureDebut))
             .map((evenement) => (
-            <div key={evenement.id} className="p-6 bg-white border border-gray-200 rounded-lg">
+            <div key={evenement.id} className="panel-soft p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-bold text-gray-900">{evenement.nom}</h3>
-                  <p className="text-sm text-gray-500">{formatDate(evenement.date)}</p>
+                  <h3 className="font-bold text-ink">{evenement.nom}</h3>
+                  <p className="text-sm text-muted">{formatDate(evenement.date)}</p>
                 </div>
                 {evenement.public && (
                   <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
@@ -285,14 +286,14 @@ export default function PlanningPage() {
                 )}
               </div>
               <div className="mb-4">
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-muted mb-2">
                   {evenement.heureDebut} - {evenement.heureFin} · {evenement.lieu}
                 </p>
-                <p className="text-sm text-gray-700">{evenement.description}</p>
+                <p className="text-sm text-muted">{evenement.description}</p>
               </div>
               {evenement.agents.length > 0 && (
                 <div>
-                  <p className="text-xs text-gray-500 mb-2">Agents affectés :</p>
+                  <p className="text-xs text-muted mb-2">Agents affectés :</p>
                   <div className="flex flex-wrap gap-2">
                     {evenement.agents.map((agent, idx) => (
                       <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">

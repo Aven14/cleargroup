@@ -1,13 +1,15 @@
 export function PageHeader({
   title,
   subtitle,
+  brand = "ClearBus",
 }: {
   title: string;
   subtitle?: string;
+  brand?: "ClearBus" | "ClearSecurity" | "ClearGroup";
 }) {
   return (
     <div className="mb-8 border-b border-line pb-6">
-      <p className="label-caps mb-1 text-primary">ClearBus</p>
+      <p className="label-caps mb-1 text-primary">{brand}</p>
       <h1 className="text-3xl font-extrabold tracking-tight text-ink md:text-4xl">
         {title}
       </h1>

@@ -120,13 +120,14 @@ export default function PatrouillesPage() {
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Patrouilles"
         subtitle="Gestion des patrouilles et des missions en cours"
       />
 
       <section className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-gray-900">Patrouilles actives</h2>
+          <h2 className="text-lg font-bold text-ink">Patrouilles actives</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="btn-primary"
@@ -136,33 +137,33 @@ export default function PatrouillesPage() {
         </div>
 
         {showCreateForm && (
-          <div className="mb-4 p-6 bg-white border border-gray-200 rounded-lg">
-            <h3 className="mb-4 font-bold text-gray-900">Nouvelle patrouille</h3>
+          <div className="mb-4 panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Secteur</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Secteur</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: Centre-ville"
                   value={newPatrouille.secteur}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, secteur: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Véhicule</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Véhicule</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: SEC-001"
                   value={newPatrouille.vehicule}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, vehicule: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Type de mission</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Type de mission</label>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   value={newPatrouille.type}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, type: e.target.value })}
                 >
@@ -173,9 +174,9 @@ export default function PatrouillesPage() {
                 </select>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Observations</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Observations</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  className="input-field w-full min-h-[80px]"
                   placeholder="Observations sur la mission..."
                   value={newPatrouille.observations}
                   onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
@@ -189,9 +190,9 @@ export default function PatrouillesPage() {
         )}
 
         {loading ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Chargement...</div>
+          <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : patrouilles.length === 0 ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Aucune patrouille</div>
+          <div className="panel-soft p-6 text-center text-muted">Aucune patrouille</div>
         ) : (
           <div className="space-y-4">
             {patrouilles.map((patrouille) => {
@@ -202,22 +203,22 @@ export default function PatrouillesPage() {
                     <div className="flex items-center gap-4">
                       <span className="text-3xl">🚔</span>
                       <div>
-                        <h3 className="font-bold text-gray-900">
+                        <h3 className="font-bold text-ink">
                           {patrouille.sector} - {patrouille.missionType}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted">
                           {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-muted'}`}>
                         {active ? 'En cours' : 'Terminée'}
                       </span>
                       {active && (
                         <button
                           onClick={() => handleEndPatrouille(patrouille.id)}
-                          className="text-sm text-gray-500 hover:text-blue-600"
+                          className="text-sm text-muted hover:text-blue-600"
                         >
                           Terminer
                         </button>
@@ -226,18 +227,18 @@ export default function PatrouillesPage() {
                   </div>
                   <div className="grid gap-4 md:grid-cols-2 mb-4">
                     <div>
-                      <p className="text-xs text-gray-500">Début</p>
-                      <p className="font-medium text-gray-900">{formatHeure(patrouille.startedAt)}</p>
+                      <p className="text-xs text-muted">Début</p>
+                      <p className="font-medium text-ink">{formatHeure(patrouille.startedAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Fin</p>
-                      <p className="font-medium text-gray-900">{formatHeure(patrouille.endedAt)}</p>
+                      <p className="text-xs text-muted">Fin</p>
+                      <p className="font-medium text-ink">{formatHeure(patrouille.endedAt)}</p>
                     </div>
                   </div>
                   <div className="mb-4">
-                    <p className="text-xs text-gray-500 mb-2">Type de mission</p>
+                    <p className="text-xs text-muted mb-2">Type de mission</p>
                     <select
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-field w-full"
                       value={patrouille.missionType}
                       onChange={(e) => handleUpdateType(patrouille.id, e.target.value)}
                       disabled={!active}
@@ -248,14 +249,14 @@ export default function PatrouillesPage() {
                       <option>Événement</option>
                     </select>
                   </div>
-                  <div className="mb-4 p-4 bg-gray-50 rounded">
-                    <p className="text-xs text-gray-500 mb-1">Observations</p>
-                    <p className="text-sm text-gray-700">{patrouille.observations}</p>
+                  <div className="mb-4 p-4 bg-primary-light/20 rounded">
+                    <p className="text-xs text-muted mb-1">Observations</p>
+                    <p className="text-sm text-muted">{patrouille.observations}</p>
                   </div>
                   {active && (
                     <button
                       onClick={() => handleEndPatrouille(patrouille.id)}
-                      className="w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                      className="w-full btn-primary"
                     >
                       Terminer la patrouille
                     </button>
@@ -268,9 +269,9 @@ export default function PatrouillesPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-gray-900">Historique des patrouilles</h2>
-        <div className="p-6 bg-white border border-gray-200 rounded-lg">
-          <p className="text-gray-500 text-center">Fonctionnalité à venir</p>
+        <h2 className="mb-4 text-lg font-bold text-ink">Historique des patrouilles</h2>
+        <div className="panel-soft p-6">
+          <p className="text-muted text-center">Fonctionnalité à venir</p>
         </div>
       </section>
     </div>

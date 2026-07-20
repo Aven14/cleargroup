@@ -99,23 +99,24 @@ export default function AgentsPage() {
       case "En mission":
         return "bg-blue-100 text-blue-700";
       case "Hors service":
-        return "bg-gray-100 text-gray-600";
+        return "bg-gray-100 text-muted";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-gray-100 text-muted";
     }
   };
 
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Agents"
         subtitle="Liste des agents de sécurité et leur statut en temps réel"
       />
 
       <section className="mb-8">
-        <h2 className="mb-4 text-lg font-bold text-gray-900">Agents de sécurité</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink">Agents de sécurité</h2>
         {loading ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Chargement...</div>
+          <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {agents.map((agent) => {
@@ -123,11 +124,11 @@ export default function AgentsPage() {
               const shiftTime = getAgentShiftTime(agent.id);
               const patrol = getAgentPatrol(agent.id);
               return (
-                <div key={agent.id} className="p-6 bg-white border border-gray-200 rounded-lg">
+                <div key={agent.id} className="panel-soft p-6">
                   <div className="flex items-start gap-4 mb-4">
                     <span className="text-4xl">👤</span>
                     <div className="flex-1">
-                      <h3 className="font-bold text-gray-900">
+                      <h3 className="font-bold text-ink">
                         {agent.firstname} {agent.lastname}
                       </h3>
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${getStatutColor(statut)}`}>
@@ -138,13 +139,13 @@ export default function AgentsPage() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <p className="text-xs text-gray-500">Prise de service</p>
-                      <p className="text-sm text-gray-900">{shiftTime || "--:--"}</p>
+                      <p className="text-xs text-muted">Prise de service</p>
+                      <p className="text-sm text-ink">{shiftTime || "--:--"}</p>
                     </div>
                     {patrol && (
                       <div className="flex justify-between">
-                        <p className="text-xs text-gray-500">Patrouille active</p>
-                        <p className="text-sm text-gray-900">{patrol}</p>
+                        <p className="text-xs text-muted">Patrouille active</p>
+                        <p className="text-sm text-ink">{patrol}</p>
                       </div>
                     )}
                   </div>
@@ -156,35 +157,35 @@ export default function AgentsPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-gray-900">Statistiques</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink">Statistiques</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Disponibles</p>
-                <p className="mt-2 text-3xl font-extrabold text-gray-900">
+                <p className="text-sm text-muted">Disponibles</p>
+                <p className="mt-2 text-3xl font-extrabold text-ink">
                   {agents.filter(a => getAgentStatus(a.id).statut === "Disponible").length}
                 </p>
               </div>
               <span className="text-2xl">🟢</span>
             </div>
           </div>
-          <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">En mission</p>
-                <p className="mt-2 text-3xl font-extrabold text-gray-900">
+                <p className="text-sm text-muted">En mission</p>
+                <p className="mt-2 text-3xl font-extrabold text-ink">
                   {agents.filter(a => getAgentStatus(a.id).statut === "En mission").length}
                 </p>
               </div>
               <span className="text-2xl">🔵</span>
             </div>
           </div>
-          <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Hors service</p>
-                <p className="mt-2 text-3xl font-extrabold text-gray-900">
+                <p className="text-sm text-muted">Hors service</p>
+                <p className="mt-2 text-3xl font-extrabold text-ink">
                   {agents.filter(a => getAgentStatus(a.id).statut === "Hors service").length}
                 </p>
               </div>

@@ -89,6 +89,7 @@ export default function DetenusPage() {
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Détenus"
         subtitle="Gestion des personnes détenues et leur temps de rétention"
       />
@@ -102,42 +103,42 @@ export default function DetenusPage() {
         </button>
 
         {showAddForm && (
-          <div className="mt-4 p-6 bg-white border border-gray-200 rounded-lg">
-            <h3 className="mb-4 font-bold text-gray-900">Nouveau détenu</h3>
+          <div className="mt-4 panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Nouveau détenu</h3>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Prénom</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Prénom</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     value={newDetenu.firstname}
                     onChange={(e) => setNewDetenu({ ...newDetenu, firstname: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Nom</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Nom</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field w-full"
                     value={newDetenu.lastname}
                     onChange={(e) => setNewDetenu({ ...newDetenu, lastname: e.target.value })}
                   />
                 </div>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Motif</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Motif</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  className="input-field w-full min-h-[80px]"
                   value={newDetenu.reason}
                   onChange={(e) => setNewDetenu({ ...newDetenu, reason: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Temps de détention (minutes)</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Temps de détention (minutes)</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   value={newDetenu.detentionTime}
                   onChange={(e) => setNewDetenu({ ...newDetenu, detentionTime: parseInt(e.target.value) || 60 })}
                 />
@@ -151,21 +152,21 @@ export default function DetenusPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-gray-900">Détenus actuels</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink">Détenus actuels</h2>
         {loading ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Chargement...</div>
+          <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : detenus.length === 0 ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Aucun détenu</div>
+          <div className="panel-soft p-6 text-center text-muted">Aucun détenu</div>
         ) : (
           <div className="space-y-4">
             {detenus.map((detenu) => {
               const tempsRestant = calculateTempsRestant(detenu.enteredAt, detenu.detentionTime);
               return (
-                <div key={detenu.id} className="p-6 bg-white border border-gray-200 rounded-lg">
+                <div key={detenu.id} className="panel-soft p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-bold text-gray-900">{detenu.firstname} {detenu.lastname}</h3>
-                      <p className="text-sm text-gray-500">Agent: {detenu.agent?.firstname} {detenu.agent?.lastname}</p>
+                      <h3 className="font-bold text-ink">{detenu.firstname} {detenu.lastname}</h3>
+                      <p className="text-sm text-muted">Agent: {detenu.agent?.firstname} {detenu.agent?.lastname}</p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${tempsRestant <= 0 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
                       {tempsRestant <= 0 ? 'Libérable' : 'En détention'}
@@ -173,26 +174,26 @@ export default function DetenusPage() {
                   </div>
                   <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                      <p className="text-xs text-gray-500">Entrée</p>
-                      <p className="font-medium text-gray-900">{formatHeure(detenu.enteredAt)}</p>
+                      <p className="text-xs text-muted">Entrée</p>
+                      <p className="font-medium text-ink">{formatHeure(detenu.enteredAt)}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Durée</p>
-                      <p className="font-medium text-gray-900">{detenu.detentionTime} min</p>
+                      <p className="text-xs text-muted">Durée</p>
+                      <p className="font-medium text-ink">{detenu.detentionTime} min</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Restant</p>
+                      <p className="text-xs text-muted">Restant</p>
                       <p className={`font-medium ${tempsRestant <= 0 ? 'text-green-600' : 'text-orange-600'}`}>{tempsRestant} min</p>
                     </div>
                   </div>
-                  <div className="mb-4 p-4 bg-gray-50 rounded">
-                    <p className="text-xs text-gray-500 mb-1">Motif</p>
-                    <p className="text-sm text-gray-700">{detenu.reason}</p>
+                  <div className="mb-4 p-4 bg-primary-light/20 rounded">
+                    <p className="text-xs text-muted mb-1">Motif</p>
+                    <p className="text-sm text-muted">{detenu.reason}</p>
                   </div>
                   {tempsRestant <= 0 && (
                     <button
                       onClick={() => handleReleaseDetenu(detenu.id)}
-                      className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                      className="btn-primary"
                     >
                       Libérer
                     </button>

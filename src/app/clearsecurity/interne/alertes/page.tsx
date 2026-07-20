@@ -110,6 +110,7 @@ export default function AlertesPage() {
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Alertes"
         subtitle="Gestion des alertes de sécurité en temps réel"
       />
@@ -123,43 +124,43 @@ export default function AlertesPage() {
         </button>
 
         {showCreateForm && (
-          <div className="mt-4 p-6 bg-white border border-gray-200 rounded-lg">
-            <h3 className="mb-4 font-bold text-gray-900">Nouvelle alerte</h3>
+          <div className="mt-4 panel-soft p-6">
+            <h3 className="mb-4 font-bold text-ink">Nouvelle alerte</h3>
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Type d&apos;alerte</label>
+                <label className="label-caps block mb-2">Type d&apos;alerte</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: Intrusion"
                   value={newAlerte.type}
                   onChange={(e) => setNewAlerte({ ...newAlerte, type: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Lieu</label>
+                <label className="label-caps block mb-2">Lieu</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   placeholder="Ex: Entrée principale"
                   value={newAlerte.location}
                   onChange={(e) => setNewAlerte({ ...newAlerte, location: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Description</label>
+                <label className="label-caps block mb-2">Description</label>
                 <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
+                  className="input-field w-full min-h-[80px]"
                   placeholder="Description de l'alerte..."
                   value={newAlerte.description}
                   onChange={(e) => setNewAlerte({ ...newAlerte, description: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Nombre d&apos;agents requis</label>
+                <label className="label-caps block mb-2">Nombre d&apos;agents requis</label>
                 <input
                   type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-field w-full"
                   value={newAlerte.agentsRequested}
                   onChange={(e) => setNewAlerte({ ...newAlerte, agentsRequested: parseInt(e.target.value) || 2 })}
                 />
@@ -173,34 +174,34 @@ export default function AlertesPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-gray-900">Alertes actives</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink">Alertes actives</h2>
         {loading ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Chargement...</div>
+          <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : alertes.length === 0 ? (
-          <div className="p-6 text-center text-gray-500 bg-white border border-gray-200 rounded-lg">Aucune alerte</div>
+          <div className="panel-soft p-6 text-center text-muted">Aucune alerte</div>
         ) : (
           <div className="space-y-4">
             {alertes.map((alerte) => (
               <div key={alerte.id} className={`p-6 border rounded-lg ${alerte.active ? 'bg-white border-red-400' : 'bg-white border-gray-200 opacity-60'}`}>
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="font-bold text-gray-900">{alerte.type}</h3>
-                    <p className="text-sm text-gray-500">{alerte.location}</p>
+                    <h3 className="font-bold text-ink">{alerte.type}</h3>
+                    <p className="text-sm text-muted">{alerte.location}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${alerte.active ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${alerte.active ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-muted'}`}>
                     {alerte.active ? 'Active' : 'Clôturée'}
                   </span>
                 </div>
-                <p className="text-sm text-gray-700 mb-4">{alerte.description}</p>
+                <p className="text-sm text-muted mb-4">{alerte.description}</p>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted">
                     {alerte.responses.length} / {alerte.agentsRequested} agents
                   </span>
-                  <span className="text-xs text-gray-400">{formatRelativeTime(alerte.createdAt)}</span>
+                  <span className="text-xs text-muted/70">{formatRelativeTime(alerte.createdAt)}</span>
                 </div>
                 {alerte.responses.length > 0 && (
-                  <div className="mb-4 p-4 bg-gray-50 rounded">
-                    <p className="text-xs text-gray-500 mb-2">Agents acceptés</p>
+                  <div className="mb-4 p-4 bg-primary-light/20 rounded">
+                    <p className="text-xs text-muted mb-2">Agents acceptés</p>
                     <div className="flex flex-wrap gap-2">
                       {alerte.responses.map((response, idx) => (
                         <span key={idx} className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
@@ -214,7 +215,7 @@ export default function AlertesPage() {
                   {alerte.active && alerte.responses.length < alerte.agentsRequested && (
                     <button
                       onClick={() => handleAcceptAlerte(alerte.id)}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                      className="btn-primary flex-1"
                     >
                       Accepter
                     </button>
@@ -222,7 +223,7 @@ export default function AlertesPage() {
                   {alerte.active && (
                     <button
                       onClick={() => handleCloseAlerte(alerte.id)}
-                      className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 transition-colors"
+                      className="flex-1 px-4 py-2 bg-gray-200 text-muted text-sm font-medium rounded-md hover:bg-gray-300 transition-colors"
                     >
                       Clôturer
                     </button>

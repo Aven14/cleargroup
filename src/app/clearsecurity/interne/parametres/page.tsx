@@ -19,6 +19,7 @@ export default function ParametresPage() {
   return (
     <div className="page-enter">
       <PageHeader
+        brand="ClearSecurity"
         title="Paramètres"
         subtitle="Configuration du module ClearSecurity"
       />
