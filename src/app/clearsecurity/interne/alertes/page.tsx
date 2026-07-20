@@ -156,7 +156,7 @@ export default function AlertesPage() {
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Nombre d'agents requis</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Nombre d&apos;agents requis</label>
                 <input
                   type="number"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -165,7 +165,7 @@ export default function AlertesPage() {
                 />
               </div>
               <button onClick={handleCreateAlerte} className="btn-primary w-full">
-                Créer l'alerte
+                Créer l&apos;alerte
               </button>
             </div>
           </div>

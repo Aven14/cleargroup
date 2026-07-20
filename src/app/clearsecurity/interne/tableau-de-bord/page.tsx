@@ -68,23 +68,12 @@ export default function SecurityDashboardPage() {
     }
   };
 
-  const formatRelativeTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return 'À l\'instant';
-    if (diffMins < 60) return `Il y a ${diffMins} min`;
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `Il y a ${diffHours} h`;
-    return `Il y a ${Math.floor(diffHours / 24)} j`;
-  };
 
   return (
     <div className="page-enter">
       <PageHeader
         title="Tableau de bord"
-        subtitle="Vue d'ensemble des opérations de sécurité en temps réel"
+        subtitle="Vue d&apos;ensemble des opérations de sécurité en temps réel"
       />
 
       <section className="mb-8">

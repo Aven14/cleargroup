@@ -182,7 +182,7 @@ export default function PlanningPage() {
             <h3 className="mb-4 font-bold text-gray-900">Nouvel événement</h3>
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Nom de l'événement</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Nom de l&apos;événement</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -261,7 +261,7 @@ export default function PlanningPage() {
                 <label htmlFor="public" className="text-sm text-gray-700">Événement public (visible par tous)</label>
               </div>
               <button onClick={handleCreateEvenement} className="btn-primary w-full">
-                Créer l'événement
+                Créer l&apos;événement
               </button>
             </div>
           </div>

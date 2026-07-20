@@ -132,7 +132,7 @@ export default function DebriefingsPage() {
                 </div>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Type d'intervention</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Type d&apos;intervention</label>
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={newDebriefing.typeIntervention}
