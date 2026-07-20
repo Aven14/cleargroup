@@ -127,7 +127,7 @@ export default function AlertesPage() {
             <h3 className="mb-4 font-bold text-gray-900">Nouvelle alerte</h3>
             <div className="space-y-4">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">Type d'alerte</label>
+                <label className="block mb-2 text-sm font-medium text-gray-700">Type d&apos;alerte</label>
                 <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

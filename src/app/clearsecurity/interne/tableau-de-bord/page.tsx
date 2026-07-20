@@ -112,7 +112,7 @@ export default function SecurityDashboardPage() {
           <div className="p-6 bg-white border border-gray-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Débriefings aujourd'hui</p>
+                <p className="text-sm text-gray-500">Débriefings aujourd&apos;hui</p>
                 <p className="mt-2 text-3xl font-extrabold text-gray-900">{loading ? '-' : stats?.todayDebriefings || 0}</p>
               </div>
               <span className="text-2xl">📋</span>
