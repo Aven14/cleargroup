@@ -215,14 +215,14 @@ export default function PlanningPage() {
                   key={idx}
                   className={`p-2 border rounded-md text-center cursor-pointer transition-colors ${
                     day
-                      ? "hover:bg-blue-50 border-gray-200"
+                      ? "hover:bg-blue-50"
                       : "border-transparent"
                   } ${
                     selectedDate && day && day.toDateString() === selectedDate.toDateString()
                       ? "bg-blue-100 border-blue-400"
                       : ""
                   } ${
-                    hasEvent ? "border-4 border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""
+                    hasEvent ? "border-4 !border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" : day ? "border-gray-200" : ""
                   }`}
                   onClick={() => day && setSelectedDate(day)}
                 >
