@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 
 interface Evenement {
@@ -11,14 +11,23 @@ interface Evenement {
   heureFin: string;
   lieu: string;
   description: string;
-  agents: string[];
+  confirmedAgents: string[];
   public: boolean;
+}
+
+interface Agent {
+  id: string;
+  firstname: string;
+  lastname: string;
+  roles: string[];
 }
 
 export default function PlanningPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [currentUser, setCurrentUser] = useState<Agent | null>(null);
   const [evenements, setEvenements] = useState<Evenement[]>([
     {
       id: "1",
@@ -28,7 +37,7 @@ export default function PlanningPage() {
       heureFin: "12:00",
       lieu: "Centre-ville",
       description: "Patrouille de routine dans le centre-ville",
-      agents: ["Jean Dupont", "Marie Martin"],
+      confirmedAgents: [],
       public: true,
     },
     {
@@ -39,7 +48,7 @@ export default function PlanningPage() {
       heureFin: "18:00",
       lieu: "Salle des fêtes",
       description: "Surveillance de l'événement public",
-      agents: ["Pierre Bernard"],
+      confirmedAgents: [],
       public: false,
     },
   ]);
@@ -50,9 +59,31 @@ export default function PlanningPage() {
     heureFin: "",
     lieu: "",
     description: "",
-    agents: "",
     public: false,
   });
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const userResponse = await fetch('/api/auth/user');
+      if (userResponse.ok) {
+        const user = await userResponse.json();
+        setCurrentUser(user);
+      }
+
+      const usersResponse = await fetch('/api/users');
+      if (usersResponse.ok) {
+        const users = await usersResponse.json();
+        const securityAgents = users.filter((u: Agent) => u.roles.includes('SECURITY'));
+        setAgents(securityAgents);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des données:', error);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -86,7 +117,6 @@ export default function PlanningPage() {
   };
 
   const handleCreateEvenement = () => {
-    const agentsArray = newEvenement.agents.split(',').map(a => a.trim()).filter(a => a);
     const evenement: Evenement = {
       id: Date.now().toString(),
       nom: newEvenement.nom,
@@ -95,7 +125,7 @@ export default function PlanningPage() {
       heureFin: newEvenement.heureFin,
       lieu: newEvenement.lieu,
       description: newEvenement.description,
-      agents: agentsArray,
+      confirmedAgents: [],
       public: newEvenement.public,
     };
     setEvenements([...evenements, evenement]);
@@ -106,10 +136,28 @@ export default function PlanningPage() {
       heureFin: "",
       lieu: "",
       description: "",
-      agents: "",
       public: false,
     });
     setShowCreateForm(false);
+  };
+
+  const handleConfirmAgent = (evenementId: string, agentName: string) => {
+    setEvenements(evenements.map(e => {
+      if (e.id === evenementId) {
+        if (e.confirmedAgents.includes(agentName)) {
+          return {
+            ...e,
+            confirmedAgents: e.confirmedAgents.filter(a => a !== agentName)
+          };
+        } else {
+          return {
+            ...e,
+            confirmedAgents: [...e.confirmedAgents, agentName]
+          };
+        }
+      }
+      return e;
+    }));
   };
 
   const hasEvenementOnDate = (date: Date) => {
@@ -168,7 +216,7 @@ export default function PlanningPage() {
                       ? "bg-blue-100 border-blue-400"
                       : ""
                   } ${
-                    hasEvent ? "border-blue-400 border-2" : ""
+                    hasEvent ? "bg-blue-200 border-blue-500" : ""
                   }`}
                   onClick={() => day && setSelectedDate(day)}
                 >
@@ -255,16 +303,6 @@ export default function PlanningPage() {
                   onChange={(e) => setNewEvenement({ ...newEvenement, description: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Agents (séparés par des virgules)</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  placeholder="Ex: Jean Dupont, Marie Martin"
-                  value={newEvenement.agents}
-                  onChange={(e) => setNewEvenement({ ...newEvenement, agents: e.target.value })}
-                />
-              </div>
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -304,18 +342,27 @@ export default function PlanningPage() {
                 </p>
                 <p className="text-sm text-muted">{evenement.description}</p>
               </div>
-              {evenement.agents.length > 0 && (
-                <div>
-                  <p className="text-xs text-muted mb-2">Agents affectés :</p>
-                  <div className="flex flex-wrap gap-2">
-                    {evenement.agents.map((agent, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                        {agent}
-                      </span>
-                    ))}
-                  </div>
+              <div>
+                <p className="text-xs text-muted mb-2">Agents disponibles :</p>
+                <div className="flex flex-wrap gap-2">
+                  {agents.map((agent) => {
+                    const isConfirmed = evenement.confirmedAgents.includes(`${agent.firstname} ${agent.lastname}`);
+                    return (
+                      <button
+                        key={agent.id}
+                        onClick={() => handleConfirmAgent(evenement.id, `${agent.firstname} ${agent.lastname}`)}
+                        className={`px-2 py-1 rounded text-xs transition-colors ${
+                          isConfirmed
+                            ? "bg-green-100 text-green-700 border border-green-300"
+                            : "bg-blue-100 text-blue-700 border border-blue-300 hover:bg-blue-200"
+                        }`}
+                      >
+                        {agent.firstname} {agent.lastname} {isConfirmed ? "✓" : ""}
+                      </button>
+                    );
+                  })}
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
