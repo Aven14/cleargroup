@@ -184,6 +184,8 @@ model SecurityPatrol {
   endedAt     DateTime?
   missionType String   @default("Patrouille mobile")
   observations String?
+  maxAgents   Int      @default(2)
+  additionalAgentIds String[] @default([])
   agent       User     @relation("CreatedPatrols", fields: [agentId], references: [id], onDelete: Cascade)
   coequipier   User?    @relation("PatrolMembers", fields: [coequipierId], references: [id], onDelete: SetNull)
 

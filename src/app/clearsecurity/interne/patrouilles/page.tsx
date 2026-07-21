@@ -13,6 +13,12 @@ interface Patrol {
   endedAt: string | null;
   missionType: string;
   observations: string;
+  maxAgents: number;
+  agents: {
+    id: string;
+    firstname: string;
+    lastname: string;
+  }[];
   agent: {
     id: string;
     firstname: string;
@@ -29,17 +35,32 @@ export default function PatrouillesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [patrouilles, setPatrouilles] = useState<Patrol[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [newPatrouille, setNewPatrouille] = useState({
     secteur: "",
     vehicule: "",
     type: "Patrouille mobile",
     observations: "",
+    maxAgents: 2,
   });
 
   useEffect(() => {
     loadPatrouilles();
+    loadCurrentUser();
   }, []);
+
+  const loadCurrentUser = async () => {
+    try {
+      const response = await fetch('/api/auth/user');
+      if (response.ok) {
+        const user = await response.json();
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement de l&apos;utilisateur:', error);
+    }
+  };
 
   const loadPatrouilles = async () => {
     try {
@@ -65,6 +86,7 @@ export default function PatrouillesPage() {
           vehicle: newPatrouille.vehicule,
           missionType: newPatrouille.type,
           observations: newPatrouille.observations,
+          maxAgents: newPatrouille.maxAgents,
         }),
       });
       if (response.ok) {
@@ -74,6 +96,7 @@ export default function PatrouillesPage() {
           vehicule: "",
           type: "Patrouille mobile",
           observations: "",
+          maxAgents: 2,
         });
         setShowCreateForm(false);
       }
@@ -110,6 +133,44 @@ export default function PatrouillesPage() {
     } catch (error) {
       console.error('Erreur lors de la mise à jour du type:', error);
     }
+  };
+
+  const handleJoinPatrouille = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/patrols/${id}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        await loadPatrouilles();
+      }
+    } catch (error) {
+      console.error('Erreur lors du rejoindre la patrouille:', error);
+    }
+  };
+
+  const handleLeavePatrouille = async (id: string) => {
+    try {
+      const response = await fetch(`/api/security/patrols/${id}/leave`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        await loadPatrouilles();
+      }
+    } catch (error) {
+      console.error('Erreur lors du départ de la patrouille:', error);
+    }
+  };
+
+  const isInPatrouille = (patrouille: Patrol) => {
+    if (!currentUser) return false;
+    return patrouille.agents.some(a => a.id === currentUser.id);
+  };
+
+  const canJoinPatrouille = (patrouille: Patrol) => {
+    if (!currentUser) return false;
+    return !isInPatrouille(patrouille) && patrouille.agents.length < patrouille.maxAgents && !patrouille.endedAt;
   };
 
   const formatHeure = (dateString: string | null) => {
@@ -174,6 +235,17 @@ export default function PatrouillesPage() {
                 </select>
               </div>
               <div>
+                <label className="block mb-2 text-sm font-medium text-muted">Nombre max d&apos;agents (max 8)</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="8"
+                  className="input-field w-full"
+                  value={newPatrouille.maxAgents}
+                  onChange={(e) => setNewPatrouille({ ...newPatrouille, maxAgents: Math.min(8, Math.max(1, parseInt(e.target.value) || 1)) })}
+                />
+              </div>
+              <div>
                 <label className="block mb-2 text-sm font-medium text-muted">Observations</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
@@ -207,7 +279,10 @@ export default function PatrouillesPage() {
                           {patrouille.sector} - {patrouille.missionType}
                         </h3>
                         <p className="text-sm text-muted">
-                          {patrouille.agent?.firstname} {patrouille.agent?.lastname} {patrouille.coequipier && `+ ${patrouille.coequipier.firstname} ${patrouille.coequipier.lastname}`} · {patrouille.vehicle}
+                          {patrouille.agents.map(a => `${a.firstname} ${a.lastname}`).join(', ')} · {patrouille.vehicle}
+                        </p>
+                        <p className="text-xs text-muted mt-1">
+                          {patrouille.agents.length}/{patrouille.maxAgents} agents
                         </p>
                       </div>
                     </div>
@@ -253,6 +328,29 @@ export default function PatrouillesPage() {
                     <p className="text-xs text-muted mb-1">Observations</p>
                     <p className="text-sm text-muted">{patrouille.observations}</p>
                   </div>
+                  {active && currentUser && currentUser.roles.includes('SECURITY') && (
+                    <div className="mb-4">
+                      {isInPatrouille(patrouille) ? (
+                        <button
+                          onClick={() => handleLeavePatrouille(patrouille.id)}
+                          className="w-full px-3 py-2 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200 transition-colors"
+                        >
+                          Quitter la patrouille
+                        </button>
+                      ) : canJoinPatrouille(patrouille) ? (
+                        <button
+                          onClick={() => handleJoinPatrouille(patrouille.id)}
+                          className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
+                        >
+                          Rejoindre la patrouille ({patrouille.agents.length}/{patrouille.maxAgents})
+                        </button>
+                      ) : (
+                        <p className="text-sm text-muted text-center">
+                          {patrouille.agents.length >= patrouille.maxAgents ? "Patrouille complète" : "Impossible de rejoindre"}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   {active && (
                     <button
                       onClick={() => handleEndPatrouille(patrouille.id)}
