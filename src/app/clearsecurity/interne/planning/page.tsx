@@ -26,7 +26,6 @@ export default function PlanningPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [agents, setAgents] = useState<Agent[]>([]);
   const [currentUser, setCurrentUser] = useState<Agent | null>(null);
   const [evenements, setEvenements] = useState<Evenement[]>([
     {
@@ -72,13 +71,6 @@ export default function PlanningPage() {
       if (userResponse.ok) {
         const user = await userResponse.json();
         setCurrentUser(user);
-      }
-
-      const usersResponse = await fetch('/api/users');
-      if (usersResponse.ok) {
-        const users = await usersResponse.json();
-        const securityAgents = users.filter((u: Agent) => u.roles.includes('SECURITY'));
-        setAgents(securityAgents);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);

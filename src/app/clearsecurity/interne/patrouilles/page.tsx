@@ -35,7 +35,7 @@ export default function PatrouillesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [patrouilles, setPatrouilles] = useState<Patrol[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; firstname: string; lastname: string; roles: string[] } | null>(null);
 
   const [newPatrouille, setNewPatrouille] = useState({
     secteur: "",
