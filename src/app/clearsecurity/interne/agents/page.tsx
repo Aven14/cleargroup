@@ -49,8 +49,12 @@ export default function AgentsPage() {
       const usersResponse = await fetch('/api/users');
       if (usersResponse.ok) {
         const users = await usersResponse.json();
+        console.log('Tous les utilisateurs:', users);
         const securityAgents = users.filter((u: Agent) => u.roles.includes('SECURITY'));
+        console.log('Agents de sécurité filtrés:', securityAgents);
         setAgents(securityAgents);
+      } else {
+        console.error('Erreur API users:', usersResponse.status);
       }
 
       const shiftsResponse = await fetch('/api/security/shifts');
