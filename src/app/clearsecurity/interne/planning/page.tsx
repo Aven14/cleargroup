@@ -222,7 +222,7 @@ export default function PlanningPage() {
                       ? "bg-blue-100 border-blue-400"
                       : ""
                   } ${
-                    hasEvent ? "bg-blue-200 border-blue-500" : ""
+                    hasEvent ? "border-4 border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" : ""
                   }`}
                   onClick={() => day && setSelectedDate(day)}
                 >
