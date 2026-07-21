@@ -112,6 +112,11 @@ export default function PlanningPage() {
     setShowCreateForm(false);
   };
 
+  const hasEvenementOnDate = (date: Date) => {
+    const dateString = date.toISOString().split('T')[0];
+    return evenements.some(e => e.date === dateString);
+  };
+
   const days = getDaysInMonth(currentDate);
   const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
@@ -146,23 +151,28 @@ export default function PlanningPage() {
           </div>
           
           <div className="grid grid-cols-7 gap-2">
-            {days.map((day, idx) => (
-              <div
-                key={idx}
-                className={`p-2 border rounded-md text-center cursor-pointer transition-colors ${
-                  day
-                    ? "hover:bg-blue-50 border-gray-200"
-                    : "border-transparent"
-                } ${
-                  selectedDate && day && day.toDateString() === selectedDate.toDateString()
-                    ? "bg-blue-100 border-blue-400"
-                    : ""
-                }`}
-                onClick={() => day && setSelectedDate(day)}
-              >
-                {day ? day.getDate() : ""}
-              </div>
-            ))}
+            {days.map((day, idx) => {
+              const hasEvent = day && hasEvenementOnDate(day);
+              return (
+                <div
+                  key={idx}
+                  className={`p-2 border rounded-md text-center cursor-pointer transition-colors ${
+                    day
+                      ? "hover:bg-blue-50 border-gray-200"
+                      : "border-transparent"
+                  } ${
+                    selectedDate && day && day.toDateString() === selectedDate.toDateString()
+                      ? "bg-blue-100 border-blue-400"
+                      : ""
+                  } ${
+                    hasEvent ? "border-blue-400 border-2" : ""
+                  }`}
+                  onClick={() => day && setSelectedDate(day)}
+                >
+                  {day ? day.getDate() : ""}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
