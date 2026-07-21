@@ -344,21 +344,23 @@ export default function PlanningPage() {
               </div>
               <div>
                 <p className="text-xs text-muted mb-2">Agents disponibles :</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="space-y-2">
                   {agents.map((agent) => {
                     const isConfirmed = evenement.confirmedAgents.includes(`${agent.firstname} ${agent.lastname}`);
                     return (
-                      <button
-                        key={agent.id}
-                        onClick={() => handleConfirmAgent(evenement.id, `${agent.firstname} ${agent.lastname}`)}
-                        className={`px-2 py-1 rounded text-xs transition-colors ${
-                          isConfirmed
-                            ? "bg-green-100 text-green-700 border border-green-300"
-                            : "bg-blue-100 text-blue-700 border border-blue-300 hover:bg-blue-200"
-                        }`}
-                      >
-                        {agent.firstname} {agent.lastname} {isConfirmed ? "✓" : ""}
-                      </button>
+                      <div key={agent.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm text-ink">{agent.firstname} {agent.lastname}</span>
+                        <button
+                          onClick={() => handleConfirmAgent(evenement.id, `${agent.firstname} ${agent.lastname}`)}
+                          className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                            isConfirmed
+                              ? "bg-red-100 text-red-700 hover:bg-red-200"
+                              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                          }`}
+                        >
+                          {isConfirmed ? "Désassigner" : "M'assigner"}
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
