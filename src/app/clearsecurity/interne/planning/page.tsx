@@ -160,6 +160,12 @@ export default function PlanningPage() {
     }));
   };
 
+  const handleDeleteEvenement = (evenementId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cet événement ?")) {
+      setEvenements(evenements.filter(e => e.id !== evenementId));
+    }
+  };
+
   const hasEvenementOnDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -330,11 +336,21 @@ export default function PlanningPage() {
                   <h3 className="font-bold text-ink">{evenement.nom}</h3>
                   <p className="text-sm text-muted">{formatDate(evenement.date)}</p>
                 </div>
-                {evenement.public && (
-                  <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
-                    Public
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {evenement.public && (
+                    <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium">
+                      Public
+                    </span>
+                  )}
+                  {currentUser && currentUser.roles.includes('ADMIN') && (
+                    <button
+                      onClick={() => handleDeleteEvenement(evenement.id)}
+                      className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium hover:bg-red-200 transition-colors"
+                    >
+                      Supprimer
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="mb-4">
                 <p className="text-sm text-muted mb-2">
