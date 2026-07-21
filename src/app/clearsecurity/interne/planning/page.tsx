@@ -250,7 +250,7 @@ export default function PlanningPage() {
                 <label className="block mb-2 text-sm font-medium text-muted">Description</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
-                  placeholder="Description de l'événement..."
+                  placeholder="Description de l&apos;événement..."
                   value={newEvenement.description}
                   onChange={(e) => setNewEvenement({ ...newEvenement, description: e.target.value })}
                 />
