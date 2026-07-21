@@ -370,7 +370,7 @@ export default function PlanningPage() {
                       onClick={() => handleConfirmAgent(evenement.id, `${currentUser.firstname} ${currentUser.lastname}`)}
                       className="w-full px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
                     >
-                      M'assigner
+                      M&apos;assigner
                     </button>
                   )}
                 </div>
