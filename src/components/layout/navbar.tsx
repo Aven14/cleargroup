@@ -25,32 +25,6 @@ type NavItem = {
 function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean): NavItem[] {
   const links: NavItem[] = [];
 
-  if (isInClearBus) {
-    if (hasRole(roles, "DRIVER") || hasRole(roles, "ADMIN")) {
-      links.push(
-        { href: "/clearbus/chauffeur", label: "Mon service" },
-        { href: "/clearbus/chauffeur/annonces", label: "Annonces" },
-        { href: "/clearbus/chauffeur/bannis", label: "Personnes bannies" }
-      );
-    }
-    if (hasRole(roles, "CONTROLLER") || hasRole(roles, "ADMIN")) {
-      links.push({ href: "/clearbus/controleur", label: "Contrôle" });
-    }
-  }
-  if (isInClearSecurity) {
-    if (hasRole(roles, "SECURITY") || hasRole(roles, "ADMIN")) {
-      links.push(
-        { href: "/clearsecurity/interne/tableau-de-bord", label: "Tableau de bord" },
-        { href: "/clearsecurity/interne/prise-service", label: "Prise de service" },
-        { href: "/clearsecurity/interne/patrouilles", label: "Patrouilles" },
-        { href: "/clearsecurity/interne/alertes", label: "Alertes" },
-        { href: "/clearsecurity/interne/detenus", label: "Personnes détenues" },
-        { href: "/clearsecurity/interne/debriefings", label: "Débriefings" },
-        { href: "/clearsecurity/interne/agents", label: "Agents" },
-        { href: "/clearsecurity/interne/planning", label: "Planning" }
-      );
-    }
-  }
   if (hasRole(roles, "ADMIN")) {
     links.push({ href: "/admin", label: "Admin" });
   }

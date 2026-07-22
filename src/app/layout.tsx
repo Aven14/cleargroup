@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import { AudioProvider } from "@/contexts/audio-context";
 import { TransportBackground } from "@/components/layout/transport-background";
 import { Navbar } from "@/components/layout/navbar";
+import { SidebarRight } from "@/components/layout/sidebar-right";
 import { getCurrentUser, ensureBootstrapAdmin } from "@/lib/session";
 import { RadioPlayer } from "@/components/audio/radio-player";
 import "./globals.css";
@@ -35,8 +36,9 @@ export default async function RootLayout({
         <AudioProvider>
           <TransportBackground />
           <Navbar user={user} />
+          <SidebarRight user={user} />
           <main className="relative z-10 min-h-screen bg-transparent pt-8 pb-28">
-            <div className="panel ml-56 pl-4 pr-4 py-6">
+            <div className="panel ml-56 mr-56 pl-4 pr-4 py-6">
               {children}
             </div>
           </main>
