@@ -229,12 +229,14 @@ export default function PlanningPage() {
       <section className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-ink">Événements du {formatDate(selectedDate.toISOString())}</h2>
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="btn-primary"
-          >
-            {showCreateForm ? "Annuler" : "Créer un événement"}
-          </button>
+          {currentUser && currentUser.roles.includes('ADMIN') && (
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="btn-primary"
+            >
+              {showCreateForm ? "Annuler" : "Créer un événement"}
+            </button>
+          )}
         </div>
 
         {showCreateForm && (
