@@ -18,26 +18,48 @@ interface TransportLine {
   stops: Stop[];
 }
 
+interface Driver {
+  id: string;
+  firstname: string;
+  lastname: string;
+}
+
+interface ActiveLine {
+  id: string;
+  userId: string;
+  lineId: string;
+  currentStopId: string | null;
+  destinationStopId: string | null;
+  startedAt: string;
+  endedAt: string | null;
+  line: TransportLine;
+  user: Driver;
+}
+
 export default function ClearBusPage() {
-  const [lines, setLines] = useState<TransportLine[]>([]);
+  const [activeLines, setActiveLines] = useState<ActiveLine[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadLines = async () => {
+    const loadActiveLines = async () => {
       try {
         const response = await fetch('/api/transport/lines');
         if (response.ok) {
           const data = await response.json();
-          setLines(data);
+          setActiveLines(data);
         }
       } catch (error) {
-        console.error('Erreur lors du chargement des lignes:', error);
+        console.error('Erreur lors du chargement des lignes actives:', error);
       } finally {
         setLoading(false);
       }
     };
-    loadLines();
+    loadActiveLines();
   }, []);
+
+  const formatHeure = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
 
   return (
     <div className="page-enter mx-auto max-w-6xl px-4">
@@ -73,7 +95,7 @@ export default function ClearBusPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-surface shadow-card">
-              <svg className="h-6 w-6 text-primary" fill="none" viewBox=" 0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
             </div>
@@ -114,40 +136,50 @@ export default function ClearBusPage() {
       </section>
 
       <section>
-        <h2 className="mb-6 text-xl font-bold text-ink">Nos lignes actives</h2>
+        <h2 className="mb-6 text-xl font-bold text-ink">Lignes actives</h2>
         {loading ? (
-          <div className="panel-soft p-6 text-center text-muted">Chargement des lignes...</div>
-        ) : lines.length === 0 ? (
-          <div className="panel-soft p-6 text-center text-muted">Aucune ligne disponible</div>
+          <div className="panel-soft p-6 text-center text-muted">Chargement des lignes actives...</div>
+        ) : activeLines.length === 0 ? (
+          <div className="panel-soft p-6 text-center text-muted">Aucune ligne active pour le moment</div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {lines.map((line) => (
+            {activeLines.map((activeLine) => (
               <Link
-                key={line.id}
-                href={`/clearbus/lignes/${line.number}`}
+                key={activeLine.id}
+                href={`/clearbus/lignes/${activeLine.line.number}`}
                 className="panel-soft p-6 transition hover:shadow-card"
               >
                 <div className="mb-4 flex items-center gap-3">
                   <div
                     className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-white shadow-card"
-                    style={{ backgroundColor: line.color }}
+                    style={{ backgroundColor: activeLine.line.color }}
                   >
-                    {line.number}
+                    {activeLine.line.number}
                   </div>
                   <div>
-                    <h3 className="font-bold text-ink">{line.name}</h3>
-                    <p className="text-xs text-muted">{line.stops.length} arrêts</p>
+                    <h3 className="font-bold text-ink">{activeLine.line.name}</h3>
+                    <p className="text-xs text-muted">{activeLine.line.stops.length} arrêts</p>
                   </div>
                 </div>
+                <div className="mb-3">
+                  <p className="text-xs text-muted mb-1">Chauffeur</p>
+                  <p className="text-sm font-medium text-ink">
+                    {activeLine.user.firstname} {activeLine.user.lastname}
+                  </p>
+                </div>
+                <div className="mb-3">
+                  <p className="text-xs text-muted mb-1">Début du service</p>
+                  <p className="text-sm font-medium text-ink">{formatHeure(activeLine.startedAt)}</p>
+                </div>
                 <div className="flex flex-wrap gap-1">
-                  {line.stops.slice(0, 3).map((stop) => (
+                  {activeLine.line.stops.slice(0, 3).map((stop) => (
                     <span key={stop.id} className="px-2 py-1 bg-primary-light/50 rounded text-xs text-muted">
                       {stop.name}
                     </span>
                   ))}
-                  {line.stops.length > 3 && (
+                  {activeLine.line.stops.length > 3 && (
                     <span className="px-2 py-1 bg-gray-100 rounded text-xs text-muted">
-                      +{line.stops.length - 3}
+                      +{activeLine.line.stops.length - 3}
                     </span>
                   )}
                 </div>

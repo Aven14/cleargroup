@@ -1,16 +1,32 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET - Récupérer toutes les lignes de transport
+// GET - Récupérer les lignes de transport actives (avec chauffeurs en service)
 export async function GET() {
-  const lines = await prisma.transportLine.findMany({
+  const activeLines = await prisma.driverShift.findMany({
+    where: {
+      endedAt: null,
+    },
     include: {
-      stops: {
-        orderBy: { order: 'asc' },
+      line: {
+        include: {
+          stops: {
+            orderBy: { order: 'asc' },
+          },
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+        },
       },
     },
-    orderBy: { number: 'asc' },
+    orderBy: {
+      startedAt: 'desc',
+    },
   });
 
-  return NextResponse.json(lines);
+  return NextResponse.json(activeLines);
 }
