@@ -1,6 +1,30 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+interface SecurityShiftWithUser {
+  user: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    roles: string[];
+  };
+  startedAt: Date;
+}
+
+interface DriverShiftWithUser {
+  user: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    roles: string[];
+  };
+  startedAt: Date;
+  line: {
+    number: number;
+    name: string;
+  } | null;
+}
+
 // GET - Récupérer tout le personnel en service (ClearBus et ClearSecurity)
 export async function GET() {
   const activeShifts = await prisma.securityServiceShift.findMany({
@@ -42,7 +66,7 @@ export async function GET() {
   });
 
   const activeStaff = [
-    ...activeShifts.map((shift: any) => ({
+    ...activeShifts.map((shift: SecurityShiftWithUser) => ({
       id: shift.user.id,
       firstname: shift.user.firstname,
       lastname: shift.user.lastname,
@@ -51,7 +75,7 @@ export async function GET() {
       startedAt: shift.startedAt,
       line: null,
     })),
-    ...activeDriverShifts.map((shift: any) => ({
+    ...activeDriverShifts.map((shift: DriverShiftWithUser) => ({
       id: shift.user.id,
       firstname: shift.user.firstname,
       lastname: shift.user.lastname,

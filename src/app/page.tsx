@@ -3,6 +3,26 @@ import Link from "next/link";
 import { getHomeNetworkData } from "@/actions/lines";
 import { prisma } from "@/lib/prisma";
 
+interface SecurityShiftWithUser {
+  user: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    roles: string[];
+  };
+  startedAt: Date;
+}
+
+interface DriverShiftWithUser {
+  user: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    roles: string[];
+  };
+  startedAt: Date;
+}
+
 
 
 const divisions = [
@@ -63,7 +83,7 @@ const divisions = [
 
 export default async function HomePage() {
 
-  const { lineCount, activeLines } = await getHomeNetworkData();
+  const { lineCount } = await getHomeNetworkData();
 
   // Récupérer tout le personnel en service
   const activeShifts = await prisma.securityServiceShift.findMany({
@@ -105,7 +125,7 @@ export default async function HomePage() {
   });
 
   const activeStaff = [
-    ...activeShifts.map((shift: any) => ({
+    ...activeShifts.map((shift: SecurityShiftWithUser) => ({
       id: shift.user.id,
       firstname: shift.user.firstname,
       lastname: shift.user.lastname,
@@ -113,7 +133,7 @@ export default async function HomePage() {
       type: 'SECURITY' as const,
       startedAt: shift.startedAt,
     })),
-    ...activeDriverShifts.map((shift: any) => ({
+    ...activeDriverShifts.map((shift: DriverShiftWithUser) => ({
       id: shift.user.id,
       firstname: shift.user.firstname,
       lastname: shift.user.lastname,

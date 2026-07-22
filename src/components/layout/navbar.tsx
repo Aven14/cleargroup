@@ -22,7 +22,7 @@ type NavItem = {
   children?: NavItem[];
 };
 
-function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean): NavItem[] {
+function linksForRoles(roles: UserRole[]): NavItem[] {
   const links: NavItem[] = [];
 
   if (hasRole(roles, "ADMIN")) {
@@ -83,7 +83,7 @@ export function Navbar({ user }: { user: NavUser | null }) {
       { href: "/actualites", label: "Actualités" },
       { href: "/a-propos", label: "À propos" },
       { href: "/contact", label: "Contact" },
-      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles, isInClearBus, isInClearSecurity) : []),
+      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles) : []),
     ];
   }, [user, pathname]);
 
