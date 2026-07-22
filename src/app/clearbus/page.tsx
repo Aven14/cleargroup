@@ -1,6 +1,44 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
+
+interface Stop {
+  id: string;
+  name: string;
+  slug: string;
+  order: number;
+}
+
+interface TransportLine {
+  id: string;
+  number: number;
+  name: string;
+  color: string;
+  stops: Stop[];
+}
 
 export default function ClearBusPage() {
+  const [lines, setLines] = useState<TransportLine[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadLines = async () => {
+      try {
+        const response = await fetch('/api/transport/lines');
+        if (response.ok) {
+          const data = await response.json();
+          setLines(data);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des lignes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadLines();
+  }, []);
+
   return (
     <div className="page-enter mx-auto max-w-6xl px-4">
       <section className="panel-highlight relative mb-12 overflow-hidden p-8 md:p-12">
@@ -35,7 +73,7 @@ export default function ClearBusPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <div className="panel-soft bg-gradient-to-br from-primary/10 to-primary/5 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-surface shadow-card">
-              <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="h-6 w-6 text-primary" fill="none" viewBox=" 0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
             </div>
@@ -76,27 +114,47 @@ export default function ClearBusPage() {
       </section>
 
       <section>
-        <h2 className="mb-6 text-xl font-bold text-ink">Pourquoi nous choisir</h2>
-        <div className="panel-soft p-6">
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Réseau dense et ponctuel</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Tarifs abordables</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Bus modernes et confortables</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Partenaire de confiance de ClearGroup</span>
-            </li>
-          </ul>
-        </div>
+        <h2 className="mb-6 text-xl font-bold text-ink">Nos lignes actives</h2>
+        {loading ? (
+          <div className="panel-soft p-6 text-center text-muted">Chargement des lignes...</div>
+        ) : lines.length === 0 ? (
+          <div className="panel-soft p-6 text-center text-muted">Aucune ligne disponible</div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {lines.map((line) => (
+              <Link
+                key={line.id}
+                href={`/clearbus/lignes/${line.number}`}
+                className="panel-soft p-6 transition hover:shadow-card"
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <div
+                    className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-white shadow-card"
+                    style={{ backgroundColor: line.color }}
+                  >
+                    {line.number}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-ink">{line.name}</h3>
+                    <p className="text-xs text-muted">{line.stops.length} arrêts</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {line.stops.slice(0, 3).map((stop) => (
+                    <span key={stop.id} className="px-2 py-1 bg-primary-light/50 rounded text-xs text-muted">
+                      {stop.name}
+                    </span>
+                  ))}
+                  {line.stops.length > 3 && (
+                    <span className="px-2 py-1 bg-gray-100 rounded text-xs text-muted">
+                      +{line.stops.length - 3}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
