@@ -5,12 +5,12 @@ import { requireUser } from "@/lib/session";
 // POST - Quitter une patrouille
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["SECURITY", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
-  const patrolId = params.id;
+  const { id: patrolId } = await params;
 
   // Vérifier que la patrouille existe
   const patrol = await prisma.securityPatrol.findUnique({
