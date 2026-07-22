@@ -210,6 +210,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [pauseMusicWithFade, playAnnouncementSequence]);
 
   const pollAnnouncements = useCallback(async () => {
+    // Ne traiter les annonces que si l'utilisateur a activé la radio
+    if (!userWantsRadioRef.current) return;
+
     try {
       const response = await fetch(
         `/api/announcements?after=${encodeURIComponent(lastPollAfterRef.current)}`,
