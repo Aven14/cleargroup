@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { getHomeNetworkData } from "@/actions/lines";
+import { prisma } from "@/lib/prisma";
 
 
 
@@ -63,6 +64,64 @@ const divisions = [
 export default async function HomePage() {
 
   const { lineCount, activeLines } = await getHomeNetworkData();
+
+  // Récupérer tout le personnel en service
+  const activeShifts = await prisma.securityServiceShift.findMany({
+    where: {
+      endedAt: null,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          roles: true,
+        },
+      },
+    },
+  });
+
+  const activeDriverShifts = await prisma.driverShift.findMany({
+    where: {
+      endedAt: null,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstname: true,
+          lastname: true,
+          roles: true,
+        },
+      },
+      line: {
+        select: {
+          number: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  const activeStaff = [
+    ...activeShifts.map((shift: any) => ({
+      id: shift.user.id,
+      firstname: shift.user.firstname,
+      lastname: shift.user.lastname,
+      roles: shift.user.roles,
+      type: 'SECURITY' as const,
+      startedAt: shift.startedAt,
+    })),
+    ...activeDriverShifts.map((shift: any) => ({
+      id: shift.user.id,
+      firstname: shift.user.firstname,
+      lastname: shift.user.lastname,
+      roles: shift.user.roles,
+      type: 'DRIVER' as const,
+      startedAt: shift.startedAt,
+    })),
+  ];
 
   return (
 
@@ -198,55 +257,63 @@ export default async function HomePage() {
 
       <section>
 
-        <h2 className="mb-6 text-xl font-bold text-ink">Lignes ClearBus actives</h2>
+        <h2 className="mb-6 text-xl font-bold text-ink">Personnel en service</h2>
 
-        {activeLines.length === 0 ? (
+        {activeStaff.length === 0 ? (
 
           <div className="panel-soft p-8 text-center text-muted">
 
-            Aucune ligne active
+            Aucun personnel en service
 
           </div>
 
         ) : (
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
 
-            {activeLines.map((line) => (
+            {activeStaff.map((staff) => (
 
-              <Link
+              <div
 
-                key={line.id}
+                key={staff.id}
 
-                href={`/clearbus/lignes/l${line.number}/suivi`}
-
-                className="panel-soft flex items-center gap-4 p-4 transition hover:shadow-card-hover"
+                className="panel-soft p-4"
 
               >
 
-                <div
+                <p className="font-semibold text-ink">
 
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md text-lg font-bold text-white shadow-elevated"
+                  {staff.firstname} {staff.lastname}
 
-                  style={{ backgroundColor: line.color }}
+                </p>
 
-                >
+                <p className="text-sm text-muted">
 
-                  {line.number}
+                  {staff.type === 'SECURITY' ? 'ClearSecurity' : 'ClearBus'}
+
+                </p>
+
+                <div className="mt-2 flex flex-wrap gap-1">
+
+                  {staff.roles.map((role) => (
+
+                    <span
+
+                      key={role}
+
+                      className="px-2 py-0.5 bg-primary-light/50 rounded text-xs text-muted"
+
+                    >
+
+                      {role}
+
+                    </span>
+
+                  ))}
 
                 </div>
 
-                <div>
-
-                  <p className="font-semibold text-ink">{line.name}</p>
-
-                  <p className="text-sm text-muted">Conducteur : {line.driver}</p>
-
-                  <p className="mt-1 text-xs font-medium text-primary">Voir les arrêts →</p>
-
-                </div>
-
-              </Link>
+              </div>
 
             ))}
 

@@ -1,6 +1,44 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
+
+interface ActiveStaff {
+  id: string;
+  firstname: string;
+  lastname: string;
+  roles: string[];
+  type: 'SECURITY' | 'DRIVER';
+  startedAt: string;
+  line: { number: number; name: string } | null;
+}
 
 export default function ClearSecurityPage() {
+  const [activeStaff, setActiveStaff] = useState<ActiveStaff[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadActiveStaff = async () => {
+      try {
+        const response = await fetch('/api/active-staff');
+        if (response.ok) {
+          const data = await response.json();
+          const securityStaff = data.filter((staff: ActiveStaff) => staff.type === 'SECURITY');
+          setActiveStaff(securityStaff);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des agents en service:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadActiveStaff();
+  }, []);
+
+  const formatHeure = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
+
   return (
     <div className="page-enter mx-auto max-w-6xl px-4">
       <section className="panel-highlight relative mb-12 overflow-hidden p-8 md:p-12">
@@ -77,27 +115,36 @@ export default function ClearSecurityPage() {
       </section>
 
       <section>
-        <h2 className="mb-6 text-xl font-bold text-ink">Pourquoi nous choisir</h2>
-        <div className="panel-soft p-6">
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Agents formés et certifiés</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Intervention rapide 24h/24</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Équipements de pointe</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 h-2 w-2 rounded-full bg-accent flex-shrink-0" />
-              <span className="text-muted">Partenaire de confiance de ClearGroup</span>
-            </li>
-          </ul>
-        </div>
+        <h2 className="mb-6 text-xl font-bold text-ink">Agents en service</h2>
+        {loading ? (
+          <div className="panel-soft p-6 text-center text-muted">Chargement des agents...</div>
+        ) : activeStaff.length === 0 ? (
+          <div className="panel-soft p-6 text-center text-muted">Aucun agent en service pour le moment</div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {activeStaff.map((agent) => (
+              <div key={agent.id} className="panel-soft p-6">
+                <div className="mb-3">
+                  <p className="font-bold text-ink">
+                    {agent.firstname} {agent.lastname}
+                  </p>
+                  <p className="text-xs text-muted">ClearSecurity</p>
+                </div>
+                <div className="mb-3">
+                  <p className="text-xs text-muted mb-1">Début du service</p>
+                  <p className="text-sm font-medium text-ink">{formatHeure(agent.startedAt)}</p>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {agent.roles.map((role) => (
+                    <span key={role} className="px-2 py-1 bg-primary-light/50 rounded text-xs text-muted">
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
