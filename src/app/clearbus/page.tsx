@@ -147,7 +147,7 @@ export default function ClearBusPage() {
               <Link
                 key={activeLine.id}
                 href={`/clearbus/lignes/${activeLine.line.number}`}
-                className="panel-soft p-6 transition hover:shadow-card"
+                className="panel-soft p-8 transition hover:shadow-card"
               >
                 <div className="mb-4 flex items-center gap-3">
                   <div

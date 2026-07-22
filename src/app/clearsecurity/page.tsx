@@ -123,7 +123,7 @@ export default function ClearSecurityPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {activeStaff.map((agent) => (
-              <div key={agent.id} className="panel-soft p-6">
+              <div key={agent.id} className="panel-soft p-8">
                 <div className="mb-3">
                   <p className="font-bold text-ink">
                     {agent.firstname} {agent.lastname}

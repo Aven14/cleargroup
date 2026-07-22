@@ -229,7 +229,7 @@ export default async function HomePage() {
 
               href={d.href}
 
-              className={`panel-soft bg-gradient-to-br p-6 ${d.color} transition hover:shadow-card-hover`}
+              className={`panel-soft bg-gradient-to-br p-8 ${d.color} transition hover:shadow-card-hover`}
 
             >
 
@@ -277,7 +277,7 @@ export default async function HomePage() {
 
                 key={staff.id}
 
-                className="panel-soft p-4"
+                className="panel-soft p-6"
 
               >
 
@@ -295,7 +295,7 @@ export default async function HomePage() {
 
                 <div className="mt-2 flex flex-wrap gap-1">
 
-                  {staff.roles.map((role) => (
+                  {staff.roles.map((role: string) => (
 
                     <span
 
