@@ -24,7 +24,6 @@ export async function PATCH(
         height: body.height ? parseInt(body.height) : null,
         allergies: body.allergies || [],
         medications: body.medications || [],
-        medicalHistory: body.medicalHistory || null,
       },
     });
 
