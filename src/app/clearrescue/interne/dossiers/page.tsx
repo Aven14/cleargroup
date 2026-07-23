@@ -361,7 +361,11 @@ export default function DossiersPage() {
                             body: JSON.stringify({ type: newMedicalHistory }),
                           });
                           if (response.ok) {
-                            await loadPatients();
+                            const newHistory = await response.json();
+                            setEditingPatient({
+                              ...editingPatient,
+                              medicalHistories: [...(editingPatient.medicalHistories || []), newHistory]
+                            });
                             setNewMedicalHistory("");
                           }
                         } catch (error) {
@@ -398,7 +402,10 @@ export default function DossiersPage() {
                                     method: 'DELETE',
                                   });
                                   if (response.ok) {
-                                    await loadPatients();
+                                    setEditingPatient({
+                                      ...editingPatient,
+                                      medicalHistories: editingPatient.medicalHistories?.filter(h => h.id !== history.id) || []
+                                    });
                                   }
                                 } catch (error) {
                                   console.error('Erreur lors de la suppression de l&apos;antécédent:', error);
