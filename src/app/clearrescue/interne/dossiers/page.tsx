@@ -386,7 +386,7 @@ export default function DossiersPage() {
                 </div>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Numéro d'assurance</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Numéro d&apos;assurance</label>
                 <input
                   type="text"
                   className="input-field w-full"
