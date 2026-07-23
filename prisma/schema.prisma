@@ -36,6 +36,12 @@ model User {
   alertResponses SecurityAlertResponse[]
   createdDebriefings SecurityDebriefing[]
   detainedPersons SecurityDetainee[]
+  rescueShifts RescueServiceShift[]
+  createdRescuePatrols RescuePatrol[] @relation("CreatedRescuePatrols")
+  rescuePatrolMember  RescuePatrol[] @relation("RescuePatrolMembers")
+  createdRescueAlerts RescueAlert[]
+  rescueAlertResponses RescueAlertResponse[]
+  createdRescueDebriefings RescueDebriefing[]
 
   @@index([roles])
 }
@@ -261,6 +267,102 @@ model SecurityDetainee {
 }
 
 model SecurityEvent {
+  id          String   @id @default(cuid())
+  name        String
+  date        DateTime
+  startTime   String
+  endTime     String
+  description String
+  location    String
+  agentIds    String[]
+  isPublic    Boolean  @default(true)
+
+  @@index([date])
+  @@index([isPublic])
+}
+
+model RescueServiceShift {
+  id          String   @id @default(cuid())
+  userId      String
+  vehicle     String?
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, endedAt])
+  @@index([endedAt])
+}
+
+model RescuePatrol {
+  id          String   @id @default(cuid())
+  agentId     String
+  coequipierId String?
+  sector      String
+  vehicle     String
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  missionType String   @default("Intervention médicale")
+  observations String?
+  maxAgents   Int      @default(2)
+  additionalAgentIds String[] @default([])
+  agent       User     @relation("CreatedRescuePatrols", fields: [agentId], references: [id], onDelete: Cascade)
+  coequipier   User?    @relation("RescuePatrolMembers", fields: [coequipierId], references: [id], onDelete: SetNull)
+
+  @@index([agentId, endedAt])
+  @@index([endedAt])
+}
+
+model RescueAlert {
+  id              String   @id @default(cuid())
+  type            String
+  location        String
+  description     String
+  agentsRequested Int      @default(1)
+  createdById     String
+  active          Boolean  @default(true)
+  closedAt        DateTime?
+  createdAt       DateTime @default(now())
+  createdBy       User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  responses       RescueAlertResponse[]
+
+  @@index([createdById, active])
+  @@index([active])
+  @@index([closedAt])
+  @@index([createdAt])
+}
+
+model RescueAlertResponse {
+  id        String   @id @default(cuid())
+  alertId   String
+  userId    String
+  respondedAt DateTime @default(now())
+  alert     RescueAlert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([alertId])
+  @@index([userId])
+}
+
+model RescueDebriefing {
+  id            String   @id @default(cuid())
+  title         String
+  date          DateTime @default(now())
+  location      String
+  agentsPresent String[]
+  interventionType String
+  summary       String
+  procedure     String
+  result        String
+  incidents     String?
+  observations  String?
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@index([createdById])
+  @@index([date])
+}
+
+model RescueEvent {
   id          String   @id @default(cuid())
   name        String
   date        DateTime
