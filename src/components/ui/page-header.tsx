@@ -5,7 +5,7 @@ export function PageHeader({
 }: {
   title: string;
   subtitle?: string;
-  brand?: "ClearBus" | "ClearSecurity" | "ClearGroup";
+  brand?: "ClearBus" | "ClearSecurity" | "ClearGroup" | "ClearRescue";
 }) {
   return (
     <div className="mb-8 border-b border-line pb-6">

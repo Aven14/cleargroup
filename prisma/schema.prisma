@@ -13,6 +13,7 @@ enum UserRole {
   CONTROLLER
   ADMIN
   SECURITY
+  AMBULANCIER
 }
 
 model User {

@@ -73,10 +73,11 @@ export function Navbar({ user }: { user: NavUser | null }) {
       { href: "/", label: "Accueil" },
       {
         href: "/nos-entreprises",
-        label: "Nos entreprises",
+        label: "Nos Branches",
         children: [
           { href: "/clearbus", label: "ClearBus" },
           { href: "/clearsecurity", label: "ClearSecurity" },
+          { href: "/clearrescue", label: "ClearRescue" },
         ],
       },
       { href: "/recrutement", label: "Recrutement" },

@@ -19,7 +19,7 @@ type NavItem = {
   matchPrefix?: string;
 };
 
-function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean): NavItem[] {
+function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean, isInClearRescue: boolean): NavItem[] {
   const links: NavItem[] = [];
 
   if (isInClearBus) {
@@ -45,6 +45,19 @@ function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecuri
         { href: "/clearsecurity/interne/debriefings", label: "Débriefings" },
         { href: "/clearsecurity/interne/agents", label: "Agents" },
         { href: "/clearsecurity/interne/planning", label: "Planning" }
+      );
+    }
+  }
+  if (isInClearRescue) {
+    if (hasRole(roles, "AMBULANCIER") || hasRole(roles, "ADMIN")) {
+      links.push(
+        { href: "/clearrescue/interne/tableau-de-bord", label: "Tableau de bord" },
+        { href: "/clearrescue/interne/prise-service", label: "Prise de service" },
+        { href: "/clearrescue/interne/patrouilles", label: "Interventions" },
+        { href: "/clearrescue/interne/alertes", label: "Alertes" },
+        { href: "/clearrescue/interne/debriefings", label: "Débriefings" },
+        { href: "/clearrescue/interne/agents", label: "Ambulanciers" },
+        { href: "/clearrescue/interne/planning", label: "Planning" }
       );
     }
   }
@@ -83,18 +96,20 @@ export function SidebarRight({ user }: { user: NavUser | null }) {
   const sidebarLinks = useMemo<NavItem[]>(() => {
     const isInClearBus = pathname.startsWith('/clearbus');
     const isInClearSecurity = pathname.startsWith('/clearsecurity');
+    const isInClearRescue = pathname.startsWith('/clearrescue');
     
-    if (!user || (!isInClearBus && !isInClearSecurity)) {
+    if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue)) {
       return [];
     }
     
-    return linksForRoles(user.roles, isInClearBus, isInClearSecurity);
+    return linksForRoles(user.roles, isInClearBus, isInClearSecurity, isInClearRescue);
   }, [user, pathname]);
 
   const isInClearBus = pathname.startsWith('/clearbus');
   const isInClearSecurity = pathname.startsWith('/clearsecurity');
+  const isInClearRescue = pathname.startsWith('/clearrescue');
 
-  if (!user || (!isInClearBus && !isInClearSecurity) || sidebarLinks.length === 0) {
+  if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue) || sidebarLinks.length === 0) {
     return null;
   }
 
@@ -102,7 +117,7 @@ export function SidebarRight({ user }: { user: NavUser | null }) {
     <aside className="fixed right-0 top-0 z-50 flex h-screen w-56 flex-col border-l border-line/70 bg-surface/85 shadow-elevated backdrop-blur-md">
       <div className="border-b border-line/70 px-4 py-4">
         <h2 className="text-sm font-bold text-ink">
-          {isInClearBus ? "ClearBus" : "ClearSecurity"}
+          {isInClearBus ? "ClearBus" : isInClearSecurity ? "ClearSecurity" : "ClearRescue"}
         </h2>
       </div>
 
