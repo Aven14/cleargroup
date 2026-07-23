@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
         height: body.height ? parseInt(body.height) : null,
         allergies: body.allergies || [],
         medications: body.medications || [],
-        medicalHistory: body.medicalHistory || null,
       },
     });
 
