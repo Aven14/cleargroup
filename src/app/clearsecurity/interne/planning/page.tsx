@@ -27,30 +27,7 @@ export default function PlanningPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [currentUser, setCurrentUser] = useState<Agent | null>(null);
-  const [evenements, setEvenements] = useState<Evenement[]>([
-    {
-      id: "1",
-      nom: "Patrouille centre-ville",
-      date: new Date().toISOString().split('T')[0],
-      heureDebut: "08:00",
-      heureFin: "12:00",
-      lieu: "Centre-ville",
-      description: "Patrouille de routine dans le centre-ville",
-      confirmedAgents: [],
-      public: true,
-    },
-    {
-      id: "2",
-      nom: "Surveillance événement",
-      date: new Date().toISOString().split('T')[0],
-      heureDebut: "14:00",
-      heureFin: "18:00",
-      lieu: "Salle des fêtes",
-      description: "Surveillance de l'événement public",
-      confirmedAgents: [],
-      public: false,
-    },
-  ]);
+  const [evenements, setEvenements] = useState<Evenement[]>([]);
   const [newEvenement, setNewEvenement] = useState({
     nom: "",
     date: new Date().toISOString().split('T')[0],

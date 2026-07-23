@@ -89,8 +89,8 @@ export async function startShift(lineId: string) {
       details: `Ligne ${line.number} - ${line.name}`,
     });
     
-    revalidatePath("/chauffeur");
-    revalidatePath("/chauffeur/annonces");
+    revalidatePath("/clearbus/chauffeur");
+    revalidatePath("/clearbus/chauffeur/annonces");
     return { success: true };
   } catch {
     return { success: false, error: "Impossible de démarrer le service." };
@@ -135,10 +135,10 @@ export async function endShift() {
       details: `${cancelledTickets} billet(s) annulé(s)`,
     });
 
-    revalidatePath("/chauffeur");
-    revalidatePath("/chauffeur/annonces");
-    revalidatePath("/chauffeur/billets");
-    revalidatePath("/controleur");
+    revalidatePath("/clearbus/chauffeur");
+    revalidatePath("/clearbus/chauffeur/annonces");
+    revalidatePath("/clearbus/chauffeur/billets");
+    revalidatePath("/clearbus/controleur");
     revalidatePath("/admin");
 
     return {
@@ -200,7 +200,7 @@ export async function announceStop(stopId: string) {
       lineId: shift.lineId,
     });
 
-    revalidatePath(`/lignes/l${shift.line.number}/suivi`);
+    revalidatePath(`/clearbus/lignes/l${shift.line.number}/suivi`);
 
     return {
       success: true,

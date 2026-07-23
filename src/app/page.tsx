@@ -313,26 +313,6 @@ export default async function HomePage() {
 
                 </p>
 
-                <div className="mt-2 flex flex-wrap gap-1">
-
-                  {staff.roles.map((role: string) => (
-
-                    <span
-
-                      key={role}
-
-                      className="px-2 py-0.5 bg-primary-light/50 rounded text-xs text-muted"
-
-                    >
-
-                      {role}
-
-                    </span>
-
-                  ))}
-
-                </div>
-
               </div>
 
             ))}

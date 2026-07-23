@@ -78,7 +78,7 @@ export function ShiftDashboard({
             Début : {formatDate(myShift.startedAt)}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/chauffeur/annonces" className="btn-primary">
+            <Link href="/clearbus/chauffeur/annonces" className="btn-primary">
               Annonces arrêts ({myShift.line.stops.length})
             </Link>
             <Link href="/chauffeur/billets" className="btn-secondary">
