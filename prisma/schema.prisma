@@ -376,3 +376,25 @@ model RescueEvent {
   @@index([date])
   @@index([isPublic])
 }
+
+model RescuePatient {
+  id          String   @id @default(cuid())
+  firstname   String
+  lastname    String
+  dateOfBirth DateTime
+  gender      String
+  bloodType   String?
+  weight      Decimal? @db.Decimal(5, 2)
+  height      Int?     @db.SmallInt
+  allergies   String[] @default([])
+  medications String[] @default([])
+  medicalHistory String?
+  emergencyContactName String?
+  emergencyContactPhone String?
+  insuranceNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([firstname, lastname])
+  @@index([dateOfBirth])
+}

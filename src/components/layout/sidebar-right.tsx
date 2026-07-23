@@ -55,6 +55,7 @@ function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecuri
         { href: "/clearrescue/interne/prise-service", label: "Prise de service" },
         { href: "/clearrescue/interne/patrouilles", label: "Interventions" },
         { href: "/clearrescue/interne/alertes", label: "Alertes" },
+        { href: "/clearrescue/interne/dossiers", label: "Dossiers" },
         { href: "/clearrescue/interne/debriefings", label: "Débriefings" },
         { href: "/clearrescue/interne/agents", label: "Ambulanciers" },
         { href: "/clearrescue/interne/planning", label: "Planning" }
