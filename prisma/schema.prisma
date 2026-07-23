@@ -388,10 +388,21 @@ model RescuePatient {
   height      Int?     @db.SmallInt
   allergies   String[] @default([])
   medications String[] @default([])
-  medicalHistory String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  medicalHistories RescueMedicalHistory[]
 
   @@index([firstname, lastname])
   @@index([dateOfBirth])
+}
+
+model RescueMedicalHistory {
+  id        String   @id @default(cuid())
+  patientId String
+  type      String
+  createdAt DateTime @default(now())
+  patient   RescuePatient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, createdAt])
+  @@index([createdAt])
 }

@@ -8,6 +8,11 @@ export async function GET() {
 
   try {
     const patients = await prisma.rescuePatient.findMany({
+      include: {
+        medicalHistories: {
+          orderBy: { createdAt: "desc" },
+        },
+      },
       orderBy: { createdAt: "desc" },
     });
 

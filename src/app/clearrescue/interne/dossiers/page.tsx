@@ -14,9 +14,13 @@ interface Patient {
   height: number | null;
   allergies: string[];
   medications: string[];
-  medicalHistory: string | null;
   createdAt: string;
   updatedAt: string;
+  medicalHistories: {
+    id: string;
+    type: string;
+    createdAt: string;
+  }[];
 }
 
 export default function DossiersPage() {
@@ -36,8 +40,8 @@ export default function DossiersPage() {
     height: "",
     allergies: "",
     medications: "",
-    medicalHistory: "",
   });
+  const [newMedicalHistory, setNewMedicalHistory] = useState("");
 
   useEffect(() => {
     loadPatients();
@@ -85,8 +89,8 @@ export default function DossiersPage() {
           height: "",
           allergies: "",
           medications: "",
-          medicalHistory: "",
         });
+        setNewMedicalHistory("");
         setShowCreateForm(false);
       }
     } catch (error) {
@@ -124,8 +128,8 @@ export default function DossiersPage() {
           height: "",
           allergies: "",
           medications: "",
-          medicalHistory: "",
         });
+        setNewMedicalHistory("");
         setShowCreateForm(false);
       }
     } catch (error) {
@@ -160,7 +164,6 @@ export default function DossiersPage() {
       height: patient.height?.toString() || "",
       allergies: patient.allergies.join(', '),
       medications: patient.medications.join(', '),
-      medicalHistory: patient.medicalHistory || "",
     });
     setShowCreateForm(true);
   };
@@ -219,8 +222,8 @@ export default function DossiersPage() {
                 height: "",
                 allergies: "",
                 medications: "",
-                medicalHistory: "",
               });
+              setNewMedicalHistory("");
             }}
             className="btn-primary"
           >
@@ -337,15 +340,80 @@ export default function DossiersPage() {
                   onChange={(e) => setNewPatient({ ...newPatient, medications: e.target.value })}
                 />
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Antécédents médicaux</label>
-                <textarea
-                  className="input-field w-full min-h-[80px]"
-                  placeholder="Historique médical..."
-                  value={newPatient.medicalHistory}
-                  onChange={(e) => setNewPatient({ ...newPatient, medicalHistory: e.target.value })}
-                />
-              </div>
+              {editingPatient && (
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-muted">Ajouter un antécédent</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      className="input-field flex-1"
+                      placeholder="Ex: Chute, AVP, Malaise..."
+                      value={newMedicalHistory}
+                      onChange={(e) => setNewMedicalHistory(e.target.value)}
+                    />
+                    <button
+                      onClick={async () => {
+                        if (!newMedicalHistory.trim() || !editingPatient) return;
+                        try {
+                          const response = await fetch(`/api/rescue/patients/${editingPatient.id}/medical-histories`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ type: newMedicalHistory }),
+                          });
+                          if (response.ok) {
+                            await loadPatients();
+                            setNewMedicalHistory("");
+                          }
+                        } catch (error) {
+                          console.error('Erreur lors de l&apos;ajout de l&apos;antécédent:', error);
+                        }
+                      }}
+                      className="btn-primary px-4"
+                    >
+                      Ajouter
+                    </button>
+                  </div>
+                  {editingPatient.medicalHistories && editingPatient.medicalHistories.length > 0 && (
+                    <div className="mt-3 space-y-1">
+                      {editingPatient.medicalHistories
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        .map((history) => (
+                          <div key={history.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
+                            <span>
+                              <span className="font-medium">{history.type}</span>
+                              <span className="text-muted ml-2">
+                                le {new Date(history.createdAt).toLocaleString('fr-FR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                            </span>
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const response = await fetch(`/api/rescue/patients/${editingPatient.id}/medical-histories/${history.id}`, {
+                                    method: 'DELETE',
+                                  });
+                                  if (response.ok) {
+                                    await loadPatients();
+                                  }
+                                } catch (error) {
+                                  console.error('Erreur lors de la suppression de l&apos;antécédent:', error);
+                                }
+                              }}
+                              className="text-red-600 hover:text-red-700 ml-2"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              )}
               <button
                 onClick={editingPatient ? handleUpdatePatient : handleCreatePatient}
                 className="btn-primary w-full"
