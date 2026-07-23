@@ -4,15 +4,16 @@ import { requireUser } from "@/lib/session";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["AMBULANCIER", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   try {
+    const { id } = await params;
     const body = await request.json();
     const patient = await prisma.rescuePatient.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         firstname: body.firstname,
         lastname: body.lastname,
@@ -39,14 +40,15 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["AMBULANCIER", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   try {
+    const { id } = await params;
     await prisma.rescuePatient.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });
