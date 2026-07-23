@@ -25,9 +25,6 @@ export async function PATCH(
         allergies: body.allergies || [],
         medications: body.medications || [],
         medicalHistory: body.medicalHistory || null,
-        emergencyContactName: body.emergencyContactName || null,
-        emergencyContactPhone: body.emergencyContactPhone || null,
-        insuranceNumber: body.insuranceNumber || null,
       },
     });
 

@@ -15,9 +15,6 @@ interface Patient {
   allergies: string[];
   medications: string[];
   medicalHistory: string | null;
-  emergencyContactName: string | null;
-  emergencyContactPhone: string | null;
-  insuranceNumber: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -40,9 +37,6 @@ export default function DossiersPage() {
     allergies: "",
     medications: "",
     medicalHistory: "",
-    emergencyContactName: "",
-    emergencyContactPhone: "",
-    insuranceNumber: "",
   });
 
   useEffect(() => {
@@ -92,9 +86,6 @@ export default function DossiersPage() {
           allergies: "",
           medications: "",
           medicalHistory: "",
-          emergencyContactName: "",
-          emergencyContactPhone: "",
-          insuranceNumber: "",
         });
         setShowCreateForm(false);
       }
@@ -134,9 +125,6 @@ export default function DossiersPage() {
           allergies: "",
           medications: "",
           medicalHistory: "",
-          emergencyContactName: "",
-          emergencyContactPhone: "",
-          insuranceNumber: "",
         });
         setShowCreateForm(false);
       }
@@ -173,9 +161,6 @@ export default function DossiersPage() {
       allergies: patient.allergies.join(', '),
       medications: patient.medications.join(', '),
       medicalHistory: patient.medicalHistory || "",
-      emergencyContactName: patient.emergencyContactName || "",
-      emergencyContactPhone: patient.emergencyContactPhone || "",
-      insuranceNumber: patient.insuranceNumber || "",
     });
     setShowCreateForm(true);
   };
@@ -199,8 +184,7 @@ export default function DossiersPage() {
     const searchLower = searchTerm.toLowerCase();
     return (
       p.firstname.toLowerCase().includes(searchLower) ||
-      p.lastname.toLowerCase().includes(searchLower) ||
-      p.insuranceNumber?.toLowerCase().includes(searchLower)
+      p.lastname.toLowerCase().includes(searchLower)
     );
   });
 
@@ -236,9 +220,6 @@ export default function DossiersPage() {
                 allergies: "",
                 medications: "",
                 medicalHistory: "",
-                emergencyContactName: "",
-                emergencyContactPhone: "",
-                insuranceNumber: "",
               });
             }}
             className="btn-primary"
@@ -365,35 +346,6 @@ export default function DossiersPage() {
                   onChange={(e) => setNewPatient({ ...newPatient, medicalHistory: e.target.value })}
                 />
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Contact urgence (Nom)</label>
-                  <input
-                    type="text"
-                    className="input-field w-full"
-                    value={newPatient.emergencyContactName}
-                    onChange={(e) => setNewPatient({ ...newPatient, emergencyContactName: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Contact urgence (Téléphone)</label>
-                  <input
-                    type="text"
-                    className="input-field w-full"
-                    value={newPatient.emergencyContactPhone}
-                    onChange={(e) => setNewPatient({ ...newPatient, emergencyContactPhone: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Numéro d&apos;assurance</label>
-                <input
-                  type="text"
-                  className="input-field w-full"
-                  value={newPatient.insuranceNumber}
-                  onChange={(e) => setNewPatient({ ...newPatient, insuranceNumber: e.target.value })}
-                />
-              </div>
               <button
                 onClick={editingPatient ? handleUpdatePatient : handleCreatePatient}
                 className="btn-primary w-full"
@@ -472,21 +424,12 @@ export default function DossiersPage() {
                     </div>
                   </div>
                 )}
-                {patient.emergencyContactName && (
-                  <div className="mb-4 p-2 bg-yellow-50 rounded">
-                    <p className="text-xs text-muted">Contact urgence:</p>
-                    <p className="text-sm text-ink">{patient.emergencyContactName}</p>
-                    {patient.emergencyContactPhone && (
-                      <p className="text-sm text-ink">{patient.emergencyContactPhone}</p>
-                    )}
-                  </div>
-                )}
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEditPatient(patient)}
                     className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
                   >
-                    Modifier
+                    Ouvrir
                   </button>
                   <button
                     onClick={() => handleDeletePatient(patient.id)}

@@ -389,9 +389,6 @@ model RescuePatient {
   allergies   String[] @default([])
   medications String[] @default([])
   medicalHistory String?
-  emergencyContactName String?
-  emergencyContactPhone String?
-  insuranceNumber String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

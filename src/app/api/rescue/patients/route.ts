@@ -36,9 +36,6 @@ export async function POST(request: NextRequest) {
         allergies: body.allergies || [],
         medications: body.medications || [],
         medicalHistory: body.medicalHistory || null,
-        emergencyContactName: body.emergencyContactName || null,
-        emergencyContactPhone: body.emergencyContactPhone || null,
-        insuranceNumber: body.insuranceNumber || null,
       },
     });
 
