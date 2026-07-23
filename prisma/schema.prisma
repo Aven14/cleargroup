@@ -400,6 +400,7 @@ model RescueMedicalHistory {
   id        String   @id @default(cuid())
   patientId String
   type      String
+  bilan     String?
   createdAt DateTime @default(now())
   patient   RescuePatient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 

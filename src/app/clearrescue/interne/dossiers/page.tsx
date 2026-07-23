@@ -19,6 +19,7 @@ interface Patient {
   medicalHistories: {
     id: string;
     type: string;
+    bilan: string | null;
     createdAt: string;
   }[];
 }
@@ -42,6 +43,7 @@ export default function DossiersPage() {
     medications: "",
   });
   const [newMedicalHistory, setNewMedicalHistory] = useState("");
+  const [newMedicalBilan, setNewMedicalBilan] = useState("");
 
   useEffect(() => {
     loadPatients();
@@ -91,6 +93,7 @@ export default function DossiersPage() {
           medications: "",
         });
         setNewMedicalHistory("");
+        setNewMedicalBilan("");
         setShowCreateForm(false);
       }
     } catch (error) {
@@ -130,6 +133,7 @@ export default function DossiersPage() {
           medications: "",
         });
         setNewMedicalHistory("");
+        setNewMedicalBilan("");
         setShowCreateForm(false);
       }
     } catch (error) {
@@ -343,13 +347,19 @@ export default function DossiersPage() {
               {editingPatient && (
                 <div>
                   <label className="block mb-2 text-sm font-medium text-muted">Ajouter un antécédent</label>
-                  <div className="flex gap-2">
+                  <div className="space-y-2">
                     <input
                       type="text"
-                      className="input-field flex-1"
+                      className="input-field w-full"
                       placeholder="Ex: Chute, AVP, Malaise..."
                       value={newMedicalHistory}
                       onChange={(e) => setNewMedicalHistory(e.target.value)}
+                    />
+                    <textarea
+                      className="input-field w-full min-h-[60px]"
+                      placeholder="Bilan (douleurs, symptômes, localisation...)"
+                      value={newMedicalBilan}
+                      onChange={(e) => setNewMedicalBilan(e.target.value)}
                     />
                     <button
                       onClick={async () => {
@@ -358,7 +368,7 @@ export default function DossiersPage() {
                           const response = await fetch(`/api/rescue/patients/${editingPatient.id}/medical-histories`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ type: newMedicalHistory }),
+                            body: JSON.stringify({ type: newMedicalHistory, bilan: newMedicalBilan || null }),
                           });
                           if (response.ok) {
                             const newHistory = await response.json();
@@ -367,12 +377,13 @@ export default function DossiersPage() {
                               medicalHistories: [...(editingPatient.medicalHistories || []), newHistory]
                             });
                             setNewMedicalHistory("");
+                            setNewMedicalBilan("");
                           }
                         } catch (error) {
                           console.error('Erreur lors de l&apos;ajout de l&apos;antécédent:', error);
                         }
                       }}
-                      className="btn-primary px-4"
+                      className="btn-primary w-full"
                     >
                       Ajouter
                     </button>
@@ -382,39 +393,44 @@ export default function DossiersPage() {
                       {editingPatient.medicalHistories
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((history) => (
-                          <div key={history.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 rounded">
-                            <span>
-                              <span className="font-medium">{history.type}</span>
-                              <span className="text-muted ml-2">
-                                le {new Date(history.createdAt).toLocaleString('fr-FR', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                          <div key={history.id} className="text-sm p-2 bg-gray-50 rounded">
+                            <div className="flex justify-between items-start">
+                              <span>
+                                <span className="font-medium">{history.type}</span>
+                                <span className="text-muted ml-2">
+                                  le {new Date(history.createdAt).toLocaleString('fr-FR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </span>
                               </span>
-                            </span>
-                            <button
-                              onClick={async () => {
-                                try {
-                                  const response = await fetch(`/api/rescue/patients/${editingPatient.id}/medical-histories/${history.id}`, {
-                                    method: 'DELETE',
-                                  });
-                                  if (response.ok) {
-                                    setEditingPatient({
-                                      ...editingPatient,
-                                      medicalHistories: editingPatient.medicalHistories?.filter(h => h.id !== history.id) || []
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const response = await fetch(`/api/rescue/patients/${editingPatient.id}/medical-histories/${history.id}`, {
+                                      method: 'DELETE',
                                     });
+                                    if (response.ok) {
+                                      setEditingPatient({
+                                        ...editingPatient,
+                                        medicalHistories: editingPatient.medicalHistories?.filter(h => h.id !== history.id) || []
+                                      });
+                                    }
+                                  } catch (error) {
+                                    console.error('Erreur lors de la suppression de l&apos;antécédent:', error);
                                   }
-                                } catch (error) {
-                                  console.error('Erreur lors de la suppression de l&apos;antécédent:', error);
-                                }
-                              }}
-                              className="text-red-600 hover:text-red-700 ml-2"
-                            >
-                              ×
-                            </button>
+                                }}
+                                className="text-red-600 hover:text-red-700 ml-2"
+                              >
+                                ×
+                              </button>
+                            </div>
+                            {history.bilan && (
+                              <p className="text-muted mt-1 text-xs italic">{history.bilan}</p>
+                            )}
                           </div>
                         ))}
                     </div>

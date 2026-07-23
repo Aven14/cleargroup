@@ -46,6 +46,7 @@ export async function POST(
       data: {
         patientId: id,
         type: body.type,
+        bilan: body.bilan || null,
       },
     });
 
