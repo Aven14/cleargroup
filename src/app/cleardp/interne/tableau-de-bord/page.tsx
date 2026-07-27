@@ -27,21 +27,20 @@ export default function TableauDeBordPage() {
 
   const loadStats = async () => {
     try {
-      const [clientsRes, shiftsRes, repairsRes] = await Promise.all([
+      const [clientsRes, shiftsRes] = await Promise.all([
         fetch('/api/dp/clients'),
         fetch('/api/dp/shifts'),
-        fetch('/api/dp/repairs'),
       ]);
 
       if (clientsRes.ok && shiftsRes.ok) {
         const clients = await clientsRes.json();
         const shifts = await shiftsRes.json();
         
-        const activeMechanics = shifts.filter((s: any) => !s.endedAt).length;
-        const totalRepairs = clients.reduce((sum: number, c: any) => sum + (c.repairs?.length || 0), 0);
-        const clientsWithDiscount = clients.filter((c: any) => c.hasDiscount).length;
-        const pendingRepairs = clients.reduce((sum: number, c: any) => 
-          sum + (c.repairs?.filter((r: any) => r.status === "En cours").length || 0), 0);
+        const activeMechanics = shifts.filter((s: { endedAt: string | null }) => !s.endedAt).length;
+        const totalRepairs = clients.reduce((sum: number, c: { repairs?: any[] }) => sum + (c.repairs?.length || 0), 0);
+        const clientsWithDiscount = clients.filter((c: { hasDiscount: boolean }) => c.hasDiscount).length;
+        const pendingRepairs = clients.reduce((sum: number, c: { repairs?: { status: string }[] }) => 
+          sum + (c.repairs?.filter((r: { status: string }) => r.status === "En cours").length || 0), 0);
 
         setStats({
           totalClients: clients.length,
@@ -133,7 +132,7 @@ export default function TableauDeBordPage() {
             <div>
               <h3 className="font-bold text-ink">Programme fidélité</h3>
               <p className="text-sm text-muted">
-                Les clients bénéficient d'une réduction de 50% après 5 réparations.
+                Les clients bénéficient d&apos;une réduction de 50% après 5 réparations.
                 Le compteur de réparation est automatiquement incrémenté à chaque intervention.
               </p>
             </div>
@@ -143,7 +142,7 @@ export default function TableauDeBordPage() {
             <div>
               <h3 className="font-bold text-ink">Gestion des fiches</h3>
               <p className="text-sm text-muted">
-                Chaque client dispose d'une fiche individuelle avec son historique de réparations,
+                Chaque client dispose d&apos;une fiche individuelle avec son historique de réparations,
                 ses informations de contact et les détails de son véhicule.
               </p>
             </div>

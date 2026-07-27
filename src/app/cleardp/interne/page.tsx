@@ -42,7 +42,7 @@ export default function ClearDPInternePage() {
             <span className="text-2xl">📊</span>
           </div>
           <h3 className="font-bold text-ink">Tableau de bord</h3>
-          <p className="mt-2 text-sm text-muted">Statistiques et vue d'ensemble</p>
+          <p className="mt-2 text-sm text-muted">Statistiques et vue d&apos;ensemble</p>
         </Link>
       </div>
     </div>

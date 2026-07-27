@@ -22,7 +22,7 @@ export default function ClearDPPage() {
         const response = await fetch('/api/dp/shifts');
         if (response.ok) {
           const data = await response.json();
-          const activeShifts = data.filter((shift: any) => !shift.endedAt);
+          const activeShifts = data.filter((shift: { endedAt: string | null }) => !shift.endedAt);
           setActiveMechanics(activeShifts);
         }
       } catch (error) {
@@ -87,7 +87,7 @@ export default function ClearDPPage() {
               </svg>
             </div>
             <h3 className="font-bold text-ink">Dépannage rapide</h3>
-            <p className="mt-2 text-sm text-muted">Intervention d'urgence sur route et sur site.</p>
+            <p className="mt-2 text-sm text-muted">Intervention d&apos;urgence sur route et sur site.</p>
           </div>
 
           <div className="panel-soft bg-gradient-to-br from-primary-light/80 to-white p-6">

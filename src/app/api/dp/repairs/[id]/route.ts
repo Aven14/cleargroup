@@ -13,7 +13,7 @@ export async function PATCH(
   const body = await request.json();
   const { status, notes } = body;
 
-  const updateData: any = {};
+  const updateData: { status?: string; notes?: string; completedAt?: Date } = {};
   if (status) updateData.status = status;
   if (notes !== undefined) updateData.notes = notes;
   

@@ -244,7 +244,7 @@ export default function FichesPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d'immatriculation</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d&apos;immatriculation</label>
                   <input
                     type="text"
                     className="input-field w-full"
