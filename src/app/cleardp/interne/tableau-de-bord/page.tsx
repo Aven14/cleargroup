@@ -37,7 +37,7 @@ export default function TableauDeBordPage() {
         const shifts = await shiftsRes.json();
         
         const activeMechanics = shifts.filter((s: { endedAt: string | null }) => !s.endedAt).length;
-        const totalRepairs = clients.reduce((sum: number, c: { repairs?: any[] }) => sum + (c.repairs?.length || 0), 0);
+        const totalRepairs = clients.reduce((sum: number, c: { repairs?: unknown[] }) => sum + (c.repairs?.length || 0), 0);
         const clientsWithDiscount = clients.filter((c: { hasDiscount: boolean }) => c.hasDiscount).length;
         const pendingRepairs = clients.reduce((sum: number, c: { repairs?: { status: string }[] }) => 
           sum + (c.repairs?.filter((r: { status: string }) => r.status === "En cours").length || 0), 0);
