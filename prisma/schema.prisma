@@ -14,6 +14,7 @@ enum UserRole {
   ADMIN
   SECURITY
   AMBULANCIER
+  MECANICIEN
 }
 
 model User {
@@ -42,6 +43,9 @@ model User {
   createdRescueAlerts RescueAlert[]
   rescueAlertResponses RescueAlertResponse[]
   createdRescueDebriefings RescueDebriefing[]
+  dpShifts DPServiceShift[]
+  createdDPRepairs DPRepair[] @relation("CreatedRepairs")
+  dpClients DPClient[]
 
   @@index([roles])
 }
@@ -406,4 +410,69 @@ model RescueMedicalHistory {
 
   @@index([patientId, createdAt])
   @@index([createdAt])
+}
+
+model DPServiceShift {
+  id          String   @id @default(cuid())
+  userId      String
+  vehicle     String?
+  startedAt   DateTime @default(now())
+  endedAt     DateTime?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, endedAt])
+  @@index([endedAt])
+}
+
+model DPClient {
+  id                String   @id @default(cuid())
+  firstname         String
+  lastname          String
+  phoneNumber       String?
+  email             String?
+  vehiclePlate      String
+  vehicleModel      String
+  totalRepairs      Int      @default(0)
+  loyaltyPoints     Int      @default(0)
+  hasDiscount       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  createdBy         String
+  creator           User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  repairs           DPRepair[]
+
+  @@index([firstname, lastname])
+  @@index([vehiclePlate])
+  @@index([hasDiscount])
+  @@index([createdAt])
+}
+
+model DPRepair {
+  id              String   @id @default(cuid())
+  clientId        String
+  mechanicId      String
+  vehiclePlate    String
+  vehicleModel    String
+  repairType      String
+  description     String
+  partsReplaced   String[] @default([])
+  laborHours      Decimal  @db.Decimal(4, 2)
+  laborCost       Decimal  @db.Decimal(10, 2)
+  partsCost       Decimal  @db.Decimal(10, 2)
+  totalCost       Decimal  @db.Decimal(10, 2)
+  discountApplied Boolean  @default(false)
+  discountAmount  Decimal? @db.Decimal(10, 2)
+  finalCost       Decimal  @db.Decimal(10, 2)
+  status          String   @default("En cours")
+  notes           String?
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  client          DPClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  mechanic        User     @relation("CreatedRepairs", fields: [mechanicId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([mechanicId])
+  @@index([status])
+  @@index([startedAt])
+  @@index([vehiclePlate])
 }

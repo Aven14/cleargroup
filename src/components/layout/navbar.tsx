@@ -68,6 +68,7 @@ export function Navbar({ user }: { user: NavUser | null }) {
   const mainLinks = useMemo<NavItem[]>(() => {
     const isInClearBus = pathname.startsWith('/clearbus');
     const isInClearSecurity = pathname.startsWith('/clearsecurity');
+    const isInClearDP = pathname.startsWith('/cleardp');
     
     return [
       { href: "/", label: "Accueil" },
@@ -78,13 +79,14 @@ export function Navbar({ user }: { user: NavUser | null }) {
           { href: "/clearbus", label: "ClearBus" },
           { href: "/clearsecurity", label: "ClearSecurity" },
           { href: "/clearrescue", label: "ClearRescue" },
+          { href: "/cleardp", label: "ClearDP" },
         ],
       },
       { href: "/recrutement", label: "Recrutement" },
       { href: "/actualites", label: "Actualités" },
       { href: "/a-propos", label: "À propos" },
       { href: "/contact", label: "Contact" },
-      ...(user && (isInClearBus || isInClearSecurity) ? linksForRoles(user.roles) : []),
+      ...(user && (isInClearBus || isInClearSecurity || isInClearDP) ? linksForRoles(user.roles) : []),
     ];
   }, [user, pathname]);
 
