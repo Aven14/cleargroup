@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Client {
   id: string;
@@ -162,13 +161,11 @@ export default function FichesPage() {
   };
 
   return (
-    <div className="flex">
-      <DPSidebar />
-      <main className="flex-1 ml-56 p-6">
-        <PageHeader
-          brand="ClearDP"
-          title="Fiches clients"
-          subtitle="Gestion des dossiers clients et historique des réparations"
+    <div className="page-enter">
+      <PageHeader
+        brand="ClearDP"
+        title="Fiches clients"
+        subtitle="Gestion des dossiers clients et historique des réparations"
       />
 
       <section className="mb-8">
@@ -367,7 +364,6 @@ export default function FichesPage() {
           </div>
         )}
       </section>
-      </main>
     </div>
   );
 }

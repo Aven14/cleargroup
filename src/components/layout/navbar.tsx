@@ -28,6 +28,45 @@ function linksForRoles(roles: UserRole[]): NavItem[] {
   if (hasRole(roles, "ADMIN")) {
     links.push({ href: "/admin", label: "Admin" });
   }
+  if (hasRole(roles, "SECURITY")) {
+    links.push(
+      { href: "/clearsecurity/interne/tableau-de-bord", label: "Tableau de bord", matchPrefix: "/clearsecurity/interne" },
+      { href: "/clearsecurity/interne/prise-service", label: "Prise de service", matchPrefix: "/clearsecurity/interne/prise-service" },
+      { href: "/clearsecurity/interne/patrouilles", label: "Patrouilles", matchPrefix: "/clearsecurity/interne/patrouilles" },
+      { href: "/clearsecurity/interne/debriefings", label: "Débriefings", matchPrefix: "/clearsecurity/interne/debriefings" },
+      { href: "/clearsecurity/interne/alertes", label: "Alertes", matchPrefix: "/clearsecurity/interne/alertes" },
+      { href: "/clearsecurity/interne/detenus", label: "Personnes détenues", matchPrefix: "/clearsecurity/interne/detenus" },
+      { href: "/clearsecurity/interne/agents", label: "Agents", matchPrefix: "/clearsecurity/interne/agents" },
+      { href: "/clearsecurity/interne/planning", label: "Planning", matchPrefix: "/clearsecurity/interne/planning" },
+      { href: "/clearsecurity/interne/parametres", label: "Paramètres", matchPrefix: "/clearsecurity/interne/parametres" }
+    );
+  }
+  if (hasRole(roles, "AMBULANCIER")) {
+    links.push(
+      { href: "/clearrescue/interne/tableau-de-bord", label: "Tableau de bord", matchPrefix: "/clearrescue/interne" },
+      { href: "/clearrescue/interne/prise-service", label: "Prise de service", matchPrefix: "/clearrescue/interne/prise-service" },
+      { href: "/clearrescue/interne/patrouilles", label: "Patrouilles", matchPrefix: "/clearrescue/interne/patrouilles" },
+      { href: "/clearrescue/interne/debriefings", label: "Débriefings", matchPrefix: "/clearrescue/interne/debriefings" },
+      { href: "/clearrescue/interne/alertes", label: "Alertes", matchPrefix: "/clearrescue/interne/alertes" },
+      { href: "/clearrescue/interne/dossiers", label: "Dossiers patients", matchPrefix: "/clearrescue/interne/dossiers" },
+      { href: "/clearrescue/interne/agents", label: "Agents", matchPrefix: "/clearrescue/interne/agents" },
+      { href: "/clearrescue/interne/planning", label: "Planning", matchPrefix: "/clearrescue/interne/planning" }
+    );
+  }
+  if (hasRole(roles, "MECANICIEN")) {
+    links.push(
+      { href: "/cleardp/interne/tableau-de-bord", label: "Tableau de bord", matchPrefix: "/cleardp/interne" },
+      { href: "/cleardp/interne/prise-service", label: "Prise de service", matchPrefix: "/cleardp/interne/prise-service" },
+      { href: "/cleardp/interne/agents", label: "Mécaniciens", matchPrefix: "/cleardp/interne/agents" },
+      { href: "/cleardp/interne/fiches", label: "Fiches clients", matchPrefix: "/cleardp/interne/fiches" }
+    );
+  }
+  if (hasRole(roles, "DRIVER")) {
+    links.push({ href: "/clearbus/chauffeur", label: "Espace chauffeur" });
+  }
+  if (hasRole(roles, "CONTROLLER")) {
+    links.push({ href: "/clearbus/controleur", label: "Espace contrôleur" });
+  }
 
   return links;
 }
