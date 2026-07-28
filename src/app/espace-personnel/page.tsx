@@ -12,10 +12,7 @@ export default async function EspacePersonnelPage() {
     redirect("/clearbus/connexion");
   }
 
-  // Rediriger vers la page appropriée selon le rôle
-  if (hasRole(sessionUser.roles, "ADMIN")) {
-    redirect("/admin");
-  }
+  // Rediriger vers la page appropriée selon le rôle (sauf ADMIN qui peut voir son espace personnel)
   if (hasRole(sessionUser.roles, "SECURITY")) {
     redirect("/clearsecurity/interne/tableau-de-bord");
   }
