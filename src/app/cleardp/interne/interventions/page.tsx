@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
-interface Patrol {
+interface Intervention {
   id: string;
   mechanicId: string;
   coequipierId: string | null;
@@ -12,7 +11,7 @@ interface Patrol {
   vehicle: string;
   startedAt: string;
   endedAt: string | null;
-  missionType: string;
+  interventionType: string;
   observations: string;
   maxMechanics: number;
   mechanics: {
@@ -32,22 +31,22 @@ interface Patrol {
   } | null;
 }
 
-export default function PatrouillesPage() {
+export default function InterventionsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [patrouilles, setPatrouilles] = useState<Patrol[]>([]);
+  const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ id: string; firstname: string; lastname: string; roles: string[] } | null>(null);
 
-  const [newPatrouille, setNewPatrouille] = useState({
+  const [newIntervention, setNewIntervention] = useState({
     secteur: "",
     vehicule: "",
-    type: "Patrouille mobile",
+    type: "Dépannage",
     observations: "",
     maxMechanics: 2,
   });
 
   useEffect(() => {
-    loadPatrouilles();
+    loadInterventions();
     loadCurrentUser();
   }, []);
 
@@ -63,115 +62,115 @@ export default function PatrouillesPage() {
     }
   };
 
-  const loadPatrouilles = async () => {
+  const loadInterventions = async () => {
     try {
-      const response = await fetch('/api/dp/patrols');
+      const response = await fetch('/api/dp/interventions');
       if (response.ok) {
         const data = await response.json();
-        setPatrouilles(data);
+        setInterventions(data);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des patrouilles:', error);
+      console.error('Erreur lors du chargement des interventions:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreatePatrouille = async () => {
+  const handleCreateIntervention = async () => {
     try {
-      const response = await fetch('/api/dp/patrols', {
+      const response = await fetch('/api/dp/interventions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sector: newPatrouille.secteur,
-          vehicle: newPatrouille.vehicule,
-          missionType: newPatrouille.type,
-          observations: newPatrouille.observations,
-          maxMechanics: newPatrouille.maxMechanics,
+          sector: newIntervention.secteur,
+          vehicle: newIntervention.vehicule,
+          interventionType: newIntervention.type,
+          observations: newIntervention.observations,
+          maxMechanics: newIntervention.maxMechanics,
         }),
       });
       if (response.ok) {
-        await loadPatrouilles();
-        setNewPatrouille({
+        await loadInterventions();
+        setNewIntervention({
           secteur: "",
           vehicule: "",
-          type: "Patrouille mobile",
+          type: "Dépannage",
           observations: "",
           maxMechanics: 2,
         });
         setShowCreateForm(false);
       }
     } catch (error) {
-      console.error('Erreur lors de la création de la patrouille:', error);
+      console.error('Erreur lors de la création de l&apos;intervention:', error);
     }
   };
 
-  const handleEndPatrouille = async (id: string) => {
+  const handleEndIntervention = async (id: string) => {
     try {
-      const response = await fetch(`/api/dp/patrols/${id}`, {
+      const response = await fetch(`/api/dp/interventions/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ended: true }),
       });
       if (response.ok) {
-        await loadPatrouilles();
+        await loadInterventions();
       }
     } catch (error) {
-      console.error('Erreur lors de la fin de patrouille:', error);
+      console.error('Erreur lors de la fin d&apos;intervention:', error);
     }
   };
 
   const handleUpdateType = async (id: string, type: string) => {
     try {
-      const response = await fetch(`/api/dp/patrols/${id}`, {
+      const response = await fetch(`/api/dp/interventions/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ missionType: type }),
+        body: JSON.stringify({ interventionType: type }),
       });
       if (response.ok) {
-        await loadPatrouilles();
+        await loadInterventions();
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour du type:', error);
     }
   };
 
-  const handleJoinPatrouille = async (id: string) => {
+  const handleJoinIntervention = async (id: string) => {
     try {
-      const response = await fetch(`/api/dp/patrols/${id}/join`, {
+      const response = await fetch(`/api/dp/interventions/${id}/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
       if (response.ok) {
-        await loadPatrouilles();
+        await loadInterventions();
       }
     } catch (error) {
-      console.error('Erreur lors du rejoindre la patrouille:', error);
+      console.error('Erreur lors du rejoindre l&apos;intervention:', error);
     }
   };
 
-  const handleLeavePatrouille = async (id: string) => {
+  const handleLeaveIntervention = async (id: string) => {
     try {
-      const response = await fetch(`/api/dp/patrols/${id}/leave`, {
+      const response = await fetch(`/api/dp/interventions/${id}/leave`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
       if (response.ok) {
-        await loadPatrouilles();
+        await loadInterventions();
       }
     } catch (error) {
-      console.error('Erreur lors du départ de la patrouille:', error);
+      console.error('Erreur lors du départ de l&apos;intervention:', error);
     }
   };
 
-  const isInPatrouille = (patrouille: Patrol) => {
+  const isInIntervention = (intervention: Intervention) => {
     if (!currentUser) return false;
-    return patrouille.mechanics.some(a => a.id === currentUser.id);
+    return intervention.mechanics.some(m => m.id === currentUser.id);
   };
 
-  const canJoinPatrouille = (patrouille: Patrol) => {
+  const canJoinIntervention = (intervention: Intervention) => {
     if (!currentUser) return false;
-    return !isInPatrouille(patrouille) && patrouille.mechanics.length < patrouille.maxMechanics && !patrouille.endedAt;
+    return !isInIntervention(intervention) && intervention.mechanics.length < intervention.maxMechanics && !intervention.endedAt;
   };
 
   const formatHeure = (dateString: string | null) => {
@@ -193,32 +192,31 @@ export default function PatrouillesPage() {
     return `${mins} min`;
   };
 
-  const activePatrouilles = patrouilles.filter(p => !p.endedAt);
-  const completedPatrouilles = patrouilles.filter(p => p.endedAt);
+  const activeInterventions = interventions.filter(i => !i.endedAt);
+  const completedInterventions = interventions.filter(i => i.endedAt);
 
   return (
-    <div className="mr-56">
-      <DPSidebar />
+    <div className="page-enter">
       <PageHeader
         brand="ClearDP"
-        title="Patrouilles"
-        subtitle="Gestion des patrouilles et des missions en cours"
+        title="Interventions"
+        subtitle="Gestion des interventions et missions en cours"
       />
 
       <section className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-ink">Patrouilles actives</h2>
+          <h2 className="text-lg font-bold text-ink">Interventions actives</h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="btn-primary"
           >
-            {showCreateForm ? "Annuler" : "Créer une patrouille"}
+            {showCreateForm ? "Annuler" : "Créer une intervention"}
           </button>
         </div>
 
         {showCreateForm && (
           <div className="mb-4 panel-soft p-6">
-            <h3 className="mb-4 font-bold text-ink">Nouvelle patrouille</h3>
+            <h3 className="mb-4 font-bold text-ink">Nouvelle intervention</h3>
             <div className="space-y-4">
               <div>
                 <label className="block mb-2 text-sm font-medium text-muted">Secteur</label>
@@ -226,8 +224,8 @@ export default function PatrouillesPage() {
                   type="text"
                   className="input-field w-full"
                   placeholder="Ex: Centre-ville"
-                  value={newPatrouille.secteur}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, secteur: e.target.value })}
+                  value={newIntervention.secteur}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, secteur: e.target.value })}
                 />
               </div>
               <div>
@@ -236,21 +234,21 @@ export default function PatrouillesPage() {
                   type="text"
                   className="input-field w-full"
                   placeholder="Ex: DP-001"
-                  value={newPatrouille.vehicule}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, vehicule: e.target.value })}
+                  value={newIntervention.vehicule}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, vehicule: e.target.value })}
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Type de mission</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Type d&apos;intervention</label>
                 <select
                   className="input-field w-full"
-                  value={newPatrouille.type}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, type: e.target.value })}
+                  value={newIntervention.type}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, type: e.target.value })}
                 >
-                  <option>Patrouille mobile</option>
-                  <option>Intervention</option>
+                  <option>Dépannage</option>
+                  <option>Réparation</option>
                   <option>Remorquage</option>
-                  <option>Assistance</option>
+                  <option>Entretien</option>
                 </select>
               </div>
               <div>
@@ -260,21 +258,21 @@ export default function PatrouillesPage() {
                   min="1"
                   max="8"
                   className="input-field w-full"
-                  value={newPatrouille.maxMechanics}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, maxMechanics: Math.min(8, Math.max(1, parseInt(e.target.value) || 1)) })}
+                  value={newIntervention.maxMechanics}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, maxMechanics: Math.min(8, Math.max(1, parseInt(e.target.value) || 1)) })}
                 />
               </div>
               <div>
                 <label className="block mb-2 text-sm font-medium text-muted">Observations</label>
                 <textarea
                   className="input-field w-full min-h-[80px]"
-                  placeholder="Observations sur la mission..."
-                  value={newPatrouille.observations}
-                  onChange={(e) => setNewPatrouille({ ...newPatrouille, observations: e.target.value })}
+                  placeholder="Observations sur l&apos;intervention..."
+                  value={newIntervention.observations}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, observations: e.target.value })}
                 />
               </div>
-              <button onClick={handleCreatePatrouille} className="btn-primary w-full">
-                Créer la patrouille
+              <button onClick={handleCreateIntervention} className="btn-primary w-full">
+                Créer l&apos;intervention
               </button>
             </div>
           </div>
@@ -282,21 +280,21 @@ export default function PatrouillesPage() {
 
         {loading ? (
           <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
-        ) : activePatrouilles.length === 0 ? (
-          <div className="panel-soft p-6 text-center text-muted">Aucune patrouille active</div>
+        ) : activeInterventions.length === 0 ? (
+          <div className="panel-soft p-6 text-center text-muted">Aucune intervention active</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {activePatrouilles.map((patrouille) => (
-              <div key={patrouille.id} className="p-4 border rounded-lg bg-white border-green-400">
+            {activeInterventions.map((intervention) => (
+              <div key={intervention.id} className="p-4 border rounded-lg bg-white border-green-400">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl">🚗</span>
+                    <span className="text-2xl">🔧</span>
                     <div>
                       <h3 className="font-bold text-ink text-sm">
-                        {patrouille.sector}
+                        {intervention.sector}
                       </h3>
                       <p className="text-xs text-muted">
-                        {patrouille.missionType}
+                        {intervention.interventionType}
                       </p>
                     </div>
                   </div>
@@ -305,11 +303,11 @@ export default function PatrouillesPage() {
                   </span>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Mécaniciens ({patrouille.mechanics.length}/{patrouille.maxMechanics})</p>
+                  <p className="text-xs text-muted mb-1">Mécaniciens ({intervention.mechanics.length}/{intervention.maxMechanics})</p>
                   <div className="flex flex-wrap gap-1">
-                    {patrouille.mechanics.map((a, idx) => (
+                    {intervention.mechanics.map((m, idx) => (
                       <span key={idx} className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">
-                        {a.firstname} {a.lastname}
+                        {m.firstname} {m.lastname}
                       </span>
                     ))}
                   </div>
@@ -317,51 +315,51 @@ export default function PatrouillesPage() {
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <div>
                     <p className="text-xs text-muted">Début</p>
-                    <p className="font-medium text-ink text-sm">{formatHeure(patrouille.startedAt)}</p>
+                    <p className="font-medium text-ink text-sm">{formatHeure(intervention.startedAt)}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted">Véhicule</p>
-                    <p className="font-medium text-ink text-sm">{patrouille.vehicle}</p>
+                    <p className="font-medium text-ink text-sm">{intervention.vehicle}</p>
                   </div>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Type de mission</p>
+                  <p className="text-xs text-muted mb-1">Type d&apos;intervention</p>
                   <select
                     className="input-field w-full text-sm py-1"
-                    value={patrouille.missionType}
-                    onChange={(e) => handleUpdateType(patrouille.id, e.target.value)}
+                    value={intervention.interventionType}
+                    onChange={(e) => handleUpdateType(intervention.id, e.target.value)}
                   >
-                    <option>Patrouille mobile</option>
-                    <option>Intervention</option>
+                    <option>Dépannage</option>
+                    <option>Réparation</option>
                     <option>Remorquage</option>
-                    <option>Assistance</option>
+                    <option>Entretien</option>
                   </select>
                 </div>
                 {currentUser && currentUser.roles.includes('MECANICIEN') && (
                   <div className="mb-3">
-                    {isInPatrouille(patrouille) ? (
+                    {isInIntervention(intervention) ? (
                       <button
-                        onClick={() => handleLeavePatrouille(patrouille.id)}
+                        onClick={() => handleLeaveIntervention(intervention.id)}
                         className="w-full px-2 py-1.5 bg-red-100 text-red-700 rounded text-xs font-medium hover:bg-red-200 transition-colors"
                       >
                         Quitter
                       </button>
-                    ) : canJoinPatrouille(patrouille) ? (
+                    ) : canJoinIntervention(intervention) ? (
                       <button
-                        onClick={() => handleJoinPatrouille(patrouille.id)}
+                        onClick={() => handleJoinIntervention(intervention.id)}
                         className="w-full px-2 py-1.5 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200 transition-colors"
                       >
-                        Rejoindre ({patrouille.mechanics.length}/{patrouille.maxMechanics})
+                        Rejoindre ({intervention.mechanics.length}/{intervention.maxMechanics})
                       </button>
                     ) : (
                       <p className="text-xs text-muted text-center">
-                        {patrouille.mechanics.length >= patrouille.maxMechanics ? "Complète" : "-"}
+                        {intervention.mechanics.length >= intervention.maxMechanics ? "Complète" : "-"}
                       </p>
                     )}
                   </div>
                 )}
                 <button
-                  onClick={() => handleEndPatrouille(patrouille.id)}
+                  onClick={() => handleEndIntervention(intervention.id)}
                   className="w-full btn-primary text-sm py-1.5"
                 >
                   Terminer
@@ -373,22 +371,22 @@ export default function PatrouillesPage() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-bold text-ink">Historique des patrouilles</h2>
-        {completedPatrouilles.length === 0 ? (
-          <div className="panel-soft p-6 text-center text-muted">Aucune patrouille terminée</div>
+        <h2 className="mb-4 text-lg font-bold text-ink">Historique des interventions</h2>
+        {completedInterventions.length === 0 ? (
+          <div className="panel-soft p-6 text-center text-muted">Aucune intervention terminée</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {completedPatrouilles.map((patrouille) => (
-              <div key={patrouille.id} className="p-4 border rounded-lg bg-white border-gray-200 opacity-80">
+            {completedInterventions.map((intervention) => (
+              <div key={intervention.id} className="p-4 border rounded-lg bg-white border-gray-200 opacity-80">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl">🚗</span>
+                    <span className="text-2xl">🔧</span>
                     <div>
                       <h3 className="font-bold text-ink text-sm">
-                        {patrouille.sector}
+                        {intervention.sector}
                       </h3>
                       <p className="text-xs text-muted">
-                        {patrouille.missionType}
+                        {intervention.interventionType}
                       </p>
                     </div>
                   </div>
@@ -397,11 +395,11 @@ export default function PatrouillesPage() {
                   </span>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Mécaniciens ({patrouille.mechanics.length})</p>
+                  <p className="text-xs text-muted mb-1">Mécaniciens ({intervention.mechanics.length})</p>
                   <div className="flex flex-wrap gap-1">
-                    {patrouille.mechanics.map((a, idx) => (
+                    {intervention.mechanics.map((m, idx) => (
                       <span key={idx} className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
-                        {a.firstname} {a.lastname}
+                        {m.firstname} {m.lastname}
                       </span>
                     ))}
                   </div>
@@ -409,25 +407,25 @@ export default function PatrouillesPage() {
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <div>
                     <p className="text-xs text-muted">Début</p>
-                    <p className="font-medium text-ink text-sm">{formatHeure(patrouille.startedAt)}</p>
+                    <p className="font-medium text-ink text-sm">{formatHeure(intervention.startedAt)}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted">Fin</p>
-                    <p className="font-medium text-ink text-sm">{formatHeure(patrouille.endedAt)}</p>
+                    <p className="font-medium text-ink text-sm">{formatHeure(intervention.endedAt)}</p>
                   </div>
                 </div>
                 <div className="mb-3">
                   <p className="text-xs text-muted">Durée</p>
-                  <p className="font-medium text-ink text-sm">{formatDuree(patrouille.startedAt, patrouille.endedAt)}</p>
+                  <p className="font-medium text-ink text-sm">{formatDuree(intervention.startedAt, intervention.endedAt)}</p>
                 </div>
                 <div className="mb-3">
                   <p className="text-xs text-muted">Véhicule</p>
-                  <p className="font-medium text-ink text-sm">{patrouille.vehicle}</p>
+                  <p className="font-medium text-ink text-sm">{intervention.vehicle}</p>
                 </div>
-                {patrouille.observations && (
+                {intervention.observations && (
                   <div className="mb-3 p-2 bg-gray-50 rounded">
                     <p className="text-xs text-muted mb-1">Observations</p>
-                    <p className="text-xs text-muted">{patrouille.observations}</p>
+                    <p className="text-xs text-muted">{intervention.observations}</p>
                   </div>
                 )}
               </div>

@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
-interface Agent {
+interface Mechanic {
   id: string;
   firstname: string;
   lastname: string;
@@ -16,7 +15,6 @@ interface Shift {
   startedAt: string;
   endedAt: string | null;
   userId: string;
-  vehicle: string | null;
   user: {
     id: string;
     firstname: string;
@@ -24,9 +22,22 @@ interface Shift {
   };
 }
 
+interface Intervention {
+  id: string;
+  mechanicId: string;
+  sector: string;
+  startedAt: string;
+  endedAt: string | null;
+  mechanic: {
+    firstname: string;
+    lastname: string;
+  };
+}
+
 export default function AgentsPage() {
-  const [agents, setAgents] = useState<Agent[]>([]);
+  const [mechanics, setMechanics] = useState<Mechanic[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,8 +49,8 @@ export default function AgentsPage() {
       const usersResponse = await fetch('/api/users');
       if (usersResponse.ok) {
         const users = await usersResponse.json();
-        const dpAgents = users.filter((u: Agent) => u.roles.includes('MECANICIEN'));
-        setAgents(dpAgents);
+        const dpMechanics = users.filter((u: Mechanic) => u.roles.includes('MECANICIEN'));
+        setMechanics(dpMechanics);
       }
 
       const shiftsResponse = await fetch('/api/dp/shifts');
@@ -47,36 +58,46 @@ export default function AgentsPage() {
         const shiftsData = await shiftsResponse.json();
         setShifts(shiftsData);
       }
+
+      const interventionsResponse = await fetch('/api/dp/interventions');
+      if (interventionsResponse.ok) {
+        const interventionsData = await interventionsResponse.json();
+        setInterventions(interventionsData);
+      }
     } catch (error) {
-      console.error('Erreur lors du chargement des agents:', error);
+      console.error('Erreur lors du chargement des mécaniciens:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getAgentStatus = (agentId: string) => {
-    const activeShift = shifts.find(s => s.userId === agentId && !s.endedAt);
+  const getMechanicStatus = (mechanicId: string) => {
+    const activeShift = shifts.find(s => s.userId === mechanicId && !s.endedAt);
+    const activeIntervention = interventions.find(i => i.mechanicId === mechanicId && !i.endedAt);
 
-    if (activeShift) return { statut: "En service", icon: "🟢" };
+    if (activeIntervention) return { statut: "En intervention", icon: "🔵" };
+    if (activeShift) return { statut: "Disponible", icon: "🟢" };
     return { statut: "Hors service", icon: "⚫" };
   };
 
-  const getAgentShiftTime = (agentId: string) => {
-    const shift = shifts.find(s => s.userId === agentId && !s.endedAt);
+  const getMechanicShiftTime = (mechanicId: string) => {
+    const shift = shifts.find(s => s.userId === mechanicId && !s.endedAt);
     if (!shift) return null;
     return new Date(shift.startedAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   };
 
-  const getAgentVehicle = (agentId: string) => {
-    const shift = shifts.find(s => s.userId === agentId && !s.endedAt);
-    if (!shift) return null;
-    return shift.vehicle;
+  const getMechanicIntervention = (mechanicId: string) => {
+    const intervention = interventions.find(i => i.mechanicId === mechanicId && !i.endedAt);
+    if (!intervention) return null;
+    return `Intervention ${intervention.sector}`;
   };
 
   const getStatutColor = (statut: string) => {
     switch (statut) {
-      case "En service":
+      case "Disponible":
         return "bg-green-100 text-green-700";
+      case "En intervention":
+        return "bg-blue-100 text-blue-700";
       case "Hors service":
         return "bg-gray-100 text-muted";
       default:
@@ -85,31 +106,30 @@ export default function AgentsPage() {
   };
 
   return (
-    <div className="mr-56">
-      <DPSidebar />
+    <div className="page-enter">
       <PageHeader
         brand="ClearDP"
-        title="Agents"
+        title="Mécaniciens"
         subtitle="Liste des mécaniciens et leur statut en temps réel"
       />
 
       <section className="mb-8">
-        <h2 className="mb-4 text-lg font-bold text-ink">Mécaniciens</h2>
+        <h2 className="mb-4 text-lg font-bold text-ink">Mécaniciens ClearDP</h2>
         {loading ? (
           <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {agents.map((agent) => {
-              const { statut, icon } = getAgentStatus(agent.id);
-              const shiftTime = getAgentShiftTime(agent.id);
-              const vehicle = getAgentVehicle(agent.id);
+            {mechanics.map((mechanic) => {
+              const { statut, icon } = getMechanicStatus(mechanic.id);
+              const shiftTime = getMechanicShiftTime(mechanic.id);
+              const intervention = getMechanicIntervention(mechanic.id);
               return (
-                <div key={agent.id} className="panel-soft p-6">
+                <div key={mechanic.id} className="panel-soft p-6">
                   <div className="flex items-start gap-4 mb-4">
-                    <span className="text-4xl">👷</span>
+                    <span className="text-4xl">🔧</span>
                     <div className="flex-1">
                       <h3 className="font-bold text-ink">
-                        {agent.firstname} {agent.lastname}
+                        {mechanic.firstname} {mechanic.lastname}
                       </h3>
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${getStatutColor(statut)}`}>
                         <span>{icon}</span>
@@ -122,10 +142,10 @@ export default function AgentsPage() {
                       <p className="text-xs text-muted">Prise de service</p>
                       <p className="text-sm text-ink">{shiftTime || "--:--"}</p>
                     </div>
-                    {vehicle && (
+                    {intervention && (
                       <div className="flex justify-between">
-                        <p className="text-xs text-muted">Véhicule</p>
-                        <p className="text-sm text-ink">{vehicle}</p>
+                        <p className="text-xs text-muted">Intervention active</p>
+                        <p className="text-sm text-ink">{intervention}</p>
                       </div>
                     )}
                   </div>
@@ -138,13 +158,13 @@ export default function AgentsPage() {
 
       <section>
         <h2 className="mb-4 text-lg font-bold text-ink">Statistiques</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted">En service</p>
+                <p className="text-sm text-muted">Disponibles</p>
                 <p className="mt-2 text-3xl font-extrabold text-ink">
-                  {agents.filter(a => getAgentStatus(a.id).statut === "En service").length}
+                  {mechanics.filter(m => getMechanicStatus(m.id).statut === "Disponible").length}
                 </p>
               </div>
               <span className="text-2xl">🟢</span>
@@ -153,9 +173,20 @@ export default function AgentsPage() {
           <div className="panel-soft p-6">
             <div className="flex items-center justify-between">
               <div>
+                <p className="text-sm text-muted">En intervention</p>
+                <p className="mt-2 text-3xl font-extrabold text-ink">
+                  {mechanics.filter(m => getMechanicStatus(m.id).statut === "En intervention").length}
+                </p>
+              </div>
+              <span className="text-2xl">🔵</span>
+            </div>
+          </div>
+          <div className="panel-soft p-6">
+            <div className="flex items-center justify-between">
+              <div>
                 <p className="text-sm text-muted">Hors service</p>
                 <p className="mt-2 text-3xl font-extrabold text-ink">
-                  {agents.filter(a => getAgentStatus(a.id).statut === "Hors service").length}
+                  {mechanics.filter(m => getMechanicStatus(m.id).statut === "Hors service").length}
                 </p>
               </div>
               <span className="text-2xl">⚫</span>

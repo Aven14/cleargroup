@@ -19,7 +19,7 @@ type NavItem = {
   matchPrefix?: string;
 };
 
-function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean, isInClearRescue: boolean): NavItem[] {
+function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecurity: boolean, isInClearRescue: boolean, isInClearDP: boolean): NavItem[] {
   const links: NavItem[] = [];
 
   if (isInClearBus) {
@@ -62,6 +62,17 @@ function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecuri
       );
     }
   }
+  if (isInClearDP) {
+    if (hasRole(roles, "MECANICIEN") || hasRole(roles, "ADMIN")) {
+      links.push(
+        { href: "/cleardp/interne/tableau-de-bord", label: "Tableau de bord" },
+        { href: "/cleardp/interne/prise-service", label: "Prise de service" },
+        { href: "/cleardp/interne/interventions", label: "Interventions" },
+        { href: "/cleardp/interne/clients", label: "Clients" },
+        { href: "/cleardp/interne/agents", label: "Mécaniciens" }
+      );
+    }
+  }
 
   return links;
 }
@@ -98,19 +109,21 @@ export function SidebarRight({ user }: { user: NavUser | null }) {
     const isInClearBus = pathname.startsWith('/clearbus');
     const isInClearSecurity = pathname.startsWith('/clearsecurity');
     const isInClearRescue = pathname.startsWith('/clearrescue');
+    const isInClearDP = pathname.startsWith('/cleardp');
     
-    if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue)) {
+    if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue && !isInClearDP)) {
       return [];
     }
     
-    return linksForRoles(user.roles, isInClearBus, isInClearSecurity, isInClearRescue);
+    return linksForRoles(user.roles, isInClearBus, isInClearSecurity, isInClearRescue, isInClearDP);
   }, [user, pathname]);
 
   const isInClearBus = pathname.startsWith('/clearbus');
   const isInClearSecurity = pathname.startsWith('/clearsecurity');
   const isInClearRescue = pathname.startsWith('/clearrescue');
+  const isInClearDP = pathname.startsWith('/cleardp');
 
-  if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue) || sidebarLinks.length === 0) {
+  if (!user || (!isInClearBus && !isInClearSecurity && !isInClearRescue && !isInClearDP) || sidebarLinks.length === 0) {
     return null;
   }
 
@@ -118,7 +131,7 @@ export function SidebarRight({ user }: { user: NavUser | null }) {
     <aside className="fixed right-0 top-0 z-50 flex h-screen w-56 flex-col border-l border-line/70 bg-surface/85 shadow-elevated backdrop-blur-md">
       <div className="border-b border-line/70 px-4 py-4">
         <h2 className="text-sm font-bold text-ink">
-          {isInClearBus ? "ClearBus" : isInClearSecurity ? "ClearSecurity" : "ClearRescue"}
+          {isInClearBus ? "ClearBus" : isInClearSecurity ? "ClearSecurity" : isInClearRescue ? "ClearRescue" : "ClearDP"}
         </h2>
       </div>
 

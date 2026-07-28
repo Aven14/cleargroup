@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Client {
   id: string;
@@ -20,17 +19,13 @@ interface Client {
   repairs: {
     id: string;
     repairType: string;
-    description: string;
     totalCost: number;
-    finalCost: number;
-    discountApplied: boolean;
     status: string;
-    startedAt: string;
     completedAt: string | null;
   }[];
 }
 
-export default function FichesPage() {
+export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -115,7 +110,7 @@ export default function FichesPage() {
   };
 
   const handleDeleteClient = async (id: string) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette fiche client ?")) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce dossier client ?")) {
       try {
         const response = await fetch(`/api/dp/clients/${id}`, {
           method: 'DELETE',
@@ -142,6 +137,21 @@ export default function FichesPage() {
     setShowCreateForm(true);
   };
 
+  const handleToggleDiscount = async (id: string, hasDiscount: boolean) => {
+    try {
+      const response = await fetch(`/api/dp/clients/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hasDiscount: !hasDiscount }),
+      });
+      if (response.ok) {
+        await loadClients();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la modification de la remise:', error);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
   };
@@ -155,19 +165,19 @@ export default function FichesPage() {
     );
   });
 
-  const getRepairsUntilDiscount = (totalRepairs: number) => {
-    const REPAIRS_FOR_DISCOUNT = 5;
-    const remaining = REPAIRS_FOR_DISCOUNT - totalRepairs;
-    return remaining > 0 ? remaining : 0;
+  const getLoyaltyLevel = (points: number) => {
+    if (points >= 500) return { level: "Or", color: "bg-yellow-100 text-yellow-700" };
+    if (points >= 200) return { level: "Argent", color: "bg-gray-100 text-gray-700" };
+    if (points >= 50) return { level: "Bronze", color: "bg-orange-100 text-orange-700" };
+    return { level: "Nouveau", color: "bg-blue-100 text-blue-700" };
   };
 
   return (
-    <div className="mr-56">
-      <DPSidebar />
+    <div className="page-enter">
       <PageHeader
         brand="ClearDP"
-        title="Fiches clients"
-        subtitle="Gestion des dossiers clients et historique des réparations"
+        title="Clients"
+        subtitle="Gestion des fiches clients et programme de fidélité"
       />
 
       <section className="mb-8">
@@ -194,14 +204,14 @@ export default function FichesPage() {
             }}
             className="btn-primary"
           >
-            {showCreateForm ? "Annuler" : "Nouvelle fiche"}
+            {showCreateForm ? "Annuler" : "Nouveau client"}
           </button>
         </div>
 
         {showCreateForm && (
           <div className="panel-soft p-6">
             <h3 className="mb-4 font-bold text-ink">
-              {editingClient ? "Modifier la fiche" : "Nouvelle fiche client"}
+              {editingClient ? "Modifier le dossier" : "Nouveau dossier client"}
             </h3>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -230,6 +240,7 @@ export default function FichesPage() {
                   <input
                     type="text"
                     className="input-field w-full"
+                    placeholder="Ex: 06 12 34 56 78"
                     value={newClient.phoneNumber}
                     onChange={(e) => setNewClient({ ...newClient, phoneNumber: e.target.value })}
                   />
@@ -237,8 +248,9 @@ export default function FichesPage() {
                 <div>
                   <label className="block mb-2 text-sm font-medium text-muted">Email</label>
                   <input
-                    type="text"
+                    type="email"
                     className="input-field w-full"
+                    placeholder="Ex: client@email.com"
                     value={newClient.email}
                     onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
                   />
@@ -246,10 +258,11 @@ export default function FichesPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d&apos;immatriculation</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d'immatriculation</label>
                   <input
                     type="text"
                     className="input-field w-full"
+                    placeholder="Ex: AA-123-BB"
                     value={newClient.vehiclePlate}
                     onChange={(e) => setNewClient({ ...newClient, vehiclePlate: e.target.value.toUpperCase() })}
                   />
@@ -259,6 +272,7 @@ export default function FichesPage() {
                   <input
                     type="text"
                     className="input-field w-full"
+                    placeholder="Ex: Ford Mustang"
                     value={newClient.vehicleModel}
                     onChange={(e) => setNewClient({ ...newClient, vehicleModel: e.target.value })}
                   />
@@ -268,7 +282,7 @@ export default function FichesPage() {
                 onClick={editingClient ? handleUpdateClient : handleCreateClient}
                 className="btn-primary w-full"
               >
-                {editingClient ? "Mettre à jour" : "Créer la fiche"}
+                {editingClient ? "Mettre à jour" : "Créer le dossier"}
               </button>
             </div>
           </div>
@@ -277,92 +291,83 @@ export default function FichesPage() {
 
       <section>
         <h2 className="mb-4 text-lg font-bold text-ink">
-          Fiches clients ({filteredClients.length})
+          Clients ({filteredClients.length})
         </h2>
         {loading ? (
           <div className="panel-soft p-6 text-center text-muted">Chargement...</div>
         ) : filteredClients.length === 0 ? (
           <div className="panel-soft p-6 text-center text-muted">
-            {searchTerm ? "Aucun résultat" : "Aucune fiche client"}
+            {searchTerm ? "Aucun résultat" : "Aucun client"}
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredClients.map((client) => (
-              <div key={client.id} className="panel-soft p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="font-bold text-ink">
-                      {client.firstname} {client.lastname}
-                    </h3>
-                    <p className="text-sm text-muted">{client.vehicleModel}</p>
-                  </div>
-                  {client.hasDiscount && (
-                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
-                      -50%
+            {filteredClients.map((client) => {
+              const loyalty = getLoyaltyLevel(client.loyaltyPoints);
+              return (
+                <div key={client.id} className="panel-soft p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="font-bold text-ink">
+                        {client.firstname} {client.lastname}
+                      </h3>
+                      <p className="text-sm text-muted">
+                        {client.vehiclePlate} · {client.vehicleModel}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-sm font-bold ${loyalty.color}`}>
+                      {loyalty.level}
                     </span>
-                  )}
-                </div>
-                <div className="mb-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted">Plaque:</span>
-                    <span className="text-ink font-mono">{client.vehiclePlate}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted">Réparations:</span>
-                    <span className="text-ink">{client.totalRepairs}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted">Points fidélité:</span>
-                    <span className="text-ink">{client.loyaltyPoints}</span>
-                  </div>
-                  {!client.hasDiscount && (
+                  <div className="mb-4 space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted">Avant -50%:</span>
-                      <span className="text-ink">{getRepairsUntilDiscount(client.totalRepairs)} répa</span>
+                      <span className="text-muted">Points de fidélité:</span>
+                      <span className="text-ink font-semibold">{client.loyaltyPoints}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted">Réparations:</span>
+                      <span className="text-ink">{client.totalRepairs}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted">Client depuis:</span>
+                      <span className="text-ink">{formatDate(client.createdAt)}</span>
+                    </div>
+                  </div>
+                  {client.phoneNumber && (
+                    <div className="mb-4">
+                      <p className="text-xs text-muted mb-1">Contact:</p>
+                      <p className="text-sm text-ink">{client.phoneNumber}</p>
+                      {client.email && <p className="text-sm text-muted">{client.email}</p>}
                     </div>
                   )}
+                  <div className="mb-4">
+                    <button
+                      onClick={() => handleToggleDiscount(client.id, client.hasDiscount)}
+                      className={`w-full px-3 py-2 rounded text-sm font-medium transition-colors ${
+                        client.hasDiscount
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {client.hasDiscount ? "✓ Remise active" : "Activer remise"}
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEditClient(client)}
+                      className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClient(client.id)}
+                      className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200 transition-colors"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
                 </div>
-                <div className="mb-4">
-                  <p className="text-xs text-muted mb-1">Historique récent:</p>
-                  {client.repairs.length === 0 ? (
-                    <p className="text-sm text-muted italic">Aucune réparation</p>
-                  ) : (
-                    <div className="space-y-1">
-                      {client.repairs.slice(0, 3).map((repair) => (
-                        <div key={repair.id} className="text-xs p-2 bg-gray-50 rounded">
-                          <div className="flex justify-between">
-                            <span className="font-medium">{repair.repairType}</span>
-                            <span className="text-muted">
-                              {formatDate(repair.startedAt)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between mt-1">
-                            <span className={`text-xs ${repair.discountApplied ? 'text-green-600' : ''}`}>
-                              {repair.discountApplied ? 'Promo appliquée' : repair.status}
-                            </span>
-                            <span className="font-medium">{repair.finalCost} $</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditClient(client)}
-                    className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
-                  >
-                    Ouvrir
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClient(client.id)}
-                    className="flex-1 px-3 py-2 bg-red-100 text-red-700 rounded text-sm font-medium hover:bg-red-200 transition-colors"
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
