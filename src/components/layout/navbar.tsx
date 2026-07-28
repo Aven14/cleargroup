@@ -207,7 +207,7 @@ export function Navbar({ user }: { user: NavUser | null }) {
           </>
         ) : (
           <>
-            {user.roles.includes("ADMIN") && (
+            {user.roles.includes("ADMIN") && !pathname.startsWith('/clearbus') && !pathname.startsWith('/clearsecurity') && !pathname.startsWith('/clearrescue') && !pathname.startsWith('/cleardp') && (
               <Link
                 href="/admin"
                 prefetch={true}
