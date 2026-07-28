@@ -14,6 +14,7 @@ interface Intervention {
   interventionType: string;
   observations: string;
   maxMechanics: number;
+  available: boolean;
   mechanics: {
     id: string;
     firstname: string;
@@ -40,9 +41,8 @@ export default function InterventionsPage() {
   const [newIntervention, setNewIntervention] = useState({
     secteur: "",
     vehicule: "",
-    type: "Dépannage",
     observations: "",
-    maxMechanics: 2,
+    maxMechanics: 4,
   });
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function InterventionsPage() {
 
   const loadInterventions = async () => {
     try {
-      const response = await fetch('/api/dp/interventions');
+      const response = await fetch('/api/dp/patrols');
       if (response.ok) {
         const data = await response.json();
         setInterventions(data);
@@ -78,13 +78,12 @@ export default function InterventionsPage() {
 
   const handleCreateIntervention = async () => {
     try {
-      const response = await fetch('/api/dp/interventions', {
+      const response = await fetch('/api/dp/patrols', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sector: newIntervention.secteur,
           vehicle: newIntervention.vehicule,
-          interventionType: newIntervention.type,
           observations: newIntervention.observations,
           maxMechanics: newIntervention.maxMechanics,
         }),
@@ -94,9 +93,8 @@ export default function InterventionsPage() {
         setNewIntervention({
           secteur: "",
           vehicule: "",
-          type: "Dépannage",
           observations: "",
-          maxMechanics: 2,
+          maxMechanics: 4,
         });
         setShowCreateForm(false);
       }
@@ -107,7 +105,7 @@ export default function InterventionsPage() {
 
   const handleEndIntervention = async (id: string) => {
     try {
-      const response = await fetch(`/api/dp/interventions/${id}`, {
+      const response = await fetch(`/api/dp/patrols/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ended: true }),
@@ -151,7 +149,7 @@ export default function InterventionsPage() {
 
   const handleLeaveIntervention = async (id: string) => {
     try {
-      const response = await fetch(`/api/dp/interventions/${id}/leave`, {
+      const response = await fetch(`/api/dp/patrols/${id}/leave`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -160,6 +158,21 @@ export default function InterventionsPage() {
       }
     } catch (error) {
       console.error('Erreur lors du départ de l&apos;intervention:', error);
+    }
+  };
+
+  const handleToggleAvailable = async (id: string, available: boolean) => {
+    try {
+      const response = await fetch(`/api/dp/patrols/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ available: !available }),
+      });
+      if (response.ok) {
+        await loadInterventions();
+      }
+    } catch (error) {
+      console.error('Erreur lors du changement de disponibilité:', error);
     }
   };
 
@@ -239,27 +252,14 @@ export default function InterventionsPage() {
                 />
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Type d&apos;intervention</label>
-                <select
-                  className="input-field w-full"
-                  value={newIntervention.type}
-                  onChange={(e) => setNewIntervention({ ...newIntervention, type: e.target.value })}
-                >
-                  <option>Dépannage</option>
-                  <option>Réparation</option>
-                  <option>Remorquage</option>
-                  <option>Entretien</option>
-                </select>
-              </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Nombre max de mécaniciens (max 8)</label>
+                <label className="block mb-2 text-sm font-medium text-muted">Nombre max de dépanneurs (max 4)</label>
                 <input
                   type="number"
                   min="1"
-                  max="8"
+                  max="4"
                   className="input-field w-full"
                   value={newIntervention.maxMechanics}
-                  onChange={(e) => setNewIntervention({ ...newIntervention, maxMechanics: Math.min(8, Math.max(1, parseInt(e.target.value) || 1)) })}
+                  onChange={(e) => setNewIntervention({ ...newIntervention, maxMechanics: Math.min(4, Math.max(1, parseInt(e.target.value) || 1)) })}
                 />
               </div>
               <div>
@@ -303,7 +303,7 @@ export default function InterventionsPage() {
                   </span>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Mécaniciens ({intervention.mechanics.length}/{intervention.maxMechanics})</p>
+                  <p className="text-xs text-muted mb-1">Dépanneurs ({intervention.mechanics.length}/{intervention.maxMechanics})</p>
                   <div className="flex flex-wrap gap-1">
                     {intervention.mechanics.map((m, idx) => (
                       <span key={idx} className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">
@@ -323,17 +323,16 @@ export default function InterventionsPage() {
                   </div>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Type d&apos;intervention</p>
-                  <select
-                    className="input-field w-full text-sm py-1"
-                    value={intervention.interventionType}
-                    onChange={(e) => handleUpdateType(intervention.id, e.target.value)}
+                  <button
+                    onClick={() => handleToggleAvailable(intervention.id, intervention.available)}
+                    className={`w-full px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                      intervention.available
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-red-100 text-red-700 hover:bg-red-200"
+                    }`}
                   >
-                    <option>Dépannage</option>
-                    <option>Réparation</option>
-                    <option>Remorquage</option>
-                    <option>Entretien</option>
-                  </select>
+                    {intervention.available ? "✓ Disponible" : "✗ Indisponible"}
+                  </button>
                 </div>
                 {currentUser && currentUser.roles.includes('MECANICIEN') && (
                   <div className="mb-3">
@@ -395,7 +394,7 @@ export default function InterventionsPage() {
                   </span>
                 </div>
                 <div className="mb-3">
-                  <p className="text-xs text-muted mb-1">Mécaniciens ({intervention.mechanics.length})</p>
+                  <p className="text-xs text-muted mb-1">Dépanneurs ({intervention.mechanics.length})</p>
                   <div className="flex flex-wrap gap-1">
                     {intervention.mechanics.map((m, idx) => (
                       <span key={idx} className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">

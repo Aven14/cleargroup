@@ -489,7 +489,8 @@ model DPPatrol {
   endedAt           DateTime?
   interventionType  String
   observations      String?
-  maxMechanics      Int      @default(2)
+  maxMechanics      Int      @default(4)
+  available         Boolean  @default(true)
   additionalMechanicIds String[] @default([])
   mechanic          User     @relation("CreatedDPPatrols", fields: [mechanicId], references: [id], onDelete: Cascade)
   coequipier         User?    @relation("DPPatrolMembers", fields: [coequipierId], references: [id], onDelete: SetNull)

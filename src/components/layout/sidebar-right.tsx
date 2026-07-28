@@ -69,7 +69,7 @@ function linksForRoles(roles: UserRole[], isInClearBus: boolean, isInClearSecuri
         { href: "/cleardp/interne/prise-service", label: "Prise de service" },
         { href: "/cleardp/interne/patrouilles", label: "Patrouilles" },
         { href: "/cleardp/interne/clients", label: "Clients" },
-        { href: "/cleardp/interne/agents", label: "Mécaniciens" }
+        { href: "/cleardp/interne/agents", label: "Dépanneurs" }
       );
     }
   }

@@ -77,9 +77,10 @@ export async function POST(request: NextRequest) {
       coequipierId: coequipierId || null,
       sector,
       vehicle,
-      interventionType: interventionType || "Dépannage",
+      interventionType: "Dépannage",
       observations: observations || "",
-      maxMechanics: Math.min(8, Math.max(1, maxMechanics || 2)),
+      maxMechanics: Math.min(4, Math.max(1, maxMechanics || 4)),
+      available: true,
       additionalMechanicIds: [],
     },
     include: {
