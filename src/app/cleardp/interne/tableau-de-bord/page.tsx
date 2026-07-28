@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Stats {
   totalClients: number;
@@ -59,8 +58,7 @@ export default function TableauDeBordPage() {
   };
 
   return (
-    <div className="page-enter mr-56">
-      <DPSidebar />
+    <div className="page-enter">
       <PageHeader
         brand="ClearDP"
         title="Tableau de bord"

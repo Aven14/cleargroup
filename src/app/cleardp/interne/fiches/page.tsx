@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
-import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Client {
   id: string;
@@ -162,8 +161,7 @@ export default function FichesPage() {
   };
 
   return (
-    <div className="page-enter mr-56">
-      <DPSidebar />
+    <div className="page-enter">
       <PageHeader
         brand="ClearDP"
         title="Fiches clients"
