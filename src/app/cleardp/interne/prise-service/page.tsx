@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Shift {
   id: string;
@@ -99,7 +100,8 @@ export default function PriseServicePage() {
   };
 
   return (
-    <div className="page-enter">
+    <div className="page-enter mr-56">
+      <DPSidebar />
       <PageHeader
         brand="ClearDP"
         title="Prise de service"

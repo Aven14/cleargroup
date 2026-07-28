@@ -53,14 +53,6 @@ function linksForRoles(roles: UserRole[]): NavItem[] {
       { href: "/clearrescue/interne/planning", label: "Planning", matchPrefix: "/clearrescue/interne/planning" }
     );
   }
-  if (hasRole(roles, "MECANICIEN")) {
-    links.push(
-      { href: "/cleardp/interne/tableau-de-bord", label: "Tableau de bord", matchPrefix: "/cleardp/interne" },
-      { href: "/cleardp/interne/prise-service", label: "Prise de service", matchPrefix: "/cleardp/interne/prise-service" },
-      { href: "/cleardp/interne/agents", label: "Mécaniciens", matchPrefix: "/cleardp/interne/agents" },
-      { href: "/cleardp/interne/fiches", label: "Fiches clients", matchPrefix: "/cleardp/interne/fiches" }
-    );
-  }
   if (hasRole(roles, "DRIVER")) {
     links.push({ href: "/clearbus/chauffeur", label: "Espace chauffeur" });
   }
