@@ -14,7 +14,7 @@ export async function PATCH(
   const { ended, available } = body;
   const { id } = await params;
 
-  const updateData: any = {};
+  const updateData: { endedAt?: Date | null; available?: boolean } = {};
   if (ended !== undefined) {
     updateData.endedAt = ended ? new Date() : null;
   }

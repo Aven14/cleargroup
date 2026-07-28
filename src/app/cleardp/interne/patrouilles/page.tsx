@@ -118,21 +118,6 @@ export default function InterventionsPage() {
     }
   };
 
-  const handleUpdateType = async (id: string, type: string) => {
-    try {
-      const response = await fetch(`/api/dp/interventions/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interventionType: type }),
-      });
-      if (response.ok) {
-        await loadInterventions();
-      }
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du type:', error);
-    }
-  };
-
   const handleJoinIntervention = async (id: string) => {
     try {
       const response = await fetch(`/api/dp/interventions/${id}/join`, {

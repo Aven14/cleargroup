@@ -138,21 +138,6 @@ export default function ClientsPage() {
     setViewingClient(client);
   };
 
-  const handleToggleDiscount = async (id: string, hasDiscount: boolean) => {
-    try {
-      const response = await fetch(`/api/dp/clients/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hasDiscount: !hasDiscount }),
-      });
-      if (response.ok) {
-        await loadClients();
-      }
-    } catch (error) {
-      console.error('Erreur lors de la modification de la remise:', error);
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
   };

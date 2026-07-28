@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   const body = await request.json();
-  const { coequipierId, sector, vehicle, interventionType, observations, maxMechanics } = body;
+  const { coequipierId, sector, vehicle, observations, maxMechanics } = body;
 
   if (!sector || !vehicle) {
     return NextResponse.json({ error: "Champs manquants" }, { status: 400 });
