@@ -2,32 +2,51 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { hasRole } from "@/lib/roles";
 import { PageHeader } from "@/components/ui/page-header";
+import { ProfileForm } from "@/components/profile/profile-form";
+import { prisma } from "@/lib/prisma";
 
 export default async function EspacePersonnelPage() {
-  const user = await getCurrentUser();
+  const sessionUser = await getCurrentUser();
   
-  if (!user) {
+  if (!sessionUser) {
     redirect("/clearbus/connexion");
   }
 
   // Rediriger vers la page appropriée selon le rôle
-  if (hasRole(user.roles, "ADMIN")) {
+  if (hasRole(sessionUser.roles, "ADMIN")) {
     redirect("/admin");
   }
-  if (hasRole(user.roles, "SECURITY")) {
+  if (hasRole(sessionUser.roles, "SECURITY")) {
     redirect("/clearsecurity/interne/tableau-de-bord");
   }
-  if (hasRole(user.roles, "AMBULANCIER")) {
+  if (hasRole(sessionUser.roles, "AMBULANCIER")) {
     redirect("/clearrescue/interne/tableau-de-bord");
   }
-  if (hasRole(user.roles, "MECANICIEN")) {
+  if (hasRole(sessionUser.roles, "MECANICIEN")) {
     redirect("/cleardp/interne/tableau-de-bord");
   }
-  if (hasRole(user.roles, "DRIVER")) {
+  if (hasRole(sessionUser.roles, "DRIVER")) {
     redirect("/clearbus/chauffeur");
   }
-  if (hasRole(user.roles, "CONTROLLER")) {
+  if (hasRole(sessionUser.roles, "CONTROLLER")) {
     redirect("/clearbus/controleur");
+  }
+
+  // Récupérer l'utilisateur complet avec createdAt
+  const user = await prisma.user.findUnique({
+    where: { id: sessionUser.id },
+    select: {
+      id: true,
+      firstname: true,
+      lastname: true,
+      email: true,
+      roles: true,
+      createdAt: true,
+    },
+  });
+
+  if (!user) {
+    redirect("/clearbus/connexion");
   }
 
   // Pour les CIVIL, afficher leur espace personnel
@@ -39,45 +58,7 @@ export default async function EspacePersonnelPage() {
       />
 
       <div className="panel-soft p-6 space-y-6">
-        <div>
-          <h3 className="mb-4 font-bold text-ink">Informations personnelles</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted">Nom</span>
-              <span className="text-ink">{user.firstname} {user.lastname}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Email</span>
-              <span className="text-ink">{user.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted">Rôle</span>
-              <span className="text-ink">Civil</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-line pt-6">
-          <h3 className="mb-4 font-bold text-ink">Services disponibles</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            <a href="/clearbus" className="panel-soft p-4 hover:shadow-lg transition-shadow">
-              <h4 className="font-bold text-ink">ClearBus</h4>
-              <p className="text-sm text-muted">Transport en commun</p>
-            </a>
-            <a href="/clearsecurity" className="panel-soft p-4 hover:shadow-lg transition-shadow">
-              <h4 className="font-bold text-ink">ClearSecurity</h4>
-              <p className="text-sm text-muted">Sécurité</p>
-            </a>
-            <a href="/clearrescue" className="panel-soft p-4 hover:shadow-lg transition-shadow">
-              <h4 className="font-bold text-ink">ClearRescue</h4>
-              <p className="text-sm text-muted">Services médicaux</p>
-            </a>
-            <a href="/cleardp" className="panel-soft p-4 hover:shadow-lg transition-shadow">
-              <h4 className="font-bold text-ink">ClearDP</h4>
-              <p className="text-sm text-muted">Dépannage</p>
-            </a>
-          </div>
-        </div>
+        <ProfileForm user={user} />
       </div>
     </div>
   );

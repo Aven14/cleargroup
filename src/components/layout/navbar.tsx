@@ -207,6 +207,20 @@ export function Navbar({ user }: { user: NavUser | null }) {
           </>
         ) : (
           <>
+            {user.roles.includes("ADMIN") && (
+              <Link
+                href="/admin"
+                prefetch={true}
+                className={cn(
+                  "block rounded-md px-3 py-2.5 text-sm font-medium transition",
+                  pathname === "/admin"
+                    ? "bg-primary text-white shadow-card"
+                    : "text-muted hover:bg-primary-light/40 hover:text-primary"
+                )}
+              >
+                Admin
+              </Link>
+            )}
             <Link
               href="/espace-personnel"
               prefetch={true}
