@@ -231,15 +231,18 @@ export default function ClientsPage() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-muted">Email (@a4l.fr uniquement)</label>
+              <div className="relative">
+                <label className="block mb-2 text-sm font-medium text-muted">Email</label>
                 <input
                   type="email"
-                  className="input-field w-full"
-                  placeholder="Ex: client@a4l.fr"
+                  className="input-field w-full pr-24"
+                  placeholder="Ex: client"
                   value={newClient.email}
                   onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
                 />
+                <span className="absolute right-4 top-8 text-muted pointer-events-none opacity-60">
+                  @a4l.fr
+                </span>
               </div>
               <button
                 onClick={handleCreateClient}
