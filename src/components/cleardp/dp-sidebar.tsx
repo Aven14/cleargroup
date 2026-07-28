@@ -55,7 +55,7 @@ export function DPSidebar() {
   };
 
   return (
-    <aside className="fixed right-0 top-0 z-40 flex h-screen w-56 flex-col border-l border-line/70 bg-surface shadow-elevated">
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-line/70 bg-surface shadow-elevated">
       <div className="border-b border-line/70 px-4 py-4">
         <button
           onClick={handleBack}
