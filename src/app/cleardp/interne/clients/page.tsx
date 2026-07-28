@@ -415,7 +415,7 @@ export default function ClientsPage() {
                           </span>
                         </div>
                         <div className="flex justify-between text-xs text-muted">
-                          <span>Coût: {repair.totalCost.toFixed(2)}€</span>
+                          <span>Coût: {Number(repair.totalCost).toFixed(2)}€</span>
                           <span>{repair.completedAt ? formatDate(repair.completedAt) : formatDate(repair.startedAt)}</span>
                         </div>
                       </div>
