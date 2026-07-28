@@ -238,12 +238,7 @@ export default function ClientsPage() {
                   className="input-field w-full"
                   placeholder="Ex: client@a4l.fr"
                   value={newClient.email}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '' || value.endsWith('@a4l.fr')) {
-                      setNewClient({ ...newClient, email: value });
-                    }
-                  }}
+                  onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
                 />
               </div>
               <button
