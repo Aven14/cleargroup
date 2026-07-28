@@ -16,10 +16,13 @@ export async function registerUser(data: {
   firstname: string;
   lastname: string;
 }) {
-  const email = data.email.trim().toLowerCase();
   const firstname = data.firstname.trim();
   const lastname = data.lastname.trim();
   const password = data.password;
+  const emailInput = data.email.trim().toLowerCase();
+
+  // Ajouter @a4l.fr automatiquement
+  const email = emailInput.endsWith("@a4l.fr") ? emailInput : `${emailInput}@a4l.fr`;
 
   if (!email || !password || !firstname || !lastname) {
     return { success: false, error: "Tous les champs sont requis." };

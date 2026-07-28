@@ -36,8 +36,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={handleSubmit} className="panel space-y-4 p-6">
       <p className="text-sm text-muted">
-        Utilisez votre identité RP pour le nom et prénom. L&apos;email doit être
-        votre vraie adresse pour la gestion du compte.
+        Utilisez votre identité RP pour le nom et prénom. L&apos;email sera automatiquement complété avec @a4l.fr
       </p>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
@@ -50,8 +49,8 @@ export function RegisterForm() {
         </div>
       </div>
       <div>
-        <label className="label-caps mb-1 block">Vrai e-mail</label>
-        <input name="email" type="email" className="input-field" required />
+        <label className="label-caps mb-1 block">Nom d&apos;utilisateur (email sans @a4l.fr)</label>
+        <input name="email" className="input-field" required placeholder="ex: jean.dupont" />
       </div>
       <div>
         <label className="label-caps mb-1 block">Mot de passe</label>
