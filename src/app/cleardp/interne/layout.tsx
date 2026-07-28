@@ -6,7 +6,7 @@ export default function ClearDPInterneLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="page-enter mr-56">
+    <div className="mr-56">
       <DPSidebar />
       {children}
     </div>

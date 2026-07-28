@@ -51,24 +51,10 @@ function DPNavLink({
 
 export function DPSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleBack = () => {
-    router.push("/cleardp");
-  };
 
   return (
     <aside className="fixed right-0 top-0 z-40 flex h-screen w-56 flex-col border-l border-line/70 bg-surface shadow-elevated">
       <div className="border-b border-line/70 px-4 py-4">
-        <button
-          onClick={handleBack}
-          className="mb-3 flex items-center gap-2 text-sm font-medium text-muted hover:text-primary transition"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Retour à ClearDP
-        </button>
         <h2 className="text-lg font-bold text-ink">Module Interne</h2>
       </div>
 
