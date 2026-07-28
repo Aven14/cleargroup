@@ -56,10 +56,25 @@ export async function registerUser(data: {
       details: `Nouvel utilisateur: ${firstname} ${lastname} (${email})`,
     });
 
+    // Connecter automatiquement l'utilisateur
+    await destroySession();
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user) {
+      await createSession(user.id);
+      
+      // Logger la connexion
+      await createLog({
+        action: "LOGIN",
+        entity: "User",
+        entityId: user.id,
+        details: `${user.firstname} ${user.lastname}`,
+      });
+    }
+
     return {
       success: true,
-      message:
-        "Compte créé avec le rôle Civil. Connectez-vous pour accéder à votre espace personnel.",
+      message: "Compte créé avec succès.",
+      redirect: getLoginRedirect(["CIVIL"]),
     };
   } catch {
     return { success: false, error: "Erreur lors de l'inscription." };

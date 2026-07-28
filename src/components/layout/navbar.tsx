@@ -208,11 +208,11 @@ export function Navbar({ user }: { user: NavUser | null }) {
         ) : (
           <>
             <Link
-              href="/clearbus/espace-personnel"
+              href="/espace-personnel"
               prefetch={true}
               className={cn(
                 "block rounded-md px-3 py-2.5 text-sm font-medium transition",
-                pathname === "/clearbus/espace-personnel"
+                pathname === "/espace-personnel"
                   ? "bg-primary text-white shadow-card"
                   : "text-muted hover:bg-primary-light/40 hover:text-primary"
               )}

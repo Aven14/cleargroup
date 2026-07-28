@@ -26,7 +26,9 @@ export function RegisterForm() {
       });
       if (res.success) {
         setSuccess(res.message ?? "Compte créé.");
-        setTimeout(() => router.push("/connexion"), 2000);
+        if (res.redirect) {
+          setTimeout(() => router.push(res.redirect!), 1000);
+        }
       } else {
         setError(res.error ?? "Erreur");
       }

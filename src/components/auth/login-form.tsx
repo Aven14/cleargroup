@@ -16,7 +16,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     e.preventDefault();
     setError(null);
     startTransition(async () => {
-      const res = await loginUser(email, password);
+      // Ajouter @a4l.fr automatiquement si non présent
+      const normalizedEmail = email.endsWith("@a4l.fr") ? email : `${email}@a4l.fr`;
+      
+      const res = await loginUser(normalizedEmail, password);
       if (res.success && res.redirect) {
         router.push(redirectTo || res.redirect);
         router.refresh();
@@ -29,7 +32,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   return (
     <form onSubmit={handleSubmit} className="panel space-y-4 p-6">
       <div>
-        <label className="label-caps mb-1 block">Email</label>
+        <label className="label-caps mb-1 block">Email (@a4l.fr ajouté automatiquement)</label>
         <input
           type="email"
           value={email}
@@ -37,6 +40,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
           className="input-field"
           required
           autoComplete="email"
+          placeholder="ex: jean.dupont"
         />
       </div>
       <div>
