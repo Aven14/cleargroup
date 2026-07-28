@@ -11,13 +11,14 @@ type DPNavItem = {
   matchPrefix?: string;
 };
 
-const dpNavItems: DPNavItem[] = [
+const DPNavItems: DPNavItem[] = [
   { href: "/cleardp/interne", label: "Tableau de bord", icon: "🏠", matchPrefix: "/cleardp/interne" },
   { href: "/cleardp/interne/prise-service", label: "Prise de service", icon: "👤", matchPrefix: "/cleardp/interne/prise-service" },
-  { href: "/cleardp/interne/patrouilles", label: "Patrouilles", icon: "🚗", matchPrefix: "/cleardp/interne/patrouilles" },
-  { href: "/cleardp/interne/agents", label: "Mécaniciens", icon: "👥", matchPrefix: "/cleardp/interne/agents" },
-  { href: "/cleardp/interne/fiches", label: "Fiches clients", icon: "📋", matchPrefix: "/cleardp/interne/fiches" },
+  { href: "/cleardp/interne/patrouilles", label: "Patrouilles", icon: "🚔", matchPrefix: "/cleardp/interne/patrouilles" },
+  { href: "/cleardp/interne/agents", label: "Dépanneurs", icon: "👥", matchPrefix: "/cleardp/interne/agents" },
+    { href: "/cleardp/interne/agents", label: "Fiches Clients", icon: "👥", matchPrefix: "/cleardp/interne/fiches" },
   { href: "/cleardp/interne/planning", label: "Planning", icon: "📅", matchPrefix: "/cleardp/interne/planning" },
+  { href: "/cleardp/interne/parametres", label: "Paramètres", icon: "⚙️", matchPrefix: "/cleardp/interne/parametres" },
 ];
 
 function DPNavLink({
@@ -72,7 +73,7 @@ export function DPSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        {dpNavItems.map((item) => (
+        {DPNavItems.map((item) => (
           <DPNavLink
             key={item.href}
             href={item.href}
