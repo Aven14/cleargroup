@@ -42,6 +42,7 @@ export default function ClientsPage() {
 
   const [newRepair, setNewRepair] = useState({
     description: "",
+    cost: "",
   });
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function ClientsPage() {
       const response = await fetch(`/api/dp/clients/${viewingClient.id}/repairs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ description: newRepair.description }),
+        body: JSON.stringify({ description: newRepair.description, cost: newRepair.cost }),
       });
       if (response.ok) {
         await loadClients();
@@ -111,7 +112,7 @@ export default function ClientsPage() {
             }
           }
         }
-        setNewRepair({ description: "" });
+        setNewRepair({ description: "", cost: "" });
       }
     } catch (error) {
       console.error('Erreur lors de l&apos;ajout de la réparation:', error);
@@ -381,7 +382,17 @@ export default function ClientsPage() {
                     className="input-field w-full min-h-[80px]"
                     placeholder="Ex: Remplacement plaquettes de frein avant, changement huile moteur..."
                     value={newRepair.description}
-                    onChange={(e) => setNewRepair({ description: e.target.value })}
+                    onChange={(e) => setNewRepair({ ...newRepair, description: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-muted">Prix à payer (€)</label>
+                  <input
+                    type="number"
+                    className="input-field w-full"
+                    placeholder="Ex: 150"
+                    value={newRepair.cost}
+                    onChange={(e) => setNewRepair({ ...newRepair, cost: e.target.value })}
                   />
                 </div>
                 <button

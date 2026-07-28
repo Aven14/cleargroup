@@ -11,8 +11,10 @@ export async function POST(
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   const body = await request.json();
-  const { description } = body;
+  const { description, cost } = body;
   const { id } = await params;
+
+  const costNumber = parseFloat(cost) || 0;
 
   // Créer la réparation
   const repair = await prisma.dPRepair.create({
@@ -24,12 +26,12 @@ export async function POST(
       repairType: "Réparation standard",
       description: description || null,
       laborHours: 1,
-      laborCost: 50,
+      laborCost: costNumber,
       partsCost: 0,
-      totalCost: 50,
-      finalCost: 50,
+      totalCost: costNumber,
+      finalCost: costNumber,
       discountApplied: false,
-      status: "En cours",
+      status: "Terminé",
     },
   });
 

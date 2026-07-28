@@ -46,6 +46,8 @@ model User {
   dpShifts DPServiceShift[]
   createdDPRepairs DPRepair[] @relation("CreatedRepairs")
   dpClients DPClient[]
+  createdDPPatrols DPPatrol[] @relation("CreatedDPPatrols")
+  dpPatrolMember DPPatrol[] @relation("DPPatrolMembers")
 
   @@index([roles])
 }
@@ -475,4 +477,23 @@ model DPRepair {
   @@index([status])
   @@index([startedAt])
   @@index([vehiclePlate])
+}
+
+model DPPatrol {
+  id                String   @id @default(cuid())
+  mechanicId        String
+  coequipierId      String?
+  sector            String
+  vehicle           String
+  startedAt         DateTime @default(now())
+  endedAt           DateTime?
+  interventionType  String
+  observations      String?
+  maxMechanics      Int      @default(2)
+  additionalMechanicIds String[] @default([])
+  mechanic          User     @relation("CreatedDPPatrols", fields: [mechanicId], references: [id], onDelete: Cascade)
+  coequipier         User?    @relation("DPPatrolMembers", fields: [coequipierId], references: [id], onDelete: SetNull)
+
+  @@index([mechanicId, endedAt])
+  @@index([endedAt])
 }
