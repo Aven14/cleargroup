@@ -185,7 +185,7 @@ export default function ClientsPage() {
           <input
             type="text"
             className="input-field flex-1"
-            placeholder="Rechercher par nom ou plaque d'immatriculation..."
+            placeholder="Rechercher par nom ou plaque d&apos;immatriculation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
