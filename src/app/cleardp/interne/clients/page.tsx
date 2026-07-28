@@ -19,8 +19,10 @@ interface Client {
   repairs: {
     id: string;
     repairType: string;
+    description: string | null;
     totalCost: number;
     status: string;
+    startedAt: string;
     completedAt: string | null;
   }[];
 }
@@ -29,16 +31,17 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [newClient, setNewClient] = useState({
     firstname: "",
     lastname: "",
-    phoneNumber: "",
     email: "",
-    vehiclePlate: "",
-    vehicleModel: "",
+  });
+
+  const [newRepair, setNewRepair] = useState({
+    description: "",
   });
 
   useEffect(() => {
@@ -71,10 +74,7 @@ export default function ClientsPage() {
         setNewClient({
           firstname: "",
           lastname: "",
-          phoneNumber: "",
           email: "",
-          vehiclePlate: "",
-          vehicleModel: "",
         });
         setShowCreateForm(false);
       }
@@ -83,29 +83,38 @@ export default function ClientsPage() {
     }
   };
 
-  const handleUpdateClient = async () => {
-    if (!editingClient) return;
+  const handleAddRepair = async () => {
+    if (!viewingClient) return;
     try {
-      const response = await fetch(`/api/dp/clients/${editingClient.id}`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/dp/clients/${viewingClient.id}/repairs`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newClient),
+        body: JSON.stringify({ description: newRepair.description }),
       });
       if (response.ok) {
         await loadClients();
-        setEditingClient(null);
-        setNewClient({
-          firstname: "",
-          lastname: "",
-          phoneNumber: "",
-          email: "",
-          vehiclePlate: "",
-          vehicleModel: "",
-        });
-        setShowCreateForm(false);
+        const updatedClient = clients.find(c => c.id === viewingClient.id);
+        if (updatedClient) {
+          setViewingClient(updatedClient);
+
+          // Vérifier si le nombre de réparations atteint 10 pour activer la remise
+          if (updatedClient.totalRepairs % 10 === 0 && !updatedClient.hasDiscount) {
+            await fetch(`/api/dp/clients/${updatedClient.id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hasDiscount: true }),
+            });
+            await loadClients();
+            const finalClient = clients.find(c => c.id === viewingClient.id);
+            if (finalClient) {
+              setViewingClient(finalClient);
+            }
+          }
+        }
+        setNewRepair({ description: "" });
       }
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du client:', error);
+      console.error('Erreur lors de l&apos;ajout de la réparation:', error);
     }
   };
 
@@ -124,17 +133,8 @@ export default function ClientsPage() {
     }
   };
 
-  const handleEditClient = (client: Client) => {
-    setEditingClient(client);
-    setNewClient({
-      firstname: client.firstname,
-      lastname: client.lastname,
-      phoneNumber: client.phoneNumber || "",
-      email: client.email || "",
-      vehiclePlate: client.vehiclePlate,
-      vehicleModel: client.vehicleModel,
-    });
-    setShowCreateForm(true);
+  const handleViewClient = (client: Client) => {
+    setViewingClient(client);
   };
 
   const handleToggleDiscount = async (id: string, hasDiscount: boolean) => {
@@ -192,14 +192,11 @@ export default function ClientsPage() {
           <button
             onClick={() => {
               setShowCreateForm(!showCreateForm);
-              setEditingClient(null);
+              setViewingClient(null);
               setNewClient({
                 firstname: "",
                 lastname: "",
-                phoneNumber: "",
                 email: "",
-                vehiclePlate: "",
-                vehicleModel: "",
               });
             }}
             className="btn-primary"
@@ -211,7 +208,7 @@ export default function ClientsPage() {
         {showCreateForm && (
           <div className="panel-soft p-6">
             <h3 className="mb-4 font-bold text-ink">
-              {editingClient ? "Modifier le dossier" : "Nouveau dossier client"}
+              Nouveau dossier client
             </h3>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -234,55 +231,26 @@ export default function ClientsPage() {
                   />
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Téléphone</label>
-                  <input
-                    type="text"
-                    className="input-field w-full"
-                    placeholder="Ex: 06 12 34 56 78"
-                    value={newClient.phoneNumber}
-                    onChange={(e) => setNewClient({ ...newClient, phoneNumber: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Email</label>
-                  <input
-                    type="email"
-                    className="input-field w-full"
-                    placeholder="Ex: client@email.com"
-                    value={newClient.email}
-                    onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d&apos;immatriculation</label>
-                  <input
-                    type="text"
-                    className="input-field w-full"
-                    placeholder="Ex: AA-123-BB"
-                    value={newClient.vehiclePlate}
-                    onChange={(e) => setNewClient({ ...newClient, vehiclePlate: e.target.value.toUpperCase() })}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Modèle de véhicule</label>
-                  <input
-                    type="text"
-                    className="input-field w-full"
-                    placeholder="Ex: Ford Mustang"
-                    value={newClient.vehicleModel}
-                    onChange={(e) => setNewClient({ ...newClient, vehicleModel: e.target.value })}
-                  />
-                </div>
+              <div>
+                <label className="block mb-2 text-sm font-medium text-muted">Email (@a4l.fr uniquement)</label>
+                <input
+                  type="email"
+                  className="input-field w-full"
+                  placeholder="Ex: client@a4l.fr"
+                  value={newClient.email}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === '' || value.endsWith('@a4l.fr')) {
+                      setNewClient({ ...newClient, email: value });
+                    }
+                  }}
+                />
               </div>
               <button
-                onClick={editingClient ? handleUpdateClient : handleCreateClient}
+                onClick={handleCreateClient}
                 className="btn-primary w-full"
               >
-                {editingClient ? "Mettre à jour" : "Créer le dossier"}
+                Créer le dossier
               </button>
             </div>
           </div>
@@ -332,31 +300,25 @@ export default function ClientsPage() {
                       <span className="text-ink">{formatDate(client.createdAt)}</span>
                     </div>
                   </div>
-                  {client.phoneNumber && (
+                  {client.email && (
                     <div className="mb-4">
                       <p className="text-xs text-muted mb-1">Contact:</p>
-                      <p className="text-sm text-ink">{client.phoneNumber}</p>
-                      {client.email && <p className="text-sm text-muted">{client.email}</p>}
+                      <p className="text-sm text-ink">{client.email}</p>
                     </div>
                   )}
-                  <div className="mb-4">
-                    <button
-                      onClick={() => handleToggleDiscount(client.id, client.hasDiscount)}
-                      className={`w-full px-3 py-2 rounded text-sm font-medium transition-colors ${
-                        client.hasDiscount
-                          ? "bg-green-100 text-green-700 hover:bg-green-200"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      {client.hasDiscount ? "✓ Remise active" : "Activer remise"}
-                    </button>
-                  </div>
+                  {client.hasDiscount && (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                        ✓ Remise active
+                      </span>
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <button
-                      onClick={() => handleEditClient(client)}
+                      onClick={() => handleViewClient(client)}
                       className="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded text-sm font-medium hover:bg-blue-200 transition-colors"
                     >
-                      Modifier
+                      Ouvrir
                     </button>
                     <button
                       onClick={() => handleDeleteClient(client.id)}
@@ -371,6 +333,105 @@ export default function ClientsPage() {
           </div>
         )}
       </section>
+
+      {viewingClient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="panel-soft max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-ink">
+                Dossier client : {viewingClient.firstname} {viewingClient.lastname}
+              </h2>
+              <button
+                onClick={() => setViewingClient(null)}
+                className="text-muted hover:text-ink text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="mb-6 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Email:</span>
+                <span className="text-ink">{viewingClient.email || "-"}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Points de fidélité:</span>
+                <span className="text-ink font-semibold">{viewingClient.loyaltyPoints}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Réparations:</span>
+                <span className="text-ink">{viewingClient.totalRepairs}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Client depuis:</span>
+                <span className="text-ink">{formatDate(viewingClient.createdAt)}</span>
+              </div>
+              {viewingClient.hasDiscount && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted">Remise:</span>
+                  <span className="text-green-700 font-semibold">✓ Active</span>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <h3 className="mb-4 font-bold text-ink">Ajouter une réparation</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-muted">Description de la réparation</label>
+                  <textarea
+                    className="input-field w-full min-h-[80px]"
+                    placeholder="Ex: Remplacement plaquettes de frein avant, changement huile moteur..."
+                    value={newRepair.description}
+                    onChange={(e) => setNewRepair({ description: e.target.value })}
+                  />
+                </div>
+                <button
+                  onClick={handleAddRepair}
+                  className="btn-primary w-full"
+                >
+                  Ajouter la réparation
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-4 font-bold text-ink">Historique des réparations</h3>
+              {viewingClient.repairs && viewingClient.repairs.length > 0 ? (
+                <div className="space-y-3">
+                  {viewingClient.repairs
+                    .sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime())
+                    .map((repair) => (
+                      <div key={repair.id} className="p-4 bg-surface rounded border">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex-1">
+                            <p className="font-medium text-ink">{repair.repairType}</p>
+                            <p className="text-sm text-muted mt-1">{repair.description || "Pas de description"}</p>
+                          </div>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            repair.status === "Terminé"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}>
+                            {repair.status}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted">
+                          <span>Coût: {repair.totalCost.toFixed(2)}€</span>
+                          <span>{repair.completedAt ? formatDate(repair.completedAt) : formatDate(repair.startedAt)}</span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="panel-soft p-4 text-center text-muted">
+                  Aucune réparation enregistrée
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
