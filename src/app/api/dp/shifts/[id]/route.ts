@@ -5,13 +5,15 @@ import { requireUser } from "@/lib/session";
 // PATCH - Terminer un shift de service
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["MECANICIEN", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
+  const { id } = await params;
+
   const shift = await prisma.dPServiceShift.update({
-    where: { id: params.id },
+    where: { id },
     data: { endedAt: new Date() },
   });
 

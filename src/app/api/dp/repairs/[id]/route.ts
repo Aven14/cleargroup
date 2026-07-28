@@ -5,13 +5,14 @@ import { requireUser } from "@/lib/session";
 // PATCH - Mettre à jour une réparation (statut, notes, etc.)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["MECANICIEN", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   const body = await request.json();
   const { status, notes } = body;
+  const { id } = await params;
 
   const updateData: { status?: string; notes?: string; completedAt?: Date } = {};
   if (status) updateData.status = status;
@@ -22,7 +23,7 @@ export async function PATCH(
   }
 
   const repair = await prisma.dPRepair.update({
-    where: { id: params.id },
+    where: { id },
     data: updateData,
     include: {
       client: true,
@@ -42,13 +43,15 @@ export async function PATCH(
 // DELETE - Supprimer une réparation
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requireUser(["MECANICIEN", "ADMIN"]);
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
+  const { id } = await params;
+
   const repair = await prisma.dPRepair.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!repair) {
@@ -56,7 +59,7 @@ export async function DELETE(
   }
 
   await prisma.dPRepair.delete({
-    where: { id: params.id },
+    where: { id },
   });
 
   // Décrémenter le compteur de réparations du client
