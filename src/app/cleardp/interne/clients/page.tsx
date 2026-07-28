@@ -240,7 +240,7 @@ export default function ClientsPage() {
                   value={newClient.email}
                   onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
                 />
-                <span className="absolute right-4 top-8 text-muted pointer-events-none opacity-60">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none opacity-60">
                   @a4l.fr
                 </span>
               </div>

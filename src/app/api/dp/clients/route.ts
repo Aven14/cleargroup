@@ -26,16 +26,15 @@ export async function POST(request: NextRequest) {
   if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
 
   const body = await request.json();
-  const { firstname, lastname, phoneNumber, email, vehiclePlate, vehicleModel } = body;
+  const { firstname, lastname, email } = body;
 
   const client = await prisma.dPClient.create({
     data: {
       firstname,
       lastname,
-      phoneNumber: phoneNumber || null,
-      email: email || null,
-      vehiclePlate: vehiclePlate.toUpperCase(),
-      vehicleModel,
+      email: email ? `${email}@a4l.fr` : null,
+      vehiclePlate: "EN ATTENTE",
+      vehicleModel: "Non spécifié",
       createdBy: auth.user.id,
     },
     include: {
