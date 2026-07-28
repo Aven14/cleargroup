@@ -185,7 +185,7 @@ export default function ClientsPage() {
           <input
             type="text"
             className="input-field flex-1"
-            placeholder="Rechercher par nom ou plaque d&apos;immatriculation..."
+            placeholder="Rechercher par nom ou plaque d'immatriculation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -258,7 +258,7 @@ export default function ClientsPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d'immatriculation</label>
+                  <label className="block mb-2 text-sm font-medium text-muted">Plaque d&apos;immatriculation</label>
                   <input
                     type="text"
                     className="input-field w-full"
