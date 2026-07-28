@@ -38,6 +38,11 @@ export default function ClearDPPage() {
     return new Date(dateString).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
   };
 
+  const formatRole = (role: string) => {
+    if (role === "MECANICIEN") return "Dépanneur";
+    return role;
+  };
+
   return (
     <div className="page-enter mx-auto max-w-6xl px-4">
       <section className="panel-highlight relative mb-12 overflow-hidden p-8 md:p-12">
@@ -142,7 +147,7 @@ export default function ClearDPPage() {
                 <div className="flex flex-wrap gap-1">
                   {mechanic.roles.map((role) => (
                     <span key={role} className="px-2 py-1 bg-primary-light/50 rounded text-xs text-muted">
-                      {role}
+                      {formatRole(role)}
                     </span>
                   ))}
                 </div>

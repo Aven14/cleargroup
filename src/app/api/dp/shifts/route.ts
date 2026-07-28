@@ -2,11 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 
-// GET - Récupérer tous les shifts de service
+// GET - Récupérer tous les shifts de service (public pour la page d'accueil)
 export async function GET() {
-  const auth = await requireUser(["MECANICIEN", "ADMIN"]);
-  if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: 401 });
-
   const shifts = await prisma.dPServiceShift.findMany({
     include: {
       user: {
