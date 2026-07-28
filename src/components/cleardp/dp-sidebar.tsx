@@ -14,8 +14,10 @@ type DPNavItem = {
 const dpNavItems: DPNavItem[] = [
   { href: "/cleardp/interne", label: "Tableau de bord", icon: "🏠", matchPrefix: "/cleardp/interne" },
   { href: "/cleardp/interne/prise-service", label: "Prise de service", icon: "👤", matchPrefix: "/cleardp/interne/prise-service" },
+  { href: "/cleardp/interne/patrouilles", label: "Patrouilles", icon: "🚗", matchPrefix: "/cleardp/interne/patrouilles" },
   { href: "/cleardp/interne/agents", label: "Mécaniciens", icon: "👥", matchPrefix: "/cleardp/interne/agents" },
   { href: "/cleardp/interne/fiches", label: "Fiches clients", icon: "📋", matchPrefix: "/cleardp/interne/fiches" },
+  { href: "/cleardp/interne/planning", label: "Planning", icon: "📅", matchPrefix: "/cleardp/interne/planning" },
 ];
 
 function DPNavLink({
