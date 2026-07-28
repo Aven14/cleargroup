@@ -50,9 +50,12 @@ export function RegisterForm() {
           <input name="lastname" className="input-field" required />
         </div>
       </div>
-      <div>
+      <div className="relative">
         <label className="label-caps mb-1 block">Nom d&apos;utilisateur (email sans @a4l.fr)</label>
-        <input name="email" className="input-field" required placeholder="ex: jean.dupont" />
+        <input name="email" className="input-field pr-24" required placeholder="ex: jean.dupont" />
+        <span className="absolute right-4 top-8 text-muted pointer-events-none opacity-60">
+          @a4l.fr
+        </span>
       </div>
       <div>
         <label className="label-caps mb-1 block">Mot de passe</label>

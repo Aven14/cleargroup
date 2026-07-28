@@ -31,17 +31,20 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="panel space-y-4 p-6">
-      <div>
-        <label className="label-caps mb-1 block">Email (@a4l.fr ajouté automatiquement)</label>
+      <div className="relative">
+        <label className="label-caps mb-1 block">Email</label>
         <input
-          type="email"
+          type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input-field"
+          className="input-field pr-24"
           required
           autoComplete="email"
           placeholder="ex: jean.dupont"
         />
+        <span className="absolute right-4 top-8 text-muted pointer-events-none opacity-60">
+          @a4l.fr
+        </span>
       </div>
       <div>
         <label className="label-caps mb-1 block">Mot de passe</label>
