@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Agent {
   id: string;
@@ -84,8 +85,10 @@ export default function AgentsPage() {
   };
 
   return (
-    <div className="page-enter">
-      <PageHeader
+    <div className="flex">
+      <DPSidebar />
+      <main className="flex-1 ml-56 p-6">
+        <PageHeader
         brand="ClearDP"
         title="Agents"
         subtitle="Liste des mécaniciens et leur statut en temps réel"
@@ -161,6 +164,7 @@ export default function AgentsPage() {
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 }

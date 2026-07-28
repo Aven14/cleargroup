@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Stats {
   totalClients: number;
@@ -58,12 +59,14 @@ export default function TableauDeBordPage() {
   };
 
   return (
-    <div className="page-enter">
-      <PageHeader
-        brand="ClearDP"
-        title="Tableau de bord"
-        subtitle="Statistiques et vue d'ensemble de l'activité"
-      />
+    <div className="flex">
+      <DPSidebar />
+      <main className="flex-1 ml-56 p-6">
+        <PageHeader
+          brand="ClearDP"
+          title="Tableau de bord"
+          subtitle="Statistiques et vue d'ensemble de l'activité"
+        />
 
       <section className="mb-8">
         <h2 className="mb-4 text-lg font-bold text-ink">Statistiques générales</h2>
@@ -149,6 +152,7 @@ export default function TableauDeBordPage() {
           </div>
         </div>
       </section>
+      </main>
     </div>
   );
 }

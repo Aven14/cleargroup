@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Shift {
   id: string;
@@ -99,12 +100,14 @@ export default function PriseServicePage() {
   };
 
   return (
-    <div className="page-enter">
-      <PageHeader
-        brand="ClearDP"
-        title="Prise de service"
-        subtitle="Gérez votre statut de service et vos informations de prise de poste"
-      />
+    <div className="flex">
+      <DPSidebar />
+      <main className="flex-1 ml-56 p-6">
+        <PageHeader
+          brand="ClearDP"
+          title="Prise de service"
+          subtitle="Gérez votre statut de service et vos informations de prise de poste"
+        />
 
       <section className="mb-8">
         <div className="panel-soft p-6">
@@ -192,6 +195,7 @@ export default function PriseServicePage() {
           </div>
         </section>
       )}
+      </main>
     </div>
   );
 }
