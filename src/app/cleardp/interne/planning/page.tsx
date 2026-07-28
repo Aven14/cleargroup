@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
+import { DPSidebar } from "@/components/cleardp/dp-sidebar";
 
 interface Evenement {
   id: string;
@@ -147,7 +148,8 @@ export default function PlanningPage() {
   const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 
   return (
-    <div className="page-enter">
+    <div className="mr-56">
+      <DPSidebar />
       <PageHeader
         brand="ClearDP"
         title="Planning"
