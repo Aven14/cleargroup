@@ -17,6 +17,7 @@ export const ASSIGNABLE_ROLES: UserRole[] = [
   "ADMIN",
   "SECURITY",
   "AMBULANCIER",
+  "MECANICIEN",
 ];
 
 export function hasRole(userRoles: UserRole[], role: UserRole): boolean {
