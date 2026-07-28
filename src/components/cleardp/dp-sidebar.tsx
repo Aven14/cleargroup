@@ -69,7 +69,7 @@ export function DPSidebar() {
         <h2 className="text-lg font-bold text-ink">Module Interne</h2>
       </div>
 
-      <nav className="absolute left-0 right-0 top-[80px] bottom-[80px] space-y-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {dpNavItems.map((item) => (
           <DPNavLink
             key={item.href}
@@ -86,7 +86,7 @@ export function DPSidebar() {
         ))}
       </nav>
 
-      <div className="absolute bottom-0 left-0 right-0 border-t border-line/70 px-3 py-4">
+      <div className="border-t border-line/70 px-3 py-4">
         <Link
           href="/cleardp"
           className="block rounded-md px-3 py-2.5 text-sm font-medium text-muted hover:bg-primary-light/40 hover:text-primary transition"
