@@ -94,8 +94,9 @@ export default function ClientsPage() {
       });
       if (response.ok) {
         await loadClients();
-        const updatedClient = clients.find(c => c.id === viewingClient.id);
-        if (updatedClient) {
+        const clientResponse = await fetch(`/api/dp/clients/${viewingClient.id}`);
+        if (clientResponse.ok) {
+          const updatedClient = await clientResponse.json();
           setViewingClient(updatedClient);
 
           // Vérifier si le nombre de réparations atteint 10 pour activer la remise
@@ -106,8 +107,9 @@ export default function ClientsPage() {
               body: JSON.stringify({ hasDiscount: true }),
             });
             await loadClients();
-            const finalClient = clients.find(c => c.id === viewingClient.id);
-            if (finalClient) {
+            const finalClientResponse = await fetch(`/api/dp/clients/${viewingClient.id}`);
+            if (finalClientResponse.ok) {
+              const finalClient = await finalClientResponse.json();
               setViewingClient(finalClient);
             }
           }
