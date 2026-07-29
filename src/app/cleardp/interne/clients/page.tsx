@@ -151,13 +151,6 @@ export default function ClientsPage() {
     );
   });
 
-  const getLoyaltyLevel = (points: number) => {
-    if (points >= 500) return { level: "Or", color: "bg-yellow-100 text-yellow-700" };
-    if (points >= 200) return { level: "Argent", color: "bg-gray-100 text-gray-700" };
-    if (points >= 50) return { level: "Bronze", color: "bg-orange-100 text-orange-700" };
-    return { level: "Nouveau", color: "bg-blue-100 text-blue-700" };
-  };
-
   return (
     <div className="page-enter">
       <PageHeader
@@ -253,28 +246,24 @@ export default function ClientsPage() {
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredClients.map((client) => {
-              const loyalty = getLoyaltyLevel(client.loyaltyPoints);
-              return (
-                <div key={client.id} className="panel-soft p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="font-bold text-ink">
-                        {client.firstname} {client.lastname}
-                      </h3>
-                      <p className="text-sm text-muted">
-                        {client.vehiclePlate} · {client.vehicleModel}
-                      </p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-bold ${loyalty.color}`}>
-                      {loyalty.level}
-                    </span>
+            {filteredClients.map((client) => (
+              <div key={client.id} className="panel-soft p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-ink">
+                      {client.firstname} {client.lastname}
+                    </h3>
+                    <p className="text-sm text-muted">
+                      {client.vehiclePlate} · {client.vehicleModel}
+                    </p>
                   </div>
+                  {client.hasDiscount && (
+                    <span className="px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-700">
+                      -50%
+                    </span>
+                  )}
+                </div>
                   <div className="mb-4 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted">Points de fidélité:</span>
-                      <span className="text-ink font-semibold">{client.loyaltyPoints}</span>
-                    </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted">Réparations:</span>
                       <span className="text-ink">{client.totalRepairs}</span>
@@ -311,9 +300,8 @@ export default function ClientsPage() {
                       Supprimer
                     </button>
                   </div>
-                </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </section>
@@ -339,10 +327,6 @@ export default function ClientsPage() {
                 <span className="text-ink">{viewingClient.email || "-"}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted">Points de fidélité:</span>
-                <span className="text-ink font-semibold">{viewingClient.loyaltyPoints}</span>
-              </div>
-              <div className="flex justify-between text-sm">
                 <span className="text-muted">Réparations:</span>
                 <span className="text-ink">{viewingClient.totalRepairs}</span>
               </div>
@@ -351,9 +335,9 @@ export default function ClientsPage() {
                 <span className="text-ink">{formatDate(viewingClient.createdAt)}</span>
               </div>
               {viewingClient.hasDiscount && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted">Remise:</span>
-                  <span className="text-green-700 font-semibold">✓ Active</span>
+                <div className="flex justify-between text-sm bg-green-50 p-3 rounded border border-green-200 mt-2">
+                  <span className="text-muted font-semibold">Remise à appliquer:</span>
+                  <span className="text-green-700 font-bold text-xl">-50%</span>
                 </div>
               )}
             </div>
