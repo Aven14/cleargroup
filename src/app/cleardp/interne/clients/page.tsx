@@ -33,6 +33,7 @@ export default function ClientsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [viewingClient, setViewingClient] = useState<Client | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddingRepair, setIsAddingRepair] = useState(false);
 
   const [newClient, setNewClient] = useState({
     firstname: "",
@@ -86,6 +87,7 @@ export default function ClientsPage() {
 
   const handleAddRepair = async () => {
     if (!viewingClient) return;
+    setIsAddingRepair(true);
     try {
       const response = await fetch(`/api/dp/clients/${viewingClient.id}/repairs`, {
         method: 'POST',
@@ -118,6 +120,8 @@ export default function ClientsPage() {
       }
     } catch (error) {
       console.error('Erreur lors de l&apos;ajout de la réparation:', error);
+    } finally {
+      setIsAddingRepair(false);
     }
   };
 
@@ -368,9 +372,10 @@ export default function ClientsPage() {
                 </div>
                 <button
                   onClick={handleAddRepair}
-                  className="btn-primary w-full"
+                  disabled={isAddingRepair}
+                  className={`btn-primary w-full ${isAddingRepair ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Ajouter la réparation
+                  {isAddingRepair ? 'Ajout en cours...' : 'Ajouter la réparation'}
                 </button>
               </div>
             </div>
